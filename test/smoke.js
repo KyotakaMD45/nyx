@@ -140,6 +140,11 @@ function check(name, ok, detail = '') {
       check('préfixe invalide ? : échappé', parsePrefix('?').regex.test('?menu'))
     }
     {
+      const { msUntilNextSlot } = require('../lib/update')
+      const at = (iso) => Math.round(msUntilNextSlot(6, new Date(iso)) / 60000)
+      check('mises à jour : vérif à heure fixe toutes les 6 h', at('2026-11-18T06:00:00Z') === 360 && at('2026-11-18T23:00:00Z') === 60)
+    }
+    {
       const lines = []
       const out1 = process.stdout.write
       const err1 = process.stderr.write

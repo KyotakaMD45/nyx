@@ -26,7 +26,7 @@
       "anti_delete": "🛡️ ANTI DELETE MSG",
       "auto_update": "🔄 AUTO UPDATE BOT"
     },
-    "update_available": "🔄 *Update available* ({0})\n\n{1}\n\nInstall it with *{2}update now*",
+    "update_available": "🔄 *Update Available!*\n\n*{0} pending update(s):*\n{1}\n\n_Use {2}update now to update now_",
     "auto_update_installing": "🔄 Auto update: installing {0} change(s), restarting…",
     "only_group": "_This command only works in a group._",
     "command_error": "❌ Error in *{0}*: {1}",
@@ -35,7 +35,8 @@
     "action_failed": "_Action refused by WhatsApp (code {0})._",
     "connecting": "[{0}] Connecting... 📡",
     "plugin_install": "[{0}] Installing plugins... 📚",
-    "plugins_installed": "[{0}] All plugins are ready! 🎓 ({1})"
+    "plugins_installed": "[{0}] All plugins are ready! 🎓 ({1})",
+    "update_more": "_...and {0} more_"
   },
   "plugins": {
     "alive": {
