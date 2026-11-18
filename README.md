@@ -12,20 +12,31 @@ Même architecture que Levanter (`config.js`, `config.env`, `lib/`, `plugins/`, 
 
 ---
 
-## Installation (VPS Ubuntu / Debian)
+## Installation rapide (VPS)
+
+Une seule commande (Ubuntu, Debian, Fedora, Arch, Alpine, macOS, Termux) :
 
 ```bash
-# Node.js 20+, git et ffmpeg (ffmpeg sert aux stickers vidéo)
+bash <(curl -fsSL https://raw.githubusercontent.com/KyotakaMD45/nyx/main/install.sh)
+```
+
+Elle installe Node.js, git, ffmpeg et les modules, clone Nyx, te demande ton `SESSION_ID`, écrit `config.env` puis lance le bot avec PM2.
+Ajoute `-y --start` pour une installation automatique : `SESSION_ID="Nyx~…" bash <(curl -fsSL …/install.sh) -y --start`.
+
+**SESSION_ID** : https://nyx-session.vercel.app (QR code ou code d’appairage).
+
+## Installation manuelle
+
+```bash
 sudo apt update && sudo apt install -y git ffmpeg
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt install -y nodejs
-
 git clone https://github.com/KyotakaMD45/nyx.git
 cd nyx
 npm install
 cp config.env.example config.env
-nano config.env          # mets ton SESSION_ID (ou laisse vide pour le QR)
-npm start                # lance le bot avec PM2
-npm run logs             # voir les logs (QR, code d'appairage…)
+nano config.env
+npm start
+npm run logs
 ```
 
 Le bot doit être installé avec `git clone` pour que les mises à jour fonctionnent.
@@ -36,7 +47,7 @@ Trois façons, au choix :
 
 | Méthode | Comment |
 |---|---|
-| **SESSION_ID** | Crée ta session sur ton site de session, puis `SESSION_ID="Nexora~…"` ou `"Nexora_…"` dans `config.env`. |
+| **SESSION_ID** | Crée ta session sur https://nyx-session.vercel.app, puis `SESSION_ID="Nyx~…"` dans `config.env` (les formats `Nexora~` / `Nexora_` marchent aussi). |
 | **QR code** | Laisse `SESSION_ID` vide : un QR s'affiche dans les logs, scanne-le dans WhatsApp › Appareils connectés. |
 | **Code d'appairage** | `PAIRING_NUMBER="2250700000000"` : un code à 8 caractères s'affiche dans les logs. |
 

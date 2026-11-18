@@ -1,0 +1,5 @@
+{
+  "functions": {
+    "api/pair.mjs": { "maxDuration": 300 }
+  }
+}

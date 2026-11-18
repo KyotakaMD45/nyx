@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nyx · Session WhatsApp</title>
+<meta name="description" content="Connecte ton WhatsApp et obtiens le SESSION_ID de ton bot Nyx." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23140b33'/%3E%3Cpath d='M40 14a18 18 0 1 0 10 32A15 15 0 0 1 40 14z' fill='%23ede9fe'/%3E%3C/svg%3E" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --bg: #05060f;
+    --card: #0f0b24cc;
+    --line: #2a2150;
+    --text: #ede9fe;
+    --muted: #a5a0c8;
+    --accent: #8b5cf6;
+    --accent2: #c4b5fd;
+    --ok: #34d399;
+    --err: #fb7185;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: radial-gradient(900px 500px at 15% 0%, #2d146640, transparent), linear-gradient(160deg, #05060f, #140b33 60%, #2d1466);
+    display: flex;
+    justify-content: center;
+    padding: 28px 16px 60px;
+  }
+  .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .wrap { width: 100%; max-width: 460px; position: relative; z-index: 1; }
+  .brand { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 6px 0 22px; }
+  .brand svg { filter: drop-shadow(0 0 14px #8b5cf6aa); }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 22px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 24px 70px #0009;
+  }
+  .sub { color: var(--muted); text-align: center; font-size: 14.5px; margin: 0 0 18px; line-height: 1.5; }
+  .tabs { display: flex; gap: 6px; background: #0a0719; border: 1px solid var(--line); border-radius: 13px; padding: 5px; margin-bottom: 16px; }
+  .tabs button {
+    flex: 1; padding: 10px; border: 0; border-radius: 9px; background: transparent;
+    color: var(--muted); font-weight: 650; font-size: 14px; cursor: pointer; transition: .15s;
+  }
+  .tabs button.on { background: linear-gradient(110deg, var(--accent), #6d28d9); color: #fff; }
+  label { display: block; font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+  input {
+    width: 100%; padding: 13px 14px; border-radius: 12px; border: 1px solid var(--line);
+    background: #0a0719; color: var(--text); font-size: 16px; outline: none;
+  }
+  input:focus { border-color: var(--accent); }
+  .hint { font-size: 12px; color: var(--muted); margin: 7px 2px 0; }
+  .go {
+    width: 100%; margin-top: 16px; padding: 14px; border: 0; border-radius: 13px; cursor: pointer;
+    font-size: 15px; font-weight: 800; color: #fff; background: linear-gradient(110deg, var(--accent), #6d28d9);
+    box-shadow: 0 8px 26px #8b5cf655;
+  }
+  .go:disabled { opacity: .5; cursor: default; }
+  .stage { margin-top: 18px; }
+  .qrbox { background: #fff; border-radius: 16px; padding: 16px; display: flex; justify-content: center; }
+  .code {
+    font-size: 30px; font-weight: 800; letter-spacing: 4px; text-align: center;
+    background: #0a0719; border: 1px dashed var(--accent); border-radius: 14px; padding: 18px; color: var(--accent2);
+  }
+  .status { text-align: center; color: var(--muted); font-size: 14px; margin-top: 14px; min-height: 20px; }
+  .status.err { color: var(--err); }
+  .spin {
+    display: inline-block; width: 15px; height: 15px; border: 2px solid #ffffff33; border-top-color: var(--accent2);
+    border-radius: 50%; animation: s .8s linear infinite; vertical-align: -2px; margin-right: 7px;
+  }
+  @keyframes s { to { transform: rotate(360deg); } }
+  .ok { color: var(--ok); font-weight: 700; margin-bottom: 10px; }
+  textarea {
+    width: 100%; height: 120px; resize: vertical; padding: 12px; border-radius: 12px; border: 1px solid var(--line);
+    background: #0a0719; color: var(--text); font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11.5px;
+  }
+  .copy {
+    width: 100%; margin-top: 10px; padding: 12px; border: 1px solid var(--accent); border-radius: 12px;
+    background: transparent; color: var(--accent2); font-weight: 700; cursor: pointer;
+  }
+  .copy.done { background: var(--ok); border-color: var(--ok); color: #05060f; }
+  .steps { font-size: 13px; color: var(--muted); line-height: 1.65; margin-top: 16px; }
+  .steps b { color: var(--text); }
+  .steps code { background: #0a0719; border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; font-size: 12px; color: var(--accent2); }
+  .foot { text-align: center; font-size: 12.5px; color: var(--muted); margin-top: 22px; }
+  .foot a { color: var(--accent2); text-decoration: none; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<canvas class="stars" id="stars"></canvas>
+<div class="wrap">
+  <div class="brand">
+    <svg width="58" height="58" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M40 10a22 22 0 1 0 14 39A19 19 0 0 1 40 10z" fill="#ede9fe" />
+    </svg>
+    <svg width="132" height="48" viewBox="0 0 590 200" aria-label="NYX">
+      <defs>
+        <linearGradient id="ink" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ffffff" />
+          <stop offset="1" stop-color="#c4b5fd" />
+        </linearGradient>
+      </defs>
+      <g fill="none" stroke="url(#ink)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 185 V15 L135 185 V15" />
+        <path d="M235 15 L295 95 L355 15 M295 95 V185" />
+        <path d="M455 15 L575 185 M575 15 L455 185" />
+      </g>
+    </svg>
+  </div>
+
+  <div class="card">
+    <p class="sub">Connecte ton WhatsApp et récupère le <b>SESSION_ID</b> de ton bot Nyx.</p>
+
+    <div id="form">
+      <div class="tabs">
+        <button id="tabQr" class="on" type="button">QR code</button>
+        <button id="tabCode" type="button">Code d'appairage</button>
+      </div>
+      <div id="phoneWrap" class="hidden">
+        <label for="phone">Ton numéro WhatsApp (indicatif + numéro, sans +)</label>
+        <input id="phone" inputmode="numeric" autocomplete="tel" placeholder="ex. 2250700000000" />
+        <div class="hint">Côte d'Ivoire : <b>225</b> puis ton numéro.</div>
+      </div>
+      <button id="go" class="go" type="button">Générer mon SESSION_ID</button>
+    </div>
+
+    <div id="stage" class="stage hidden"></div>
+    <div id="status" class="status"></div>
+  </div>
+
+  <div class="steps" id="help">
+    <div id="helpQr"><b>QR :</b> WhatsApp › Appareils connectés › Connecter un appareil › scanne le QR.</div>
+    <div id="helpCode" class="hidden"><b>Code :</b> WhatsApp › Appareils connectés › Connecter un appareil › Connecter avec un numéro › entre le code.</div>
+  </div>
+
+  <div class="foot">Nyx · <a href="https://github.com/KyotakaMD45/nyx" target="_blank" rel="noopener">installer le bot</a></div>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id)
+  let mode = 'qr'
+  let source = null
+
+  function setMode(next) {
+    mode = next
+    $('tabQr').classList.toggle('on', next === 'qr')
+    $('tabCode').classList.toggle('on', next === 'code')
+    $('phoneWrap').classList.toggle('hidden', next !== 'code')
+    $('helpQr').classList.toggle('hidden', next !== 'qr')
+    $('helpCode').classList.toggle('hidden', next !== 'code')
+  }
+
+  function setStatus(html, isError) {
+    $('status').className = 'status' + (isError ? ' err' : '')
+    $('status').innerHTML = html
+  }
+
+  function stop() {
+    if (source) source.close()
+    source = null
+    $('go').disabled = false
+  }
+
+  function start() {
+    stop()
+    const phone = ($('phone').value || '').replace(/\D/g, '')
+    if (mode === 'code' && (phone.length < 8 || phone.length > 15)) {
+      setStatus('Numéro invalide : indicatif du pays + numéro.', true)
+      return
+    }
+    $('go').disabled = true
+    $('stage').className = 'stage'
+    $('stage').innerHTML = ''
+    setStatus('<span class="spin"></span>Connexion à WhatsApp…')
+    const query = mode === 'code' ? '?mode=code&phone=' + encodeURIComponent(phone) : '?mode=qr'
+    source = new EventSource('/api/pair' + query)
+    source.onmessage = (event) => {
+      let data
+      try {
+        data = JSON.parse(event.data)
+      } catch {
+        return
+      }
+      if (data.event === 'qr') {
+        $('stage').innerHTML = '<div class="qrbox" id="qr"></div>'
+        new QRCode($('qr'), { text: data.qr, width: 236, height: 236, correctLevel: QRCode.CorrectLevel.L })
+        setStatus('Scanne ce QR dans WhatsApp.')
+      } else if (data.event === 'code') {
+        $('stage').innerHTML = '<div class="code"></div>'
+        $('stage').firstChild.textContent = data.code
+        setStatus('Entre ce code dans WhatsApp.')
+      } else if (data.event === 'connected') {
+        setStatus('<span class="spin"></span>Connecté ! Préparation de ta session…')
+      } else if (data.event === 'saved') {
+        showResult(data.sessionId)
+        stop()
+      } else if (data.event === 'error') {
+        setStatus('', true)
+        $('status').textContent = data.message || 'Erreur.'
+        stop()
+      }
+    }
+    source.onerror = () => {
+      if (!source) return
+      setStatus('Connexion interrompue. Réessaie.', true)
+      stop()
+    }
+  }
+
+  function showResult(sessionId) {
+    $('stage').innerHTML =
+      '<div class="ok">✅ Ta session est prête</div>' +
+      '<textarea id="sid" readonly></textarea>' +
+      '<button class="copy" id="copy" type="button">Copier le SESSION_ID</button>' +
+      '<div class="steps">Colle-le dans <code>config.env</code> :<br><code>SESSION_ID="…"</code><br>' +
+      'ou envoie à ton bot : <code>.setvar SESSION_ID=…</code><br><br>' +
+      '⚠️ Ne le partage avec personne : il donne accès à ton WhatsApp.</div>'
+    $('sid').value = sessionId
+    $('copy').onclick = () => {
+      const text = $('sid').value
+      const done = () => {
+        $('copy').textContent = 'Copié ✓'
+        $('copy').classList.add('done')
+      }
+      if (navigator.clipboard) navigator.clipboard.writeText(text).then(done).catch(() => {
+        $('sid').select()
+        document.execCommand('copy')
+        done()
+      })
+      else {
+        $('sid').select()
+        document.execCommand('copy')
+        done()
+      }
+    }
+    setStatus('')
+  }
+
+  $('tabQr').onclick = () => setMode('qr')
+  $('tabCode').onclick = () => setMode('code')
+  $('go').onclick = start
+
+  const canvas = $('stars')
+  const ctx = canvas.getContext('2d')
+  function drawStars() {
+    canvas.width = innerWidth
+    canvas.height = innerHeight
+    let seed = 7
+    const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280)
+    for (let i = 0; i < 120; i++) {
+      ctx.globalAlpha = rnd() * 0.6 + 0.2
+      ctx.fillStyle = '#fff'
+      ctx.beginPath()
+      ctx.arc(rnd() * canvas.width, rnd() * canvas.height, rnd() * 1.4 + 0.3, 0, Math.PI * 2)
+      ctx.fill()
+    }
+  }
+  drawStars()
+  addEventListener('resize', drawStars)
+</script>
+</body>
+</html>

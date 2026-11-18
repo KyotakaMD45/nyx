@@ -1,0 +1,13 @@
+{
+  "name": "nyx-session",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "baileys": "7.0.0-rc14",
+    "pino": "^10.4.0"
+  }
+}
