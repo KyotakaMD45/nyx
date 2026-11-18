@@ -649,27 +649,9 @@ generate_config() {
 
     cat > "$config_path" <<EOF
 SESSION_ID="${SESSION_ID}"
-PAIRING_NUMBER=""
-BOT_NAME="Nyx"
-OWNER_NAME=""
-BOT_LANG="fr"
 PREFIX="${PREFIX}"
-MODE="private"
 SUDO="${SUDO_NUMBERS}"
 AUTO_UPDATE="false"
-UPDATE_INTERVAL="6"
-ALWAYS_ONLINE="false"
-SEND_READ="false"
-REJECT_CALL="false"
-AUTO_STATUS_VIEW="true"
-STATUS_VIEW_EMOJI=""
-STATUS_VIEW_MSG=""
-STATUS_FORWARD_JID=""
-ANTI_DELETE="false"
-STICKER_PACKNAME="${STICKER_PACKNAME}"
-GEMINI_API_KEY=""
-GROQ_API_KEY=""
-TZ="Africa/Abidjan"
 EOF
 
     chmod 600 "$config_path" 2>/dev/null || true

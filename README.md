@@ -98,7 +98,7 @@ Préfixe par défaut : `.` (modifiable : `.setvar PREFIX=!`). Liste complète da
 
 ## Variables
 
-Toutes se règlent dans `config.env` ou depuis WhatsApp avec `.setvar CLÉ=VALEUR`. `.allvar` les liste.
+Comme Levanter, `config.env` ne contient que l’essentiel (`SESSION_ID`, `AUTO_UPDATE`) : les valeurs par défaut sont dans `config.js`. Ajoute une ligne `CLÉ="valeur"` dans `config.env`, ou envoie `.setvar CLÉ=VALEUR` sur WhatsApp, seulement pour ce que tu veux changer. `.allvar` les liste.
 
 | Variable | Rôle | Défaut |
 |---|---|---|
