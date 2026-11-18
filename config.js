@@ -46,6 +46,7 @@ function build() {
     STATUS_VIEW_EMOJI: (env.STATUS_VIEW_EMOJI || '').trim(),
     STATUS_VIEW_MSG: env.STATUS_VIEW_MSG || '',
     STATUS_FORWARD_JID: (env.STATUS_FORWARD_JID || '').trim(),
+    VV: (env.VV || 'false').trim(),
     ANTI_DELETE: (env.ANTI_DELETE || 'false').trim().toLowerCase(),
     DISABLE_START_MESSAGE: toBool(env.DISABLE_START_MESSAGE),
     ALIVE_MSG: env.ALIVE_MSG || '',

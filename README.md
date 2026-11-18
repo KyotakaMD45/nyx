@@ -83,6 +83,26 @@ Tout passe par `AUTO_STATUS_VIEW`, comme dans Knull et Levanter. Le plus simple 
 
 Les options se combinent : `.status no-dl &delay`, `.status only-view 2250700000000 hide-view`…
 
+## Alive, vues uniques
+
+**Alive personnalisable** (comme Knull) :
+
+| Commande | Effet |
+|---|---|
+| `.alive Je suis là ! #uptime` | enregistre ton message |
+| `.alive https://lien/image.jpg Salut #quote` | avec une image (ou une vidéo / un GIF : ajoute `&gif`) |
+| `.alive get` | affiche le texte enregistré |
+| `.alive reset` | revient au message par défaut |
+
+Variables : `#uptime` `#quote` `#name` `#version` `#ram` `#prefix`.
+
+**Vues uniques** :
+
+- `.vv` en réponse à une vue unique la révèle ici · `.vv 2250700000000` l’envoie à ce numéro.
+- `.antivv p` renvoie **automatiquement** chaque vue unique reçue dans ta discussion. Mêmes options que `.delete` : `g` (même discussion), un numéro, un groupe, portées `pm` `gm` `no-pm` `no-gm`, `off`.
+
+WhatsApp n’envoie le contenu des vues uniques qu’aux téléphones. Quand `antivv` est actif, Nyx se connecte donc en se présentant comme un téléphone Android (comme Knull et Levanter avec `VV`) ; il se reconnecte tout seul quand tu l’actives ou le désactives. Sans `antivv`, `.vv` peut échouer.
+
 ## Commandes
 
 Préfixe par défaut : `^[.,!]`, comme Knull et Levanter : `.menu`, `,menu` et `!menu` marchent (modifiable : `.setvar PREFIX=!`). Liste complète dans le bot : `.menu`.
@@ -90,7 +110,7 @@ Préfixe par défaut : `^[.,!]`, comme Knull et Levanter : `.menu`, `,menu` et `
 | Catégorie | Commandes |
 |---|---|
 | Système | `alive` `ping` `menu` (`help`, `list`) `restart` `update` |
-| Réglages | `setvar` `getvar` `delvar` `allvar` `online` `read` `call` `status` `delete` |
+| Réglages | `setvar` `getvar` `delvar` `allvar` `online` `read` `call` `status` `delete` `antivv` |
 | Propriétaire | `pass` `setsudo` `delsudo` `getsudo` `block` `unblock` `jid` |
 | Groupe | `kick` `add` `promote` `demote` `tagall` `tag` `link` `revoke` `mute` `unmute` `ginfo` `gname` `gdesc` `antilink` `welcome` `goodbye` |
 | Médias | `sticker` (`s`) `take` `toimg` `vv` |
@@ -130,6 +150,7 @@ Comme Levanter, `config.env` ne contient que l’essentiel (`SESSION_ID`, `AUTO_
 | `STATUS_VIEW_EMOJI` | Réaction aux statuts (`🔥,❤️`) | — |
 | `STATUS_VIEW_MSG` | Réponse à l'auteur d'un statut | — |
 | `STATUS_FORWARD_JID` | Où recevoir les statuts (vide = ta discussion) | — |
+| `VV` | Réglé par `.antivv` : où renvoyer chaque vue unique reçue (`p`, `g`, numéro, groupe + portée) · `false` | `false` |
 | `ANTI_DELETE` | Réglé par `.delete` : `p` (vers toi), `g` (même discussion), un numéro ou un groupe, + portée facultative `pm` `gm` `no-pm` `no-gm` (ex. `g gm`) · `false` | `false` |
 | `ALIVE_MSG` | Message alive perso (`#name #version #uptime #ram #prefix`) | — |
 | `STICKER_PACKNAME` | `Pack,Auteur` des stickers | `Nyx,Nyx Bot` |

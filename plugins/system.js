@@ -1,5 +1,6 @@
 const os = require('os')
 const { bot, lang, config, commands, prefix, prefixes, runtime, ram, restart, textToStylist, addSpace, getRam, getUptime, getDate, getPlatform } = require('../lib')
+const alive = require('../lib/alive')
 
 bot(
   {
@@ -8,22 +9,27 @@ bot(
     type: 'system',
     fromMe: false,
   },
-  async (message) => {
-    const values = {
-      '#name': config.BOT_NAME,
-      '#version': config.VERSION,
-      '#uptime': runtime(process.uptime()),
-      '#ram': ram(),
-      '#prefix': prefixes()[0] || '',
+  async (message, match, ctx = {}) => {
+    const t = lang.plugins.alive
+    const input = String(match || '').trim()
+    if (input && ctx.sudo) {
+      if (input.toLowerCase() === 'get') {
+        const current = alive.getAlive()
+        return message.send(current ? [current.message, current.url].filter(Boolean).join('\n') : t.not_set)
+      }
+      if (['reset', 'off', 'del'].includes(input.toLowerCase())) {
+        alive.resetAlive()
+        return message.send(t.reset)
+      }
+      try {
+        await alive.setAlive(input)
+      } catch (error) {
+        return message.send(t.media_failed.format(error.message))
+      }
     }
-    let text = config.ALIVE_MSG
-    if (text) {
-      for (const [key, value] of Object.entries(values)) text = text.split(key).join(value)
-      text = text.replace(/\\n/g, '\n')
-    } else {
-      text = lang.plugins.alive.card.format(config.BOT_NAME, config.VERSION, values['#uptime'], values['#ram'], os.platform())
-    }
-    await message.reply(text)
+    const card = t.card.format(config.BOT_NAME, config.VERSION, runtime(process.uptime()), ram(), os.platform())
+    const { type, content, options } = await alive.aliveMessage(prefix(), card)
+    await message.send(content, { ...options, quoted: message.data }, type)
   }
 )
 

@@ -122,6 +122,16 @@ function check(name, ok, detail = '') {
     check('.ping répond (Pong)', /Pong/.test(textsOf(out)), textsOf(out))
     out = await send(raw('.alive'))
     check('.alive répond', /en ligne/.test(textsOf(out)), textsOf(out))
+    out = await send(raw('.alive Je suis là #name, actif depuis #uptime'))
+    check('.alive <texte> : enregistré et variables remplies', /^Je suis là Nyx, actif depuis [0-9]+s$/m.test(textsOf(out)), textsOf(out))
+    out = await send(raw('.alive'))
+    check('.alive : affiche le texte personnalisé', /Je suis là Nyx/.test(textsOf(out)))
+    out = await send(raw('.alive get'))
+    check('.alive get : texte brut', textsOf(out).includes('#name'))
+    out = await send(raw('.alive Coucou', { from: STRANGER }))
+    check('.alive : un inconnu ne peut pas le changer', out.length === 0 && require('../lib/alive').getAlive().message.startsWith('Je suis là'))
+    out = await send(raw('.alive reset'))
+    check('.alive reset : retour au message par défaut', /par défaut/.test(textsOf(out)) && !require('../lib/alive').getAlive())
     out = await send(raw('.menu'))
     check('.menu : encadré + catégories', /Préfixe : \./.test(textsOf(out)) && /❏ ꜱʏꜱᴛᴇᴍ ❏/.test(textsOf(out)) && /❏ ɢʀᴏᴜᴘ ❏/.test(textsOf(out)) && textsOf(out).includes('𝙼𝙴𝙽𝚄'), textsOf(out))
     out = await send(raw('.menu group'))
@@ -261,6 +271,29 @@ function check(name, ok, detail = '') {
     check('.delete invalide : affiche les exemples', /Exemples/.test(textsOf(out)) && config.ANTI_DELETE === 'g gm')
     out = await send(raw('.delete off'))
     check('.delete off', config.ANTI_DELETE === 'false' && /désactivée/.test(textsOf(out)))
+
+    out = await send(raw('.antivv p'))
+    check('.antivv p : activé', config.VV === 'p' && /ta discussion/.test(textsOf(out)), textsOf(out))
+    {
+      const realDownload = B.downloadMediaMessage
+      B.downloadMediaMessage = async () => Buffer.from('IMG')
+      const vo = {
+        key: { remoteJid: `${STRANGER}@s.whatsapp.net`, fromMe: false, id: `VO${++n}` },
+        pushName: 'Ami',
+        message: { viewOnceMessageV2: { message: { imageMessage: { mimetype: 'image/jpeg', caption: 'secret', viewOnce: true } } } },
+      }
+      out = await send(vo)
+      const fwd = out.find((s) => s.content?.image)
+      check('antivv : la vue unique arrive dans ta discussion', fwd && fwd.jid === `${OWNER}@s.whatsapp.net` && /Vue unique/.test(fwd.content.caption) && /secret/.test(fwd.content.caption), JSON.stringify(out.map((s) => s.jid)))
+      const plain = { ...vo, key: { ...vo.key, id: `VO${++n}` }, message: { imageMessage: { mimetype: 'image/jpeg' } } }
+      out = await send(plain)
+      check('antivv : une photo normale n’est pas renvoyée', !out.some((s) => s.content?.image))
+      out = await send(raw('.vv', { extra: { contextInfo: { stanzaId: vo.key.id, participant: vo.key.remoteJid, quotedMessage: vo.message } } }))
+      check('.vv : révèle la vue unique citée', out.some((s) => s.content?.image && /Vue unique/.test(s.content.caption)), JSON.stringify(out))
+      B.downloadMediaMessage = realDownload
+    }
+    out = await send(raw('.antivv off'))
+    check('.antivv off', config.VV === 'false')
     {
       const { parseAntiDelete, inDeleteScope } = require('../lib/handler')
       check('anti-delete : portées pm/gm/no-pm/no-gm', inDeleteScope('pm', 'a@s.whatsapp.net') && !inDeleteScope('pm', 'g@g.us') && inDeleteScope('no-pm', 'g@g.us') && !inDeleteScope('no-gm', 'g@g.us') && parseAntiDelete('null') === null)

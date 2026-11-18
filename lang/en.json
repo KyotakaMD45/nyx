@@ -36,12 +36,17 @@
     "connecting": "[{0}] Connecting... 📡",
     "plugin_install": "[{0}] Installing plugins... 📚",
     "plugins_installed": "[{0}] All plugins are ready! 🎓 ({1})",
-    "update_more": "_...and {0} more_"
+    "update_more": "_...and {0} more_",
+    "view_once": "👁️ *View once* from @{0} {1}"
   },
   "plugins": {
     "alive": {
-      "desc": "Check that the bot is online",
-      "card": "*{0}* is online ✅\n\n› Version: {1}\n› Uptime: {2}\n› RAM: {3}\n› System: {4}"
+      "desc": "Bot alive message · customizable",
+      "card": "*{0}* is online ✅\n\n› Version: {1}\n› Uptime: {2}\n› RAM: {3}\n› System: {4}",
+      "not_set": "_No custom alive message: the default one is used._",
+      "reset": "✅ Alive message reset to default.",
+      "media_failed": "❌ Could not fetch the media ({0}). Send a direct link to an image, video or GIF.",
+      "usage": "*Examples:*\n- alive I am here! #uptime\n- alive https://link/image.jpg Hi #quote\n- alive https://link/anim.mp4 &gif Hello\n- alive get: show the saved text\n- alive reset: back to default\n\n*Variables:* #uptime #quote #name #version #ram #prefix"
     },
     "ping": {
       "desc": "Measure the response time",
@@ -240,9 +245,10 @@
       "usage": "_Reply to a sticker with *toimg*._"
     },
     "vv": {
-      "desc": "Reveal a view-once message",
-      "usage": "_Reply to a view-once photo / video / voice note with *vv*._",
-      "caption": "👁️ View once"
+      "desc": "Reveal a view-once (vv <number> to send it elsewhere)",
+      "usage": "_Reply to a view-once photo / video / voice note with *vv*._\n_To send it elsewhere: *vv 2250700000000*_\n\n💡 If it fails, turn on *antivv*: WhatsApp only sends view-once content to the bot in that mode.",
+      "caption": "👁️ View once from @{0}",
+      "failed": "❌ Could not fetch this view-once.\n\n💡 Turn on *antivv* (e.g. *antivv p*): WhatsApp only sends view-once content to the bot in that mode."
     },
     "ai": {
       "desc": "Ask the AI (Gemini / Groq)",
@@ -277,6 +283,20 @@
       "scope_gm": "📌 _Only for group chats_",
       "scope_no_pm": "📌 _Excluding personal chats_",
       "scope_no_gm": "📌 _Excluding group chats_"
+    },
+    "antivv": {
+      "desc": "Auto view-once: forwards every view-once you receive where you want",
+      "example": "> *Usage Examples:*\n- antivv p - Send every view-once to your chat\n- antivv g - Send it in the same chat\n- antivv p pm - PMs only\n- antivv p gm - Groups only\n- antivv p no-gm / antivv p no-pm\n- antivv 2250700000000 - Send to this number\n- antivv off - Disable\n\n*Scopes:* pm, gm, no-pm, no-gm",
+      "invalid_jid": "*Error:* _invalid number or group_",
+      "disabled": "Auto view-once has been disabled.",
+      "dest_jid": "_View-once messages will be sent to: {0}_",
+      "dest_sudo": "_View-once messages will be sent to your chat._",
+      "dest_chat": "_View-once messages will be sent to the chat itself._",
+      "scope_pm": "📌 _Only for personal chats_",
+      "scope_gm": "📌 _Only for group chats_",
+      "scope_no_pm": "📌 _Excluding personal chats_",
+      "scope_no_gm": "📌 _Excluding group chats_",
+      "reconnecting": "🔄 _Reconnecting to WhatsApp to apply the change…_"
     }
   },
   "vars": {
@@ -308,6 +328,7 @@
     "GROQ_API_KEY": "Groq API key",
     "GROQ_MODEL": "Groq model",
     "TZ": "Time zone (e.g. Africa/Abidjan)",
-    "LOG_LEVEL": "Log level: error, warn, info, debug"
+    "LOG_LEVEL": "Log level: error, warn, info, debug",
+    "VV": "Auto view-once: p, g, number or group (+ pm/gm/no-pm/no-gm) · false"
   }
 }

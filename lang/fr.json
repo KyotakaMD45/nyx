@@ -36,12 +36,17 @@
     "connecting": "[{0}] Connexion en cours... 📡",
     "plugin_install": "[{0}] Installation des plugins... 📚",
     "plugins_installed": "[{0}] Tous les plugins sont prêts ! 🎓 ({1})",
-    "update_more": "_… et {0} autre(s)_"
+    "update_more": "_… et {0} autre(s)_",
+    "view_once": "👁️ *Vue unique* de @{0} {1}"
   },
   "plugins": {
     "alive": {
-      "desc": "Vérifie que le bot est en ligne",
-      "card": "*{0}* est en ligne ✅\n\n› Version : {1}\n› Actif depuis : {2}\n› RAM : {3}\n› Système : {4}"
+      "desc": "Message « en vie » du bot · personnalisable",
+      "card": "*{0}* est en ligne ✅\n\n› Version : {1}\n› Actif depuis : {2}\n› RAM : {3}\n› Système : {4}",
+      "not_set": "_Aucun message alive personnalisé : celui par défaut est utilisé._",
+      "reset": "✅ Message alive remis par défaut.",
+      "media_failed": "❌ Média impossible à récupérer ({0}). Envoie un lien direct vers une image, une vidéo ou un GIF.",
+      "usage": "*Exemples :*\n- alive Je suis là ! #uptime\n- alive https://lien/image.jpg Salut #quote\n- alive https://lien/anim.mp4 &gif Coucou\n- alive get : voir le texte enregistré\n- alive reset : revenir au message par défaut\n\n*Variables :* #uptime #quote #name #version #ram #prefix"
     },
     "ping": {
       "desc": "Mesure le temps de réponse",
@@ -240,9 +245,10 @@
       "usage": "_Réponds à un sticker avec *toimg*._"
     },
     "vv": {
-      "desc": "Révèle une vue unique",
-      "usage": "_Réponds à une photo / vidéo / note vocale en vue unique avec *vv*._",
-      "caption": "👁️ Vue unique"
+      "desc": "Révèle une vue unique (vv <numéro> pour l’envoyer ailleurs)",
+      "usage": "_Réponds à une photo / vidéo / note vocale en vue unique avec *vv*._\n_Pour l’envoyer ailleurs : *vv 2250700000000*_\n\n💡 Si ça ne marche pas, active *antivv* : WhatsApp n’envoie les vues uniques au bot que dans ce mode.",
+      "caption": "👁️ Vue unique de @{0}",
+      "failed": "❌ Impossible de récupérer cette vue unique.\n\n💡 Active *antivv* (par ex. *antivv p*) : WhatsApp n’envoie le contenu des vues uniques au bot que dans ce mode."
     },
     "ai": {
       "desc": "Pose une question à l'IA (Gemini / Groq)",
@@ -277,6 +283,20 @@
       "scope_gm": "📌 _Seulement les groupes_",
       "scope_no_pm": "📌 _Sauf les discussions privées_",
       "scope_no_gm": "📌 _Sauf les groupes_"
+    },
+    "antivv": {
+      "desc": "Vue unique auto : renvoie chaque vue unique reçue où tu veux",
+      "example": "> *Exemples :*\n- antivv p : envoie chaque vue unique reçue dans ta discussion\n- antivv g : la renvoie dans la même discussion\n- antivv p pm : seulement les discussions privées\n- antivv p gm : seulement les groupes\n- antivv p no-gm / antivv p no-pm\n- antivv 2250700000000 : vers ce numéro\n- antivv off : désactiver\n\n*Portées :* pm, gm, no-pm, no-gm",
+      "invalid_jid": "*Erreur :* _numéro ou groupe invalide_",
+      "disabled": "La vue unique automatique a été désactivée.",
+      "dest_jid": "_Les vues uniques seront envoyées à : {0}_",
+      "dest_sudo": "_Les vues uniques seront envoyées dans ta discussion._",
+      "dest_chat": "_Les vues uniques seront renvoyées dans la discussion elle-même._",
+      "scope_pm": "📌 _Seulement les discussions privées_",
+      "scope_gm": "📌 _Seulement les groupes_",
+      "scope_no_pm": "📌 _Sauf les discussions privées_",
+      "scope_no_gm": "📌 _Sauf les groupes_",
+      "reconnecting": "🔄 _Reconnexion à WhatsApp pour appliquer le changement…_"
     }
   },
   "vars": {
@@ -308,6 +328,7 @@
     "GROQ_API_KEY": "Clé API Groq",
     "GROQ_MODEL": "Modèle Groq",
     "TZ": "Fuseau horaire (ex. Africa/Abidjan)",
-    "LOG_LEVEL": "Niveau des logs : error, warn, info, debug"
+    "LOG_LEVEL": "Niveau des logs : error, warn, info, debug",
+    "VV": "Vue unique auto : p, g, numéro ou groupe (+ pm/gm/no-pm/no-gm) · false"
   }
 }
