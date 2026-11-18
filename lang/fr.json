@@ -30,7 +30,6 @@
     "update_available": "🔄 *Mise à jour disponible !*\n\n*{0} mise(s) à jour en attente :*\n{1}\n\n_Utilise {2}update now pour mettre à jour_",
     "auto_update_installing": "🔄 Mise à jour automatique : installation de {0} changement(s), redémarrage…",
     "only_group": "_Cette commande ne fonctionne que dans un groupe._",
-    "command_error": "❌ Erreur dans *{0}* : {1}",
     "deleted_message": "🗑️ *Message supprimé* par @{0} {1}",
     "bot_not_admin": "_Je dois être admin du groupe pour faire ça._",
     "action_failed": "_Action refusée par WhatsApp (code {0})._",
@@ -38,7 +37,8 @@
     "plugin_install": "[{0}] Installation des plugins... 📚",
     "plugins_installed": "[{0}] Tous les plugins sont prêts ! 🎓 ({1})",
     "update_more": "_… et {0} autre(s)_",
-    "view_once": "👁️ *Vue unique* de @{0} {1}"
+    "view_once": "👁️ *Vue unique* de @{0} {1}",
+    "error_message": "```--- ⚠️ ERROR REPORT ⚠️ ---\n\nVersion  : {0}\nMessage  : {1}\nError    : {2}\nJid      : {3}\nCommand  : {4}\nPlatform : {5}```\n\n```-----``` *{6} ❣* ```-----```"
   },
   "plugins": {
     "alive": {

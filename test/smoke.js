@@ -229,6 +229,16 @@ function check(name, ok, detail = '') {
     await send(raw('.status emoji off'))
 
     const inGroup = (text, opts = {}) => raw(text, { jid: GROUP, participant: `${opts.from || OWNER}@s.whatsapp.net`, ...opts })
+    {
+      require('../lib').bot({ pattern: 'plante ?(.*)', type: 'misc' }, async () => {
+        throw new Error('boum')
+      })
+      out = await send(inGroup('.plante'))
+      const report = out.find((s) => /ERROR REPORT/.test(s.content?.text || ''))
+      check('erreur de commande : rapport dans le PV du propriétaire, pas dans le groupe', report && report.jid === `${OWNER}@s.whatsapp.net` && /Error    : boum/.test(report.content.text) && /Command  : plante/.test(report.content.text) && !out.some((s) => s.jid === GROUP), JSON.stringify(out.map((s) => s.jid)))
+      const { commands } = require('../lib/plugins')
+      commands.splice(commands.findIndex((c) => c.name === 'plante'), 1)
+    }
     out = await send(inGroup('.tagall Bonjour'))
     check('.tagall mentionne tout le monde', out[0]?.content?.mentions?.length === 2)
     out = await send(inGroup('.tag Message caché'))
