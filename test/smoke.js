@@ -1,5 +1,3 @@
-// Offline smoke test: simulates WhatsApp messages against a fake socket.
-// Safe on a real install: config.env, data/ and session/ are backed up and restored.
 const fs = require('fs')
 const path = require('path')
 const zlib = require('zlib')
@@ -9,7 +7,6 @@ const ENV = path.join(ROOT, 'config.env')
 const DATA = path.join(ROOT, 'data')
 const SESSION = path.join(ROOT, 'session')
 
-// --- backup ------------------------------------------------------------------
 const backup = path.join(require('os').tmpdir(), `nyx-test-${Date.now()}`)
 fs.mkdirSync(backup, { recursive: true })
 const saved = {}
@@ -54,14 +51,12 @@ function check(name, ok, detail = '') {
     const { loadPlugins, commands } = require('../lib/plugins')
     const { onMessagesUpsert, trackSends } = require('../lib/handler')
 
-    // --- plugins ---------------------------------------------------------------
     const count = loadPlugins(path.join(ROOT, 'plugins'), logger)
     check(`plugins chargés (${count} commandes)`, count >= 35)
     const names = commands.map((c) => c.name)
     check('aucun nom de commande en double', new Set(names).size === names.length, names.filter((n, i) => names.indexOf(n) !== i).join(','))
     check('chaque commande a une description', commands.every((c) => c.desc), commands.filter((c) => !c.desc).map((c) => c.name).join(','))
 
-    // --- fake socket -----------------------------------------------------------
     const OWNER = '2250700000001'
     const STRANGER = '2250700000002'
     const GROUP = '120363000000000001@g.us'
@@ -124,7 +119,6 @@ function check(name, ok, detail = '') {
     }
     const textsOf = (list) => list.map((s) => s.content?.text || '').join('\n')
 
-    // --- system ----------------------------------------------------------------
     let out = await send(raw('.ping'))
     check('.ping répond (Pong)', /Pong/.test(textsOf(out)), textsOf(out))
     out = await send(raw('.alive'))
@@ -136,7 +130,6 @@ function check(name, ok, detail = '') {
     out = await send(raw('.commandeinconnue'))
     check('commande inconnue : aucune réponse', out.length === 0)
 
-    // --- permissions ----------------------------------------------------------
     out = await send(raw('.alive', { from: STRANGER }))
     check('mode private : un inconnu est ignoré', out.length === 0)
     process.env.MODE = 'public'
@@ -148,7 +141,6 @@ function check(name, ok, detail = '') {
     process.env.MODE = 'private'
     config.reload()
 
-    // --- variables ------------------------------------------------------------
     out = await send(raw('.setvar PREFIX=!'))
     check('.setvar PREFIX=! change la config à chaud', config.PREFIX === '!', config.PREFIX)
     check('.setvar écrit config.env', /PREFIX="!"/.test(fs.readFileSync(ENV, 'utf8')))
@@ -173,7 +165,6 @@ function check(name, ok, detail = '') {
     check('.setvar masque les secrets', !textsOf(out).includes('SECRETVALUE'), textsOf(out))
     await send(raw('.delvar GEMINI_API_KEY'))
 
-    // --- sudo -----------------------------------------------------------------
     out = await send(raw('.setsudo 2250700000009'))
     check('.setsudo ajoute un numéro', config.SUDO.includes('2250700000009'))
     out = await send(raw('.getsudo', { from: '2250700000009' }))
@@ -181,7 +172,6 @@ function check(name, ok, detail = '') {
     out = await send(raw('.delsudo 2250700000009'))
     check('.delsudo', !config.SUDO.includes('2250700000009'))
 
-    // --- settings ---------------------------------------------------------------
     await send(raw('.online on'))
     check('.online on', config.ALWAYS_ONLINE === true)
     await send(raw('.online off'))
@@ -192,7 +182,6 @@ function check(name, ok, detail = '') {
     check('.mode public', config.MODE === 'public')
     await send(raw('.mode private'))
 
-    // --- group ------------------------------------------------------------------
     const inGroup = (text, opts = {}) => raw(text, { jid: GROUP, participant: `${opts.from || OWNER}@s.whatsapp.net`, ...opts })
     out = await send(inGroup('.tagall Bonjour'))
     check('.tagall mentionne tout le monde', out[0]?.content?.mentions?.length === 2)
@@ -208,7 +197,6 @@ function check(name, ok, detail = '') {
     out = await send(raw('.kick 2250700000002'))
     check('commande de groupe hors groupe : refusée', /groupe/.test(textsOf(out)))
 
-    // --- antilink ---------------------------------------------------------------
     await send(inGroup('.antilink on'))
     out = await send(inGroup('Rejoins https://chat.whatsapp.com/xyz', { from: STRANGER, fromMe: false }))
     check('antilink supprime le lien d\'un membre', out.some((s) => s.content?.delete))
@@ -216,7 +204,6 @@ function check(name, ok, detail = '') {
     check('antilink ignore le propriétaire', !out.some((s) => s.content?.delete))
     await send(inGroup('.antilink off'))
 
-    // --- anti-delete --------------------------------------------------------------
     await send(raw('.antidelete g'))
     const original = raw('message secret', { from: STRANGER, fromMe: false })
     await send(original)
@@ -227,7 +214,6 @@ function check(name, ok, detail = '') {
     check('anti-delete renvoie le message supprimé', out.some((s) => s.content?.forward?.key?.id === original.key.id))
     await send(raw('.antidelete off'))
 
-    // --- statuses -----------------------------------------------------------------
     const OWN_CHAT = `${OWNER}@s.whatsapp.net`
     const statusMsg = (from, message = { imageMessage: { caption: 'mon statut', mimetype: 'image/jpeg' } }) => ({
       key: { remoteJid: 'status@broadcast', fromMe: false, id: `ST${++n}`, participant: `${from}@s.whatsapp.net` },
@@ -289,7 +275,6 @@ function check(name, ok, detail = '') {
     check('statut texte : renvoyé avec l\'auteur', out.some((s) => s.jid === OWN_CHAT && /Statut de Ami/.test(s.content?.text || '') && /statut texte/.test(s.content?.text || '')))
     await send(raw('.status off'))
 
-    // --- startup messages -------------------------------------------------------------
     const client = require('../lib/client')
     let welcome = client.welcomeText(sock)
     check('bienvenue : nom du bot', welcome.includes(`Bienvenue sur ${config.BOT_NAME}`) && welcome.includes(`Je suis *${config.BOT_NAME}*`))
@@ -309,7 +294,6 @@ function check(name, ok, detail = '') {
     const image = fs.readFileSync(path.join(ROOT, 'media', 'welcome.jpg'))
     check('image de démarrage présente (JPEG)', image[0] === 0xff && image[1] === 0xd8)
 
-    // --- stickers -----------------------------------------------------------------
     const sharp = require('sharp')
     const webpmux = require('node-webpmux')
     const { withExif, imageToWebp } = require('../plugins/sticker')
@@ -321,7 +305,6 @@ function check(name, ok, detail = '') {
     check('sticker : webp 512x512', meta.format === 'webp' && meta.width === 512 && meta.height === 512)
     check('sticker : pack et auteur dans l\'EXIF', /MonPack/.test(img.exif.toString()) && /Moi/.test(img.exif.toString()))
 
-    // --- session import (format of the session site) --------------------------------
     const session = require('../lib/session')
     session.clearSession()
     const creds = B.initAuthCreds()

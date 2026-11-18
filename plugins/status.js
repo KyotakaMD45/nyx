@@ -1,17 +1,3 @@
-// Statuses, like Knull / Levanter.
-//
-// AUTO_STATUS_VIEW = false | true, optionally with options in the same value:
-//   true                    view every status and send it to you
-//   no-dl                   view only, do not send the status to you
-//   hide-view               do not send the "seen" receipt (view silently)
-//   &delay                  wait a random time (1 s to 5 min) before viewing
-//   only-view 225…,225…     only these contacts' statuses
-//   except-view 225…,225…   everyone except these contacts
-// Options combine, e.g. "no-dl &delay" or "only-view 2250700000000 no-dl".
-//
-// STATUS_VIEW_EMOJI   react to statuses (comma-separated list = random pick)
-// STATUS_VIEW_MSG     message sent to the author (at most once every 12 h per contact)
-// STATUS_FORWARD_JID  where statuses are sent (empty = your own chat, or a number)
 const { bot, lang, config, setVar, logger, getBaileys, parseStatusView, bare, num, toJid } = require('../lib')
 
 const REPLY_COOLDOWN = 12 * 60 * 60 * 1000
@@ -44,7 +30,6 @@ async function handleStatus(sock, raw) {
   if (!options.enabled) return
   const author = raw.key.participant || raw.participant
   if (!author) return
-  // Every number the author is known by (phone number first, then LID).
   const numbers = [raw.key.participantAlt, raw.key.participantPn, author].filter(Boolean).map(num)
   if (options.only && !numbers.some((n) => options.only.has(n))) return
   if (options.except && numbers.some((n) => options.except.has(n))) return
@@ -92,7 +77,6 @@ bot(
     const lower = value.toLowerCase()
     const saved = (key, shown) => message.reply(lang.plugins.settings.saved.format(key, shown))
 
-    // Sub-commands first (their text may contain any word), then on/off, then options.
     const emoji = /^emoji\s+(.+)$/i.exec(value)
     if (emoji) {
       const v = emoji[1].trim().toLowerCase() === 'off' ? '' : emoji[1].trim()

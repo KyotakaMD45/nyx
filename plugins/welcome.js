@@ -1,4 +1,3 @@
-// Welcome / goodbye messages per group. Placeholders: &mention (the member), &group (group name).
 const { bot, lang, db, num, logger } = require('../lib')
 
 function register(kind) {
@@ -45,7 +44,6 @@ bot({ on: 'group-participants' }, async (sock, event) => {
     logger.debug(`${kind} : ${error.message}`)
   }
   for (const participant of event.participants || []) {
-    // Mention with the identity used inside the group, so the "@…" in the text resolves.
     const jid = typeof participant === 'string' ? participant : participant.id
     const template = settings.text || lang.plugins[kind].default
     const text = template.split('&mention').join(`@${num(jid)}`).split('&group').join(subject).replace(/\\n/g, '\n')

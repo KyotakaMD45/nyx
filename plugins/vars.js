@@ -1,6 +1,5 @@
 const { bot, lang, setVar, getVar, delVar, listVars, isSecret, mask, session, restart } = require('../lib')
 
-// "KEY=VALUE" or "KEY VALUE"
 function parse(match) {
   const m = /^\s*([A-Za-z][A-Za-z0-9_]*)\s*(?:=|\s)\s*([\s\S]*)$/.exec(match || '')
   return m ? { key: m[1].toUpperCase(), value: m[2].trim() } : null
@@ -28,7 +27,6 @@ bot(
     }
     const shown = isSecret(parsed.key) ? mask(parsed.value) : parsed.value
     await message.reply(lang.plugins.setvar.done.format(parsed.key, shown))
-    // A new SESSION_ID only takes effect with a fresh session folder.
     if (parsed.key === 'SESSION_ID') {
       await message.reply(lang.plugins.setvar.session_restart)
       session.clearSession()
@@ -48,7 +46,6 @@ bot(
     if (!key) return message.reply(lang.plugins.getvar.usage)
     const value = getVar(key)
     if (value === undefined) return message.reply(lang.plugins.getvar.not_set.format(key))
-    // Secrets are masked outside of the owner's private chat.
     const shown = isSecret(key) && message.isGroup ? mask(value) : value
     await message.reply(`*${key}* = ${shown || '""'}`)
   }

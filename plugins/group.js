@@ -6,7 +6,6 @@ async function metadata(message) {
   return message.client.groupMetadata(message.jid)
 }
 
-// Runs fn only when the bot is admin of the group.
 async function asAdmin(message, fn) {
   const meta = await metadata(message)
   if (!isBotAdmin(meta, message.client)) return message.reply(lang.extra.bot_not_admin)

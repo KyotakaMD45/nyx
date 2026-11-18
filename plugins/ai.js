@@ -1,5 +1,3 @@
-// AI assistant: Gemini (GEMINI_API_KEY) first, otherwise Groq (GROQ_API_KEY).
-// Reply to a message to give it as context; reply to an image to ask about it (Gemini).
 const { bot, lang, config } = require('../lib')
 
 const SYSTEM = (name) =>

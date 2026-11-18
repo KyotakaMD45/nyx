@@ -1,5 +1,3 @@
-// Stickers: image/video -> sticker, rename a sticker's pack, sticker -> image.
-// Images use sharp. Videos/GIFs need ffmpeg installed on the server (apt install ffmpeg).
 const fs = require('fs')
 const os = require('os')
 const path = require('path')
@@ -13,7 +11,6 @@ function packInfo(text) {
   return { pack: pack || config.BOT_NAME, author: author || '' }
 }
 
-// WhatsApp reads the pack name / author from the webp EXIF chunk.
 async function withExif(webp, pack, author) {
   const img = new webpmux.Image()
   await img.load(webp)

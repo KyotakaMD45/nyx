@@ -1,7 +1,5 @@
-// Quick switches for the main variables + the automatic behaviours they control.
 const { bot, lang, config, setVar, logger } = require('../lib')
 
-// on/off command that sets a boolean variable.
 function toggle(name, variable) {
   bot(
     {
@@ -57,7 +55,6 @@ bot(
   }
 )
 
-// Calls: rejected when REJECT_CALL is on, with an optional message (REJECT_CALL_MSG).
 bot({ on: 'call' }, async (sock, calls) => {
   if (!config.REJECT_CALL) return
   for (const call of calls) {

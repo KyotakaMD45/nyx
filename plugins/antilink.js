@@ -1,5 +1,3 @@
-// Antilink per group: "delete" removes the message, "kick" also removes the sender.
-// Group admins and sudo users are never affected.
 const { bot, lang, db, num, isSudo, isAdmin, isBotAdmin, logger } = require('../lib')
 
 const LINK_RE = /(chat\.whatsapp\.com\/\S+|https?:\/\/\S+|wa\.me\/\S+)/i

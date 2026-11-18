@@ -1,4 +1,3 @@
-// Reveal a view-once photo / video / voice note: reply to it with .vv
 const { bot, lang } = require('../lib')
 
 bot(
