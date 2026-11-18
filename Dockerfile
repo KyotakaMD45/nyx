@@ -1,7 +1,7 @@
 FROM node:20-slim
-RUN apt-get update && apt-get install -y --no-install-recommends git ffmpeg ca-certificates   && rm -rf /var/lib/apt/lists/*   && npm install -g pm2 --no-audit --no-fund
+RUN apt-get update && apt-get install -y --no-install-recommends git ffmpeg ca-certificates   && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-COPY package.json ./
-RUN npm install --omit=dev --no-audit --no-fund
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --production --network-timeout 600000
 COPY . .
-CMD ["pm2-runtime", "index.js", "--name", "nyx"]
+CMD ["yarn", "docker"]
