@@ -90,7 +90,7 @@ Préfixe par défaut : `^[.,!]`, comme Knull et Levanter : `.menu`, `,menu` et `
 | Catégorie | Commandes |
 |---|---|
 | Système | `alive` `ping` `menu` (`help`, `list`) `restart` `update` |
-| Réglages | `setvar` `getvar` `delvar` `allvar` `online` `read` `call` `status` `antidelete` |
+| Réglages | `setvar` `getvar` `delvar` `allvar` `online` `read` `call` `status` `delete` |
 | Propriétaire | `pass` `setsudo` `delsudo` `getsudo` `block` `unblock` `jid` |
 | Groupe | `kick` `add` `promote` `demote` `tagall` `tag` `link` `revoke` `mute` `unmute` `ginfo` `gname` `gdesc` `antilink` `welcome` `goodbye` |
 | Médias | `sticker` (`s`) `take` `toimg` `vv` |
@@ -130,7 +130,7 @@ Comme Levanter, `config.env` ne contient que l’essentiel (`SESSION_ID`, `AUTO_
 | `STATUS_VIEW_EMOJI` | Réaction aux statuts (`🔥,❤️`) | — |
 | `STATUS_VIEW_MSG` | Réponse à l'auteur d'un statut | — |
 | `STATUS_FORWARD_JID` | Où recevoir les statuts (vide = ta discussion) | — |
-| `ANTI_DELETE` | `false`, `p` (vers toi), `g` (même discussion) ou un numéro | `false` |
+| `ANTI_DELETE` | Réglé par `.delete` : `p` (vers toi), `g` (même discussion), un numéro ou un groupe, + portée facultative `pm` `gm` `no-pm` `no-gm` (ex. `g gm`) · `false` | `false` |
 | `ALIVE_MSG` | Message alive perso (`#name #version #uptime #ram #prefix`) | — |
 | `STICKER_PACKNAME` | `Pack,Auteur` des stickers | `Nyx,Nyx Bot` |
 | `GEMINI_API_KEY` / `GROQ_API_KEY` | Clé d'IA (une seule suffit) | — |

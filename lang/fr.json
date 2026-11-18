@@ -144,10 +144,6 @@
       "header": "📥 *Statut de {0}* (+{1})",
       "own_chat": "ta discussion"
     },
-    "antidelete": {
-      "desc": "Récupère les messages supprimés",
-      "usage": "Anti-suppression : *{0}*\n*Exemples :*\n› antidelete p — vers ta discussion\n› antidelete g — dans la même discussion\n› antidelete 2250700000000 — vers ce numéro\n› antidelete off"
-    },
     "kick": {
       "desc": "Retire un membre",
       "usage": "*Exemple :* kick @membre (ou réponds à son message)",
@@ -268,6 +264,19 @@
       "removed": "🗑️ *Commandes retirées pour* {0}\n{1}",
       "missing": "⚠️ Pas autorisée(s) ici : {0}",
       "cleared": "✅ Toutes les commandes autorisées ont été retirées ici."
+    },
+    "delete": {
+      "desc": "Anti-suppression : récupère les messages supprimés",
+      "example": "> *Exemples :*\n- delete g : renvoie les messages supprimés dans la même discussion\n- delete p : les renvoie dans ta discussion\n- delete g pm : même discussion, discussions privées seulement\n- delete g gm : même discussion, groupes seulement\n- delete p no-gm : vers toi, sans les groupes\n- delete p no-pm : vers toi, sans les discussions privées\n- delete 2250700000000 : vers ce numéro\n- delete off : désactiver\n\n*Portées :* pm, gm, no-pm, no-gm",
+      "invalid_jid": "*Erreur :* _numéro ou groupe invalide_",
+      "disabled": "L’anti-suppression a été désactivée.",
+      "dest_jid": "_Les messages supprimés seront envoyés à : {0}_",
+      "dest_sudo": "_Les messages supprimés seront envoyés dans ta discussion._",
+      "dest_chat": "_Les messages supprimés seront renvoyés dans la discussion elle-même._",
+      "scope_pm": "📌 _Seulement les discussions privées_",
+      "scope_gm": "📌 _Seulement les groupes_",
+      "scope_no_pm": "📌 _Sauf les discussions privées_",
+      "scope_no_gm": "📌 _Sauf les groupes_"
     }
   },
   "vars": {

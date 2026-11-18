@@ -1,4 +1,5 @@
 const { bot, lang, config, setVar, logger } = require('../lib')
+const { DELETE_SCOPES } = require('../lib/handler')
 
 function toggle(name, variable) {
   bot(
@@ -23,21 +24,51 @@ toggle('online', 'ALWAYS_ONLINE')
 toggle('read', 'SEND_READ')
 toggle('call', 'REJECT_CALL')
 
+function deleteJid(dest) {
+  if (/^\d[\d-]*@g\.us$/.test(dest)) return dest
+  const digits = dest.replace(/\D/g, '')
+  return /^\+?[\d\s-]+(@s\.whatsapp\.net)?$/.test(dest) && digits.length >= 6 ? `${digits}@s.whatsapp.net` : null
+}
+
 bot(
   {
-    pattern: 'antidelete ?(.*)',
-    desc: lang.plugins.antidelete.desc,
+    pattern: 'delete ?(.*)',
+    alias: ['antidelete'],
+    desc: lang.plugins.delete.desc,
     type: 'settings',
   },
   async (message, match) => {
-    const value = (match || '').trim().toLowerCase()
-    if (!value) return message.reply(lang.plugins.antidelete.usage.format(config.ANTI_DELETE))
-    if (!['p', 'g', 'off'].includes(value) && !/^\d{6,}$/.test(value.replace(/\D/g, ''))) {
-      return message.reply(lang.plugins.antidelete.usage.format(config.ANTI_DELETE))
+    const t = lang.plugins.delete
+    const parts = String(match || '').trim().split(/\s+/).filter(Boolean)
+    const dest = (parts[0] || '').toLowerCase()
+    const scope = (parts[1] || '').toLowerCase()
+    const off = ['off', 'false', 'null'].includes(dest)
+    const jid = !off && !['p', 'g'].includes(dest) ? deleteJid(parts[0] || '') : null
+
+    if (!dest || (!off && !['p', 'g'].includes(dest) && !jid)) return message.send(t.example)
+    if (scope && !DELETE_SCOPES.includes(scope)) return message.send(t.example)
+
+    if (jid) {
+      try {
+        if (jid.endsWith('@g.us')) await message.client.groupMetadata(jid)
+        else {
+          const [found] = (await message.client.onWhatsApp(jid)) || []
+          if (!found?.exists) return message.send(t.invalid_jid)
+        }
+      } catch {
+        return message.send(t.invalid_jid)
+      }
     }
-    const stored = value === 'off' ? 'false' : ['p', 'g'].includes(value) ? value : value.replace(/\D/g, '')
+
+    if (off) {
+      setVar('ANTI_DELETE', 'false')
+      return message.send(t.disabled)
+    }
+    const stored = [jid ? (jid.endsWith('@g.us') ? jid : jid.split('@')[0]) : dest, scope].filter(Boolean).join(' ')
     setVar('ANTI_DELETE', stored)
-    await message.reply(lang.plugins.settings.saved.format('ANTI_DELETE', stored))
+    const destText = jid ? t.dest_jid.format(jid.endsWith('@g.us') ? jid : `+${jid.split('@')[0]}`) : dest === 'p' ? t.dest_sudo : t.dest_chat
+    const scopeText = scope ? `\n${t[`scope_${scope.replace('-', '_')}`]}` : ''
+    await message.send(destText + scopeText)
   }
 )
 

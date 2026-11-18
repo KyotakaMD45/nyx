@@ -144,10 +144,6 @@
       "header": "📥 *Status from {0}* (+{1})",
       "own_chat": "your chat"
     },
-    "antidelete": {
-      "desc": "Recover deleted messages",
-      "usage": "Anti-delete: *{0}*\n*Examples:*\n› antidelete p — to your own chat\n› antidelete g — in the same chat\n› antidelete 2250700000000 — to that number\n› antidelete off"
-    },
     "kick": {
       "desc": "Remove a member",
       "usage": "*Example:* kick @member (or reply to their message)",
@@ -268,6 +264,19 @@
       "removed": "🗑️ *Commands removed for* {0}\n{1}",
       "missing": "⚠️ Not allowed here: {0}",
       "cleared": "✅ All allowed commands were removed here."
+    },
+    "delete": {
+      "desc": "Anti-delete: recover deleted messages",
+      "example": "> *Usage Examples:*\n- delete g - Send deleted msgs in same chat\n- delete p - Send deleted msgs to your chat\n- delete g pm - Same chat, PMs only\n- delete g gm - Same chat, groups only\n- delete p no-gm - To you, exclude groups\n- delete p no-pm - To you, exclude PMs\n- delete 2250700000000 - Send to this number\n- delete off - Disable\n\n*Scopes:* pm, gm, no-pm, no-gm",
+      "invalid_jid": "*Error:* _invalid number or group_",
+      "disabled": "Anti-delete has been disabled.",
+      "dest_jid": "_Deleted messages will be sent to: {0}_",
+      "dest_sudo": "_Deleted messages will be sent to your chat._",
+      "dest_chat": "_Deleted messages will be sent to the chat itself._",
+      "scope_pm": "📌 _Only for personal chats_",
+      "scope_gm": "📌 _Only for group chats_",
+      "scope_no_pm": "📌 _Excluding personal chats_",
+      "scope_no_gm": "📌 _Excluding group chats_"
     }
   },
   "vars": {

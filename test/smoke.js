@@ -240,15 +240,31 @@ function check(name, ok, detail = '') {
     check('antilink ignore le propriétaire', !out.some((s) => s.content?.delete))
     await send(inGroup('.antilink off'))
 
-    await send(raw('.antidelete g'))
+    out = await send(raw('.delete g'))
+    check('.delete g : activé, message comme Knull', config.ANTI_DELETE === 'g' && /même/.test(textsOf(out)), textsOf(out))
+    const revoke = async (id, rid) =>
+      send({
+        key: { remoteJid: rid, fromMe: false, id: `REV${++n}` },
+        message: { protocolMessage: { type: B.proto.Message.ProtocolMessage.Type.REVOKE, key: { id } } },
+      })
     const original = raw('message secret', { from: STRANGER, fromMe: false })
     await send(original)
-    out = await send({
-      key: { remoteJid: original.key.remoteJid, fromMe: false, id: 'REVOKE1' },
-      message: { protocolMessage: { type: B.proto.Message.ProtocolMessage.Type.REVOKE, key: { id: original.key.id } } },
-    })
+    out = await revoke(original.key.id, original.key.remoteJid)
     check('anti-delete renvoie le message supprimé', out.some((s) => s.content?.forward?.key?.id === original.key.id))
-    await send(raw('.antidelete off'))
+    out = await send(raw('.delete g gm'))
+    check('.delete g gm : portée enregistrée', config.ANTI_DELETE === 'g gm' && /groupes/.test(textsOf(out)), textsOf(out))
+    const second = raw('autre secret', { from: STRANGER, fromMe: false })
+    await send(second)
+    out = await revoke(second.key.id, second.key.remoteJid)
+    check('.delete g gm : ignore les discussions privées', !out.some((s) => s.content?.forward))
+    out = await send(raw('.delete x zz'))
+    check('.delete invalide : affiche les exemples', /Exemples/.test(textsOf(out)) && config.ANTI_DELETE === 'g gm')
+    out = await send(raw('.delete off'))
+    check('.delete off', config.ANTI_DELETE === 'false' && /désactivée/.test(textsOf(out)))
+    {
+      const { parseAntiDelete, inDeleteScope } = require('../lib/handler')
+      check('anti-delete : portées pm/gm/no-pm/no-gm', inDeleteScope('pm', 'a@s.whatsapp.net') && !inDeleteScope('pm', 'g@g.us') && inDeleteScope('no-pm', 'g@g.us') && !inDeleteScope('no-gm', 'g@g.us') && parseAntiDelete('null') === null)
+    }
 
     const OWN_CHAT = `${OWNER}@s.whatsapp.net`
     const statusMsg = (from, message = { imageMessage: { caption: 'mon statut', mimetype: 'image/jpeg' } }) => ({
