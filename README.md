@@ -12,9 +12,20 @@ Même architecture que Levanter (`config.js`, `config.env`, `lib/`, `plugins/`, 
 
 ---
 
-## Installation (VPS)
+## Installation rapide (VPS)
+
+Une seule commande (Ubuntu, Debian, Fedora, Arch, Alpine, macOS, Termux) :
+
+```bash
+bash <(curl -fsSL https://tinyurl.com/nyx-install)
+```
+
+Elle installe Node.js, git, ffmpeg et les modules, clone Nyx, te demande ton `SESSION_ID`, écrit `config.env` puis lance le bot avec PM2.
+Installation automatique : `SESSION_ID="Nyx_…" bash <(curl -fsSL https://tinyurl.com/nyx-install) -y --start`.
 
 **SESSION_ID** : https://nyx-session.vercel.app (QR code ou code d’appairage).
+
+## Installation manuelle
 
 ```bash
 sudo apt update && sudo apt install -y git ffmpeg
