@@ -10,7 +10,7 @@
     "scan_qr": "[{0}] Scanne ce QR dans WhatsApp › Appareils connectés :",
     "pairing_code": "[{0}] Code d’appairage : {1}",
     "pairing_failed": "Demande du code d'appairage impossible : {0}",
-    "connected": "[{0}] En ligne, prêt à aider ! ⚡ +{1}",
+    "connected": "[{0}] En ligne, prêt à aider ! ⚡ {1}",
     "logged_out": "Session déconnectée par WhatsApp. Elle a été supprimée : reconnecte-toi (QR, code d'appairage ou nouveau SESSION_ID).",
     "connection_replaced": "Connexion remplacée : ce compte a été ouvert ailleurs avec la même session. Arrêt de la reconnexion.",
     "reconnecting": "[{0}] Reconnexion en cours... ({1}) 🔄",
@@ -35,10 +35,12 @@
     "action_failed": "_Action refusée par WhatsApp (code {0})._",
     "connecting": "[{0}] Connexion en cours... 📡",
     "plugin_install": "[{0}] Installation des plugins... 📚",
-    "plugins_installed": "[{0}] Tous les plugins sont prêts ! 🎓 ({1})",
+    "plugins_installed": "[{0}] Tous les plugins sont prêts ! 🎓",
     "update_more": "_… et {0} autre(s)_",
     "view_once": "👁️ *Vue unique* de @{0} {1}",
-    "error_message": "```--- ⚠️ ERROR REPORT ⚠️ ---\n\nVersion  : {0}\nMessage  : {1}\nError    : {2}\nJid      : {3}\nCommand  : {4}\nPlatform : {5}```\n\n```-----``` *{6} ❣* ```-----```"
+    "error_message": "```--- ⚠️ ERROR REPORT ⚠️ ---\n\nVersion  : {0}\nMessage  : {1}\nError    : {2}\nJid      : {3}\nCommand  : {4}\nPlatform : {5}```\n\n```-----``` *{6} ❣* ```-----```",
+    "install_external_plugin": "[{0}] Installation des plugins externes... 📦",
+    "installed_external_plugin": "[{0}] Plugins externes installés ! 🎒"
   },
   "plugins": {
     "alive": {
@@ -298,6 +300,30 @@
       "scope_no_pm": "📌 _Sauf les discussions privées_",
       "scope_no_gm": "📌 _Sauf les groupes_",
       "reconnecting": "🔄 _Reconnexion à WhatsApp pour appliquer le changement…_"
+    },
+    "fb": {
+      "desc": "Télécharger une vidéo Facebook",
+      "usage": "*Exemple :* fb https://www.facebook.com/...\n_(ou réponds à un message qui contient le lien)_",
+      "not_found": "*Erreur :* _Aucune vidéo trouvée pour ce lien._"
+    },
+    "insta": {
+      "desc": "Télécharger des publications, reels et vidéos Instagram",
+      "usage": "*Exemple :* insta https://www.instagram.com/reel/...\n_(ou réponds à un message qui contient le lien)_",
+      "not_found": "_Rien trouvé : la publication est peut-être privée ou supprimée._"
+    },
+    "tiktok": {
+      "desc": "Télécharger une vidéo TikTok (sans filigrane)",
+      "usage": "*Exemple :* tiktok https://vm.tiktok.com/...\n_(ou réponds à un message qui contient le lien)_",
+      "not_found": "_Vidéo introuvable. Vérifie le lien et réessaie._"
+    },
+    "url": {
+      "desc": "Transformer une image, une vidéo ou un audio en lien",
+      "usage": "_Réponds à une image, une vidéo, un audio, un sticker ou un document avec *url*._",
+      "failed": "❌ Envoi impossible : {0}"
+    },
+    "download": {
+      "too_big": "⚠️ Fichier trop lourd pour WhatsApp, voici le lien :\n{0}",
+      "failed": "❌ Le téléchargement a échoué. Réessaie dans un moment."
     }
   },
   "vars": {
@@ -330,6 +356,7 @@
     "GROQ_MODEL": "Modèle Groq",
     "TZ": "Fuseau horaire (ex. Africa/Abidjan)",
     "LOG_LEVEL": "Niveau des logs : error, warn, info, debug",
-    "VV": "Vue unique auto : p, g, numéro ou groupe (+ pm/gm/no-pm/no-gm) · false"
+    "VV": "Vue unique auto : p, g, numéro ou groupe (+ pm/gm/no-pm/no-gm) · false",
+    "LOG_MSG": "true : affiche chaque message reçu dans le terminal"
   }
 }

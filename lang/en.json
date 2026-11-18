@@ -10,7 +10,7 @@
     "scan_qr": "[{0}] Scan this QR in WhatsApp › Linked devices:",
     "pairing_code": "[{0}] Pairing code: {1}",
     "pairing_failed": "Could not request the pairing code: {0}",
-    "connected": "[{0}] Online, ready to help! ⚡ +{1}",
+    "connected": "[{0}] Online, ready to help! ⚡ {1}",
     "logged_out": "Session logged out by WhatsApp. It was removed: log in again (QR, pairing code or a new SESSION_ID).",
     "connection_replaced": "Connection replaced: this account was opened elsewhere with the same session. Not reconnecting.",
     "reconnecting": "[{0}] Reconnecting... ({1}) 🔄",
@@ -35,10 +35,12 @@
     "action_failed": "_Action refused by WhatsApp (code {0})._",
     "connecting": "[{0}] Connecting... 📡",
     "plugin_install": "[{0}] Installing plugins... 📚",
-    "plugins_installed": "[{0}] All plugins are ready! 🎓 ({1})",
+    "plugins_installed": "[{0}] All plugins are ready! 🎓",
     "update_more": "_...and {0} more_",
     "view_once": "👁️ *View once* from @{0} {1}",
-    "error_message": "```--- ⚠️ ERROR REPORT ⚠️ ---\n\nVersion  : {0}\nMessage  : {1}\nError    : {2}\nJid      : {3}\nCommand  : {4}\nPlatform : {5}```\n\n```-----``` *{6} ❣* ```-----```"
+    "error_message": "```--- ⚠️ ERROR REPORT ⚠️ ---\n\nVersion  : {0}\nMessage  : {1}\nError    : {2}\nJid      : {3}\nCommand  : {4}\nPlatform : {5}```\n\n```-----``` *{6} ❣* ```-----```",
+    "install_external_plugin": "[{0}] Installing external plugins... 📦",
+    "installed_external_plugin": "[{0}] External plugins installed! 🎒"
   },
   "plugins": {
     "alive": {
@@ -298,6 +300,30 @@
       "scope_no_pm": "📌 _Excluding personal chats_",
       "scope_no_gm": "📌 _Excluding group chats_",
       "reconnecting": "🔄 _Reconnecting to WhatsApp to apply the change…_"
+    },
+    "fb": {
+      "desc": "Download a Facebook video",
+      "usage": "*Example:* fb https://www.facebook.com/...\n_(or reply to a message containing the link)_",
+      "not_found": "*Error:* _No video found for this link._"
+    },
+    "insta": {
+      "desc": "Download Instagram posts, reels and videos",
+      "usage": "*Example:* insta https://www.instagram.com/reel/...\n_(or reply to a message containing the link)_",
+      "not_found": "_Nothing found: the post may be private or deleted._"
+    },
+    "tiktok": {
+      "desc": "Download a TikTok video (no watermark)",
+      "usage": "*Example:* tiktok https://vm.tiktok.com/...\n_(or reply to a message containing the link)_",
+      "not_found": "_Video not found. Check the link and try again._"
+    },
+    "url": {
+      "desc": "Turn an image, video or audio into a link",
+      "usage": "_Reply to an image, video, audio, sticker or document with *url*._",
+      "failed": "❌ Upload failed: {0}"
+    },
+    "download": {
+      "too_big": "⚠️ File too big for WhatsApp, here is the link:\n{0}",
+      "failed": "❌ Download failed. Try again in a moment."
     }
   },
   "vars": {
@@ -330,6 +356,7 @@
     "GROQ_MODEL": "Groq model",
     "TZ": "Time zone (e.g. Africa/Abidjan)",
     "LOG_LEVEL": "Log level: error, warn, info, debug",
-    "VV": "Auto view-once: p, g, number or group (+ pm/gm/no-pm/no-gm) · false"
+    "VV": "Auto view-once: p, g, number or group (+ pm/gm/no-pm/no-gm) · false",
+    "LOG_MSG": "true: print every received message in the terminal"
   }
 }

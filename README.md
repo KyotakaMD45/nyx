@@ -114,6 +114,7 @@ Préfixe par défaut : `^[.,!]`, comme Knull et Levanter : `.menu`, `,menu` et `
 | Propriétaire | `pass` `setsudo` `delsudo` `getsudo` `block` `unblock` `jid` |
 | Groupe | `kick` `add` `promote` `demote` `tagall` `tag` `link` `revoke` `mute` `unmute` `ginfo` `gname` `gdesc` `antilink` `welcome` `goodbye` |
 | Médias | `sticker` (`s`) `take` `toimg` `vv` |
+| Téléchargement | `fb` `insta` (`ig`) `tiktok` (`tt`) `url` |
 | IA | `ai` (`gemini`, `gpt`) |
 
 **Accès** : seuls toi et les sudo utilisent le bot. Pour ouvrir des commandes aux autres dans une discussion, utilise `pass` (l'équivalent de `zushi` dans Knull) :
@@ -157,6 +158,7 @@ Comme Levanter, `config.env` ne contient que l’essentiel (`SESSION_ID`, `AUTO_
 | `GEMINI_API_KEY` / `GROQ_API_KEY` | Clé d'IA (une seule suffit) | — |
 | `DISABLE_START_MESSAGE` | Pas de message au démarrage | `false` |
 | `TZ` / `LOG_LEVEL` | Fuseau horaire / niveau des logs | `Africa/Abidjan` / `info` |
+| `LOG_MSG` | `true` : affiche chaque message reçu dans le terminal | `false` |
 
 ## Mises à jour
 
@@ -192,9 +194,20 @@ nyx/
 └── test/smoke.js       test automatique (npm test)
 ```
 
+## Téléchargement
+
+| Commande | Effet |
+|---|---|
+| `.fb <lien>` | vidéo Facebook |
+| `.insta <lien>` | reel, vidéo ou photos Instagram (jusqu’à 10) |
+| `.tiktok <lien>` | vidéo TikTok sans filigrane (ou les photos d’un diaporama) |
+| `.url` | en réponse à une image, vidéo, audio, sticker ou document : renvoie un lien (catbox.moe) |
+
+Tu peux aussi répondre à un message qui contient le lien. Au-delà de ~95 Mo, le bot envoie le lien au lieu du fichier.
+
 ## Écrire un plugin
 
-Crée un fichier dans `plugins/`, il est chargé au démarrage :
+Crée un fichier dans `plugins/` (ou `eplugins/` pour tes plugins externes, comme Knull) : il est chargé au démarrage.
 
 ```js
 const { bot } = require('../lib')

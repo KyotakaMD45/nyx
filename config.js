@@ -60,6 +60,7 @@ function build() {
 
     TZ: (env.TZ || 'Africa/Abidjan').trim(),
     LOG_LEVEL: (env.LOG_LEVEL || 'info').trim().toLowerCase(),
+    LOG_MSG: toBool(env.LOG_MSG),
   }
 }
 
