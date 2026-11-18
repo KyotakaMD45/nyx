@@ -25,20 +25,6 @@ toggle('call', 'REJECT_CALL')
 
 bot(
   {
-    pattern: 'mode ?(.*)',
-    desc: lang.plugins.mode.desc,
-    type: 'settings',
-  },
-  async (message, match) => {
-    const value = (match || '').trim().toLowerCase()
-    if (value !== 'public' && value !== 'private') return message.reply(lang.plugins.mode.usage.format(config.MODE))
-    setVar('MODE', value)
-    await message.reply(lang.plugins.mode[value])
-  }
-)
-
-bot(
-  {
     pattern: 'antidelete ?(.*)',
     desc: lang.plugins.antidelete.desc,
     type: 'settings',

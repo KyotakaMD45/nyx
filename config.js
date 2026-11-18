@@ -22,6 +22,7 @@ function build() {
   const env = process.env
   return {
     VERSION: require('./package.json').version,
+    REPO_URL: 'https://github.com/KyotakaMD45/nyx',
     BOT_NAME: (env.BOT_NAME || 'Nyx').trim(),
     OWNER_NAME: (env.OWNER_NAME || '').trim(),
     BOT_LANG: (env.BOT_LANG || 'fr').trim().toLowerCase(),
@@ -31,7 +32,6 @@ function build() {
     PAIRING_NUMBER: String(env.PAIRING_NUMBER || '').replace(/\D/g, ''),
 
     PREFIX: env.PREFIX === undefined || env.PREFIX === '' ? '^[.,!]' : String(env.PREFIX),
-    MODE: (env.MODE || 'private').trim().toLowerCase(),
     SUDO: toList(env.SUDO).map((n) => n.replace(/\D/g, '')).filter(Boolean),
 
     AUTO_UPDATE: toBool(env.AUTO_UPDATE),

@@ -16,7 +16,7 @@
     "reconnecting": "[{0}] Reconnecting... ({1}) 🔄",
     "welcome": "👋 *Welcome to {0}!*\n\nI'm *{0}*, *{1}*'s WhatsApp bot 🔥\nAlways here to handle your chats, groups and media, 24/7.\n\n✨ *What I can do:*\n🛡️ Protection: anti-delete, view once, automatic status view.\n👥 Groups: welcome, anti-link, member management, mentions.\n🎨 Media: stickers from images and videos.\n🤖 AI: ask me anything with *{2}ai*.\n🔄 Updates: *{2}update now*, or automatic.\n\n📖 Send *{2}menu* to see every command, sorted by category.\n\n_Make yourself at home and enjoy!_ 😎",
     "owner_default": "you",
-    "start_card": "*{0} is online* ✅\n\n```PREFIX    : {1}\nMENU      : {1}menu | {1}help | {1}list\nVERSION   : {2}\nPLUGINS   : {3}\nMODE      : {4}\nNUMBER    : +{5}\n\n{6}```",
+    "start_card": "```PREFIX    : {0}\nMENU      : {0}menu | {0}help | {0}list\nVERSION   : {1}\nPLUGINS   : {2}\n{3}```\n\n*ReadMore :* _{4}_",
     "labels": {
       "sudo": "🛡️ SUDO",
       "auto_read": "📖 AUTO READ MSG",
@@ -139,12 +139,6 @@
       "desc": "Reject calls (on/off)",
       "usage": "Call rejection: *{0}*\n*Example:* call on\nOptional message: setvar REJECT_CALL_MSG=…"
     },
-    "mode": {
-      "desc": "Bot mode (public/private)",
-      "usage": "Current mode: *{0}*\n*Example:* mode public\n› private: only you and sudo users can use the bot\n› public: everyone can use the public commands",
-      "public": "🌍 *Public* mode: everyone can use the public commands.",
-      "private": "🔒 *Private* mode: only you and sudo users can use the bot."
-    },
     "status": {
       "desc": "Statuses: auto view, emoji, reply, forward",
       "usage": "*Statuses*\n› Auto view: *{0}*\n› Emoji: *{1}*\n› Reply: *{2}*\n› Sent to: *{3}*\n\n*Examples:*\n› status on — view and receive every status\n› status off\n› status no-dl — view only, without receiving them\n› status hide-view — view without the \"seen\" receipt\n› status &delay — wait a little before viewing\n› status only-view 2250700000000,2250700000001\n› status except-view 2250700000000\n› status emoji 🔥,❤️ · status emoji off\n› status msg Nice status! · status msg off\n› status forward 2250700000000 · status forward me\n\n_Options combine: status no-dl &delay_",
@@ -262,6 +256,19 @@
       "describe": "Describe this image in detail.",
       "image_needs_gemini": "_Image analysis needs GEMINI_API_KEY._",
       "empty": "_The AI gave no answer, try again._"
+    },
+    "pass": {
+      "desc": "Allow commands for others in this chat",
+      "usage": "*Examples:*\n- {0}pass ping sticker: allow these commands here\n- {0}pass: show allowed commands here\n- {0}pass del ping: remove a command\n- {0}pass del all: remove all",
+      "added": "✅ *Commands allowed for* {0}\n{1}",
+      "list": "📋 *Commands allowed for* {0}\n{1}\n\n📊 Total: {2}\n💡 Remove: {3}pass del <command> · all: {3}pass del all",
+      "none": "📋 No allowed commands here.\n\n💡 Add some: {0}pass ping sticker",
+      "already": "ℹ️ Already allowed: {0}",
+      "locked": "🔒 Owner only, cannot be allowed: {0}",
+      "unknown": "⚠️ Unknown command(s): {0}\n💡 Command list: {1}list",
+      "removed": "🗑️ *Commands removed for* {0}\n{1}",
+      "missing": "⚠️ Not allowed here: {0}",
+      "cleared": "✅ All allowed commands were removed here."
     }
   },
   "vars": {
@@ -269,7 +276,6 @@
     "OWNER_NAME": "Your name, shown in the welcome message",
     "BOT_LANG": "Language: fr or en (restart required)",
     "PREFIX": "Prefix: ^[.,!] (. , or !) · . · .,! · null (none)",
-    "MODE": "private (you + sudo) or public",
     "SUDO": "Sudo numbers, comma-separated",
     "SESSION_ID": "Session ID (session site)",
     "SESSION_URL": "Server for short session IDs",

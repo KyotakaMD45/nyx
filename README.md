@@ -60,7 +60,7 @@ La session est ensuite enregistrée dans le dossier `session/`. Si WhatsApp la d
 Comme Knull, Nyx t'envoie deux messages dans ta propre discussion :
 
 1. **Bienvenue** : une seule fois, quand une nouvelle session se connecte. Image + présentation (« Je suis *Nyx*, le bot WhatsApp de *toi* »). Ton nom vient de `OWNER_NAME`, ou à défaut du nom de ton compte WhatsApp.
-2. **Carte d'état** : à chaque démarrage du bot (pas à chaque reconnexion). Image + préfixe, menu, version, nombre de commandes, mode, puis l'état de tes réglages en ✅ / ❎ (sudo, lecture auto, statuts, appels, en ligne, anti-suppression, mise à jour auto).
+2. **Carte d'état** : à chaque démarrage ou redémarrage du bot (pas à chaque reconnexion). Image + préfixe, menu, version, nombre de plugins, l'état de tes réglages en ✅ / ❎ (sudo, lecture auto, statuts, appels, en ligne, anti-suppression, mise à jour auto) et le lien du dépôt.
 
 Les deux messages utilisent le nom du bot (`BOT_NAME`) et l'image `media/welcome.jpg`. Remplace ce fichier par ta propre image si tu veux. `DISABLE_START_MESSAGE=true` coupe la carte d'état.
 
@@ -90,13 +90,21 @@ Préfixe par défaut : `^[.,!]`, comme Knull et Levanter : `.menu`, `,menu` et `
 | Catégorie | Commandes |
 |---|---|
 | Système | `alive` `ping` `menu` (`help`, `list`) `restart` `update` |
-| Réglages | `setvar` `getvar` `delvar` `allvar` `mode` `online` `read` `call` `status` `antidelete` |
-| Propriétaire | `setsudo` `delsudo` `getsudo` `block` `unblock` `jid` |
+| Réglages | `setvar` `getvar` `delvar` `allvar` `online` `read` `call` `status` `antidelete` |
+| Propriétaire | `pass` `setsudo` `delsudo` `getsudo` `block` `unblock` `jid` |
 | Groupe | `kick` `add` `promote` `demote` `tagall` `tag` `link` `revoke` `mute` `unmute` `ginfo` `gname` `gdesc` `antilink` `welcome` `goodbye` |
 | Médias | `sticker` (`s`) `take` `toimg` `vv` |
 | IA | `ai` (`gemini`, `gpt`) |
 
-**Mode** : `private` (par défaut), seuls toi et les sudo utilisent le bot. `public` : tout le monde peut utiliser les commandes publiques (`alive`, `ping`, `menu`, stickers, `ai`). Les commandes sensibles restent réservées au propriétaire et aux sudo.
+**Accès** : seuls toi et les sudo utilisent le bot. Pour ouvrir des commandes aux autres dans une discussion, utilise `pass` (l'équivalent de `zushi` dans Knull) :
+
+| Commande | Effet |
+|---|---|
+| `.pass ping sticker` | autorise ces commandes ici (dans un groupe : pour tous les membres ; en privé : pour cette personne, partout) |
+| `.pass` | liste les commandes autorisées ici |
+| `.pass del ping` | retire une commande · `.pass del all` retire tout |
+
+Certaines commandes restent toujours réservées au propriétaire : `setvar` `getvar` `delvar` `allvar` `setsudo` `delsudo` `getsudo` `update` `restart` `block` `unblock` `pass`.
 
 ## Variables
 
@@ -111,7 +119,6 @@ Comme Levanter, `config.env` ne contient que l’essentiel (`SESSION_ID`, `AUTO_
 | `OWNER_NAME` | Ton nom, dans le message de bienvenue | nom de ton compte |
 | `BOT_LANG` | `fr` ou `en` (redémarrage requis) | `fr` |
 | `PREFIX` | Préfixe : regex `^[.,!]` · un seul `.` · liste `.,!` · `null` (aucun) | `^[.,!]` |
-| `MODE` | `private` ou `public` | `private` |
 | `SUDO` | Numéros sudo, séparés par des virgules | — |
 | `AUTO_UPDATE` | Installer les mises à jour tout seul | `false` |
 | `UPDATE_INTERVAL` | Vérification des mises à jour (heures) | `6` |
@@ -176,7 +183,6 @@ bot(
     pattern: 'bonjour ?(.*)',     // la commande .bonjour, avec des arguments facultatifs
     desc: 'Dit bonjour',
     type: 'misc',
-    fromMe: false,                // false = utilisable par tous en mode public
   },
   async (message, match) => {
     await message.reply(`Bonjour ${match || message.pushName} !`)

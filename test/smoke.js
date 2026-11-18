@@ -23,7 +23,6 @@ function restore() {
 }
 
 process.env.PREFIX = '.'
-process.env.MODE = 'private'
 process.env.SUDO = ''
 process.env.BOT_LANG = 'fr'
 process.env.LOG_LEVEL = 'error'
@@ -164,15 +163,22 @@ function check(name, ok, detail = '') {
     check('commande inconnue : aucune réponse', out.length === 0)
 
     out = await send(raw('.alive', { from: STRANGER }))
-    check('mode private : un inconnu est ignoré', out.length === 0)
-    process.env.MODE = 'public'
-    config.reload()
+    check('sans pass : un inconnu est ignoré', out.length === 0)
+    const dm = `${STRANGER}@s.whatsapp.net`
+    out = await send(raw('.pass alive sticker setvar inconnue', { jid: dm }))
+    check('.pass : ajoute, refuse setvar, signale l’inconnue', /alive/.test(textsOf(out)) && /🔒.*setvar/.test(textsOf(out)) && /inconnue/.test(textsOf(out)), textsOf(out))
     out = await send(raw('.alive', { from: STRANGER }))
-    check('mode public : un inconnu peut utiliser .alive', /en ligne/.test(textsOf(out)))
+    check('pass : l’inconnu peut utiliser .alive', /en ligne/.test(textsOf(out)))
+    out = await send(raw('.ping', { from: STRANGER }))
+    check('pass : mais pas .ping (non autorisée)', out.length === 0)
     out = await send(raw('.setvar PREFIX=!', { from: STRANGER }))
-    check('mode public : un inconnu ne peut PAS utiliser .setvar', out.length === 0 && config.PREFIX === '.')
-    process.env.MODE = 'private'
-    config.reload()
+    check('pass : jamais .setvar', out.length === 0 && config.PREFIX === '.')
+    out = await send(raw('.pass', { jid: dm }))
+    check('.pass : liste', /- alive/.test(textsOf(out)) && /- sticker/.test(textsOf(out)))
+    out = await send(raw('.pass del alive', { jid: dm }))
+    out = await send(raw('.alive', { from: STRANGER }))
+    check('.pass del : l’inconnu est de nouveau ignoré', out.length === 0)
+    await send(raw('.pass del all', { jid: dm }))
 
     out = await send(raw('.setvar PREFIX=!'))
     check('.setvar PREFIX=! change la config à chaud', config.PREFIX === '!', config.PREFIX)
@@ -211,9 +217,6 @@ function check(name, ok, detail = '') {
     await send(raw('.status emoji 🔥,❤️'))
     check('.status emoji', config.STATUS_VIEW_EMOJI === '🔥,❤️')
     await send(raw('.status emoji off'))
-    await send(raw('.mode public'))
-    check('.mode public', config.MODE === 'public')
-    await send(raw('.mode private'))
 
     const inGroup = (text, opts = {}) => raw(text, { jid: GROUP, participant: `${opts.from || OWNER}@s.whatsapp.net`, ...opts })
     out = await send(inGroup('.tagall Bonjour'))
@@ -320,7 +323,7 @@ function check(name, ok, detail = '') {
     process.env.AUTO_STATUS_VIEW = 'no-dl'
     config.reload()
     const card = client.startCard(sock)
-    check('carte : nom, préfixe, menu, version', card.includes(`*${config.BOT_NAME} est en ligne*`) && card.includes('PREFIX    : .') && card.includes('.menu | .help | .list') && card.includes(config.VERSION))
+    check('carte : nom, préfixe, menu, version', card.includes('ReadMore') && card.includes('PREFIX    : .') && card.includes('.menu | .help | .list') && card.includes(config.VERSION))
     check('carte : réglages en ✅ / ❎', card.includes('👀 AUTO STATUS VIEW') && card.includes('✅ (no-dl)') && card.includes('❎'))
     process.env.AUTO_STATUS_VIEW = 'false'
     config.reload()
