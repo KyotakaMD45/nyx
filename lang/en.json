@@ -15,7 +15,18 @@
     "logged_out": "Session logged out by WhatsApp. It was removed: log in again (QR, pairing code or a new SESSION_ID).",
     "connection_replaced": "Connection replaced: this account was opened elsewhere with the same session. Not reconnecting.",
     "reconnecting": "Connection closed ({0}), reconnecting in {1} s…",
-    "start_card": "*{0} is online* ✅\n\n› Version: {1}\n› Prefix: {2}\n› Mode: {3}\n› Commands: {4}\n› Number: +{5}\n› Auto update: {6}\n\nSend *{7}* for the command list.",
+    "welcome": "👋 *Welcome to {0}!*\n\nI'm *{0}*, *{1}*'s WhatsApp bot 🔥\nAlways here to handle your chats, groups and media, 24/7.\n\n✨ *What I can do:*\n🛡️ Protection: anti-delete, view once, automatic status view.\n👥 Groups: welcome, anti-link, member management, mentions.\n🎨 Media: stickers from images and videos.\n🤖 AI: ask me anything with *{2}ai*.\n🔄 Updates: *{2}update now*, or automatic.\n\n📖 Send *{2}menu* to see every command, sorted by category.\n\n_Make yourself at home and enjoy!_ 😎",
+    "owner_default": "you",
+    "start_card": "*{0} is online* ✅\n\n```PREFIX    : {1}\nMENU      : {1}menu | {1}help | {1}list\nVERSION   : {2}\nPLUGINS   : {3}\nMODE      : {4}\nNUMBER    : +{5}\n\n{6}```",
+    "labels": {
+      "sudo": "🛡️ SUDO",
+      "auto_read": "📖 AUTO READ MSG",
+      "auto_status": "👀 AUTO STATUS VIEW",
+      "auto_reject": "🚫 AUTO REJECT CALL",
+      "always_online": "🔋 ALWAYS ONLINE",
+      "anti_delete": "🛡️ ANTI DELETE MSG",
+      "auto_update": "🔄 AUTO UPDATE BOT"
+    },
     "update_available": "🔄 *Update available* ({0})\n\n{1}\n\nInstall it with *{2}update now*",
     "auto_update_installing": "🔄 Auto update: installing {0} change(s), restarting…",
     "only_group": "_This command only works in a group._",
@@ -139,8 +150,10 @@
       "private": "🔒 *Private* mode: only you and sudo users can use the bot."
     },
     "status": {
-      "desc": "Auto status view (on/off, emoji)",
-      "usage": "Status view: *{0}* · Emoji: *{1}*\n*Examples:*\n› status on\n› status emoji 🔥,❤️\n› status emoji off"
+      "desc": "Statuses: auto view, emoji, reply, forward",
+      "usage": "*Statuses*\n› Auto view: *{0}*\n› Emoji: *{1}*\n› Reply: *{2}*\n› Sent to: *{3}*\n\n*Examples:*\n› status on — view and receive every status\n› status off\n› status no-dl — view only, without receiving them\n› status hide-view — view without the \"seen\" receipt\n› status &delay — wait a little before viewing\n› status only-view 2250700000000,2250700000001\n› status except-view 2250700000000\n› status emoji 🔥,❤️ · status emoji off\n› status msg Nice status! · status msg off\n› status forward 2250700000000 · status forward me\n\n_Options combine: status no-dl &delay_",
+      "header": "📥 *Status from {0}* (+{1})",
+      "own_chat": "your chat"
     },
     "antidelete": {
       "desc": "Recover deleted messages",
@@ -257,6 +270,7 @@
   },
   "vars": {
     "BOT_NAME": "Bot name",
+    "OWNER_NAME": "Your name, shown in the welcome message",
     "BOT_LANG": "Language: fr or en (restart required)",
     "PREFIX": "Command prefix (several: .,! · none: false)",
     "MODE": "private (you + sudo) or public",
@@ -271,8 +285,10 @@
     "SEND_READ": "Mark messages as read (true/false)",
     "REJECT_CALL": "Reject calls (true/false)",
     "REJECT_CALL_MSG": "Message sent after a rejected call",
-    "AUTO_STATUS_VIEW": "View statuses automatically (true/false)",
+    "AUTO_STATUS_VIEW": "Statuses: false, true, or options (no-dl, hide-view, &delay, only-view …, except-view …)",
     "STATUS_VIEW_EMOJI": "Status reaction (e.g. 🔥,❤️)",
+    "STATUS_VIEW_MSG": "Message sent to a status author (once / 12 h)",
+    "STATUS_FORWARD_JID": "Where statuses are sent (empty = your chat, or a number)",
     "ANTI_DELETE": "false, p, g or a number",
     "DISABLE_START_MESSAGE": "No message on startup (true/false)",
     "ALIVE_MSG": "Custom alive message (#name #version #uptime #ram #prefix)",

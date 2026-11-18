@@ -31,6 +31,11 @@ process.env.SUDO = ''
 process.env.BOT_LANG = 'fr'
 process.env.LOG_LEVEL = 'error'
 process.env.ANTI_DELETE = 'false'
+process.env.AUTO_STATUS_VIEW = 'false'
+process.env.STATUS_VIEW_EMOJI = ''
+process.env.STATUS_VIEW_MSG = ''
+process.env.STATUS_FORWARD_JID = ''
+delete process.env.OWNER_NAME
 
 let passed = 0
 let failed = 0
@@ -61,14 +66,17 @@ function check(name, ok, detail = '') {
     const STRANGER = '2250700000002'
     const GROUP = '120363000000000001@g.us'
     let sent = []
+    let reads = []
     const calls = []
     const sock = {
-      user: { id: `${OWNER}:7@s.whatsapp.net`, lid: '90000000000001@lid' },
+      user: { id: `${OWNER}:7@s.whatsapp.net`, lid: '90000000000001@lid', name: 'Alex' },
       async sendMessage(jid, content, options) {
         sent.push({ jid, content, options })
         return { key: { id: `BOT${sent.length}${Math.random()}`, remoteJid: jid, fromMe: true } }
       },
-      async readMessages() {},
+      async readMessages(keys) {
+        reads.push(...keys)
+      },
       async groupMetadata(jid) {
         return {
           id: jid,
@@ -218,6 +226,88 @@ function check(name, ok, detail = '') {
     })
     check('anti-delete renvoie le message supprimé', out.some((s) => s.content?.forward?.key?.id === original.key.id))
     await send(raw('.antidelete off'))
+
+    // --- statuses -----------------------------------------------------------------
+    const OWN_CHAT = `${OWNER}@s.whatsapp.net`
+    const statusMsg = (from, message = { imageMessage: { caption: 'mon statut', mimetype: 'image/jpeg' } }) => ({
+      key: { remoteJid: 'status@broadcast', fromMe: false, id: `ST${++n}`, participant: `${from}@s.whatsapp.net` },
+      pushName: 'Ami',
+      message,
+    })
+    const postStatus = async (msg) => {
+      reads = []
+      return send(msg)
+    }
+    await send(raw('.status off'))
+    out = await postStatus(statusMsg(STRANGER))
+    check('statuts off : rien ne se passe', out.length === 0 && reads.length === 0)
+
+    await send(raw('.status on'))
+    out = await postStatus(statusMsg(STRANGER))
+    check('status on : statut vu', reads.length === 1)
+    check('status on : statut renvoyé dans ta discussion', out.some((s) => s.jid === OWN_CHAT && s.content?.forward))
+
+    await send(raw('.status emoji 🔥'))
+    out = await postStatus(statusMsg(STRANGER))
+    check('status emoji : réaction envoyée', out.some((s) => s.jid === 'status@broadcast' && s.content?.react?.text === '🔥'))
+    await send(raw('.status emoji off'))
+
+    await send(raw('.status no-dl'))
+    out = await postStatus(statusMsg(STRANGER))
+    check('status no-dl : vu mais pas renvoyé', reads.length === 1 && !out.some((s) => s.content?.forward))
+
+    await send(raw('.status hide-view'))
+    out = await postStatus(statusMsg(STRANGER))
+    check('status hide-view : pas de « vu » mais renvoyé', reads.length === 0 && out.some((s) => s.content?.forward))
+
+    await send(raw('.status only-view 2250700000099'))
+    out = await postStatus(statusMsg(STRANGER))
+    check('status only-view : les autres sont ignorés', reads.length === 0 && out.length === 0)
+    out = await postStatus(statusMsg('2250700000099'))
+    check('status only-view : le numéro choisi est vu', reads.length === 1)
+
+    await send(raw(`.status except-view ${STRANGER}`))
+    out = await postStatus(statusMsg(STRANGER))
+    check('status except-view : le numéro exclu est ignoré', reads.length === 0 && out.length === 0)
+
+    await send(raw('.status on'))
+    await send(raw('.status msg Joli statut !'))
+    out = await postStatus(statusMsg(STRANGER))
+    const replied = out.filter((s) => s.content?.text === 'Joli statut !')
+    out = await postStatus(statusMsg(STRANGER))
+    check('status msg : réponse envoyée à l\'auteur', replied.length === 1 && replied[0].jid === `${STRANGER}@s.whatsapp.net`)
+    check('status msg : pas de 2e réponse avant 12 h', !out.some((s) => s.content?.text === 'Joli statut !'))
+    await send(raw('.status msg Désolé pour le delay'))
+    check('status msg avec le mot « delay » ne touche pas aux options', config.STATUS_VIEW_MSG === 'Désolé pour le delay' && config.AUTO_STATUS_VIEW === 'true')
+    await send(raw('.status msg off'))
+
+    await send(raw('.status forward 2250700000055'))
+    out = await postStatus(statusMsg(STRANGER))
+    check('status forward : renvoyé vers le numéro choisi', out.some((s) => s.jid === '2250700000055@s.whatsapp.net' && s.content?.forward))
+    await send(raw('.status forward me'))
+    out = await postStatus(statusMsg(STRANGER, { extendedTextMessage: { text: 'statut texte' } }))
+    check('statut texte : renvoyé avec l\'auteur', out.some((s) => s.jid === OWN_CHAT && /Statut de Ami/.test(s.content?.text || '') && /statut texte/.test(s.content?.text || '')))
+    await send(raw('.status off'))
+
+    // --- startup messages -------------------------------------------------------------
+    const client = require('../lib/client')
+    let welcome = client.welcomeText(sock)
+    check('bienvenue : nom du bot', welcome.includes(`Bienvenue sur ${config.BOT_NAME}`) && welcome.includes(`Je suis *${config.BOT_NAME}*`))
+    check('bienvenue : nom du compte par défaut', welcome.includes('*Alex*'))
+    process.env.OWNER_NAME = 'Boss'
+    config.reload()
+    welcome = client.welcomeText(sock)
+    check('bienvenue : OWNER_NAME', welcome.includes('*Boss*'))
+    delete process.env.OWNER_NAME
+    process.env.AUTO_STATUS_VIEW = 'no-dl'
+    config.reload()
+    const card = client.startCard(sock)
+    check('carte : nom, préfixe, menu, version', card.includes(`*${config.BOT_NAME} est en ligne*`) && card.includes('PREFIX    : .') && card.includes('.menu | .help | .list') && card.includes(config.VERSION))
+    check('carte : réglages en ✅ / ❎', card.includes('👀 AUTO STATUS VIEW') && card.includes('✅ (no-dl)') && card.includes('❎'))
+    process.env.AUTO_STATUS_VIEW = 'false'
+    config.reload()
+    const image = fs.readFileSync(path.join(ROOT, 'media', 'welcome.jpg'))
+    check('image de démarrage présente (JPEG)', image[0] === 0xff && image[1] === 0xd8)
 
     // --- stickers -----------------------------------------------------------------
     const sharp = require('sharp')

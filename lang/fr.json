@@ -15,7 +15,18 @@
     "logged_out": "Session déconnectée par WhatsApp. Elle a été supprimée : reconnecte-toi (QR, code d'appairage ou nouveau SESSION_ID).",
     "connection_replaced": "Connexion remplacée : ce compte a été ouvert ailleurs avec la même session. Arrêt de la reconnexion.",
     "reconnecting": "Connexion fermée ({0}), reconnexion dans {1} s…",
-    "start_card": "*{0} est en ligne* ✅\n\n› Version : {1}\n› Préfixe : {2}\n› Mode : {3}\n› Commandes : {4}\n› Numéro : +{5}\n› Mise à jour auto : {6}\n\nTape *{7}* pour la liste des commandes.",
+    "welcome": "👋 *Bienvenue sur {0} !*\n\nJe suis *{0}*, le bot WhatsApp de *{1}* 🔥\nToujours là pour gérer tes discussions, tes groupes et tes médias, 24h/24.\n\n✨ *Ce que je sais faire :*\n🛡️ Protection : anti-suppression, vue unique, vue automatique des statuts.\n👥 Groupes : bienvenue, anti-lien, gestion des membres, mentions.\n🎨 Médias : stickers à partir d'images et de vidéos.\n🤖 IA : pose-moi tes questions avec *{2}ai*.\n🔄 Mises à jour : *{2}update now*, ou automatiques.\n\n📖 Tape *{2}menu* pour voir toutes les commandes, classées par catégorie.\n\n_Installe-toi bien, et profite à fond !_ 😎",
+    "owner_default": "toi",
+    "start_card": "*{0} est en ligne* ✅\n\n```PREFIX    : {1}\nMENU      : {1}menu | {1}help | {1}list\nVERSION   : {2}\nPLUGINS   : {3}\nMODE      : {4}\nNUMÉRO    : +{5}\n\n{6}```",
+    "labels": {
+      "sudo": "🛡️ SUDO",
+      "auto_read": "📖 AUTO READ MSG",
+      "auto_status": "👀 AUTO STATUS VIEW",
+      "auto_reject": "🚫 AUTO REJECT CALL",
+      "always_online": "🔋 ALWAYS ONLINE",
+      "anti_delete": "🛡️ ANTI DELETE MSG",
+      "auto_update": "🔄 AUTO UPDATE BOT"
+    },
     "update_available": "🔄 *Mise à jour disponible* ({0})\n\n{1}\n\nInstalle-la avec *{2}update now*",
     "auto_update_installing": "🔄 Mise à jour automatique : installation de {0} changement(s), redémarrage…",
     "only_group": "_Cette commande ne fonctionne que dans un groupe._",
@@ -139,8 +150,10 @@
       "private": "🔒 Mode *private* : seuls toi et les sudo peuvent utiliser le bot."
     },
     "status": {
-      "desc": "Vue automatique des statuts (on/off, emoji)",
-      "usage": "Vue des statuts : *{0}* · Emoji : *{1}*\n*Exemples :*\n› status on\n› status emoji 🔥,❤️\n› status emoji off"
+      "desc": "Statuts : vue auto, emoji, réponse, renvoi",
+      "usage": "*Statuts*\n› Vue auto : *{0}*\n› Emoji : *{1}*\n› Réponse : *{2}*\n› Renvoi vers : *{3}*\n\n*Exemples :*\n› status on — voir et recevoir tous les statuts\n› status off\n› status no-dl — voir seulement, sans les recevoir\n› status hide-view — voir sans le « vu »\n› status &delay — attendre un peu avant de voir\n› status only-view 2250700000000,2250700000001\n› status except-view 2250700000000\n› status emoji 🔥,❤️ · status emoji off\n› status msg Joli statut ! · status msg off\n› status forward 2250700000000 · status forward me\n\n_Les options se combinent : status no-dl &delay_",
+      "header": "📥 *Statut de {0}* (+{1})",
+      "own_chat": "ta discussion"
     },
     "antidelete": {
       "desc": "Récupère les messages supprimés",
@@ -257,6 +270,7 @@
   },
   "vars": {
     "BOT_NAME": "Nom du bot",
+    "OWNER_NAME": "Ton nom, affiché dans le message de bienvenue",
     "BOT_LANG": "Langue : fr ou en (redémarrage requis)",
     "PREFIX": "Préfixe des commandes (plusieurs : .,! · aucun : false)",
     "MODE": "private (toi + sudo) ou public",
@@ -271,8 +285,10 @@
     "SEND_READ": "Marquer les messages comme lus (true/false)",
     "REJECT_CALL": "Rejeter les appels (true/false)",
     "REJECT_CALL_MSG": "Message envoyé après un appel rejeté",
-    "AUTO_STATUS_VIEW": "Voir les statuts automatiquement (true/false)",
+    "AUTO_STATUS_VIEW": "Statuts : false, true, ou options (no-dl, hide-view, &delay, only-view …, except-view …)",
     "STATUS_VIEW_EMOJI": "Réaction aux statuts (ex. 🔥,❤️)",
+    "STATUS_VIEW_MSG": "Message envoyé à l'auteur d'un statut (1 fois / 12 h)",
+    "STATUS_FORWARD_JID": "Où t'envoyer les statuts (vide = ta discussion, ou un numéro)",
     "ANTI_DELETE": "false, p, g ou un numéro",
     "DISABLE_START_MESSAGE": "Pas de message au démarrage (true/false)",
     "ALIVE_MSG": "Message alive perso (#name #version #uptime #ram #prefix)",

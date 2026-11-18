@@ -26,6 +26,8 @@ function build() {
   return {
     VERSION: require('./package.json').version,
     BOT_NAME: (env.BOT_NAME || 'Nyx').trim(),
+    // Shown in the welcome message (defaults to the WhatsApp account's own name).
+    OWNER_NAME: (env.OWNER_NAME || '').trim(),
     BOT_LANG: (env.BOT_LANG || 'fr').trim().toLowerCase(),
 
     // Session: SESSION_ID from the session site, or QR / pairing code on first start.
@@ -48,8 +50,12 @@ function build() {
     SEND_READ: toBool(env.SEND_READ),
     REJECT_CALL: toBool(env.REJECT_CALL),
     REJECT_CALL_MSG: env.REJECT_CALL_MSG || '',
-    AUTO_STATUS_VIEW: toBool(env.AUTO_STATUS_VIEW),
+    // Statuses (see plugins/status.js): "false", "true", or options such as
+    // "no-dl", "hide-view", "&delay", "only-view 225…,225…", "except-view 225…".
+    AUTO_STATUS_VIEW: (env.AUTO_STATUS_VIEW || 'false').trim(),
     STATUS_VIEW_EMOJI: (env.STATUS_VIEW_EMOJI || '').trim(),
+    STATUS_VIEW_MSG: env.STATUS_VIEW_MSG || '',
+    STATUS_FORWARD_JID: (env.STATUS_FORWARD_JID || '').trim(),
     ANTI_DELETE: (env.ANTI_DELETE || 'false').trim().toLowerCase(),
     DISABLE_START_MESSAGE: toBool(env.DISABLE_START_MESSAGE),
     ALIVE_MSG: env.ALIVE_MSG || '',

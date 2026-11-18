@@ -1,5 +1,5 @@
 // Quick switches for the main variables + the automatic behaviours they control.
-const { bot, lang, config, setVar, logger, bare } = require('../lib')
+const { bot, lang, config, setVar, logger } = require('../lib')
 
 // on/off command that sets a boolean variable.
 function toggle(name, variable) {
@@ -41,33 +41,6 @@ bot(
 
 bot(
   {
-    pattern: 'status ?(.*)',
-    desc: lang.plugins.status.desc,
-    type: 'settings',
-  },
-  async (message, match) => {
-    const value = (match || '').trim()
-    const lower = value.toLowerCase()
-    if (lower === 'on' || lower === 'off') {
-      setVar('AUTO_STATUS_VIEW', lower === 'on' ? 'true' : 'false')
-      return message.reply(lang.plugins.settings.saved.format('AUTO_STATUS_VIEW', lower))
-    }
-    if (lower === 'emoji off') {
-      setVar('STATUS_VIEW_EMOJI', '')
-      return message.reply(lang.plugins.settings.saved.format('STATUS_VIEW_EMOJI', 'off'))
-    }
-    const emoji = /^emoji\s+(.+)$/i.exec(value)
-    if (emoji) {
-      setVar('STATUS_VIEW_EMOJI', emoji[1].trim())
-      return message.reply(lang.plugins.settings.saved.format('STATUS_VIEW_EMOJI', emoji[1].trim()))
-    }
-    const state = config.AUTO_STATUS_VIEW ? 'on' : 'off'
-    await message.reply(lang.plugins.status.usage.format(state, config.STATUS_VIEW_EMOJI || 'off'))
-  }
-)
-
-bot(
-  {
     pattern: 'antidelete ?(.*)',
     desc: lang.plugins.antidelete.desc,
     type: 'settings',
@@ -83,22 +56,6 @@ bot(
     await message.reply(lang.plugins.settings.saved.format('ANTI_DELETE', stored))
   }
 )
-
-// Statuses: mark as seen (AUTO_STATUS_VIEW) and react (STATUS_VIEW_EMOJI, comma-separated = random).
-bot({ on: 'status' }, async (sock, raw) => {
-  if (!config.AUTO_STATUS_VIEW) return
-  await sock.readMessages([raw.key])
-  const emojis = config.STATUS_VIEW_EMOJI.split(',').map((e) => e.trim()).filter(Boolean)
-  if (!emojis.length) return
-  const emoji = emojis[Math.floor(Math.random() * emojis.length)]
-  const author = raw.key.participant || raw.participant
-  if (!author) return
-  await sock.sendMessage(
-    'status@broadcast',
-    { react: { text: emoji, key: raw.key } },
-    { statusJidList: [author, bare(sock.user.id)] }
-  )
-})
 
 // Calls: rejected when REJECT_CALL is on, with an optional message (REJECT_CALL_MSG).
 bot({ on: 'call' }, async (sock, calls) => {

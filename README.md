@@ -19,7 +19,7 @@ Même architecture que Levanter (`config.js`, `config.env`, `lib/`, `plugins/`, 
 sudo apt update && sudo apt install -y git ffmpeg
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt install -y nodejs
 
-git clone https://github.com/<ton-compte>/nyx.git
+git clone https://github.com/KyotakaMD45/nyx.git
 cd nyx
 npm install
 cp config.env.example config.env
@@ -41,6 +41,34 @@ Trois façons, au choix :
 | **Code d'appairage** | `PAIRING_NUMBER="2250700000000"` : un code à 8 caractères s'affiche dans les logs. |
 
 La session est ensuite enregistrée dans le dossier `session/`. Si WhatsApp la déconnecte, Nyx la supprime et redemande un QR, sans boucler.
+
+## Messages de démarrage
+
+Comme Knull, Nyx t'envoie deux messages dans ta propre discussion :
+
+1. **Bienvenue** : une seule fois, quand une nouvelle session se connecte. Image + présentation (« Je suis *Nyx*, le bot WhatsApp de *toi* »). Ton nom vient de `OWNER_NAME`, ou à défaut du nom de ton compte WhatsApp.
+2. **Carte d'état** : à chaque démarrage du bot (pas à chaque reconnexion). Image + préfixe, menu, version, nombre de commandes, mode, puis l'état de tes réglages en ✅ / ❎ (sudo, lecture auto, statuts, appels, en ligne, anti-suppression, mise à jour auto).
+
+Les deux messages utilisent le nom du bot (`BOT_NAME`) et l'image `media/welcome.jpg`. Remplace ce fichier par ta propre image si tu veux. `DISABLE_START_MESSAGE=true` coupe la carte d'état.
+
+## Statuts
+
+Tout passe par `AUTO_STATUS_VIEW`, comme dans Knull et Levanter. Le plus simple est la commande `.status` :
+
+| Commande | Effet |
+|---|---|
+| `.status on` | voit chaque statut et **te l'envoie** dans ta discussion |
+| `.status off` | désactive |
+| `.status no-dl` | voit seulement, sans t'envoyer les statuts |
+| `.status hide-view` | voit sans envoyer le « vu » à l'auteur |
+| `.status &delay` | attend un délai aléatoire (1 s à 5 min) avant de voir |
+| `.status only-view 225…,225…` | seulement les statuts de ces numéros |
+| `.status except-view 225…` | tout le monde sauf ces numéros |
+| `.status emoji 🔥,❤️` | réagit aux statuts (un emoji au hasard) · `emoji off` pour arrêter |
+| `.status msg Joli statut !` | répond à l'auteur (une fois toutes les 12 h par contact) · `msg off` |
+| `.status forward 225…` | t'envoie les statuts vers ce numéro · `forward me` = ta discussion |
+
+Les options se combinent : `.status no-dl &delay`, `.status only-view 2250700000000 hide-view`…
 
 ## Commandes
 
@@ -67,6 +95,7 @@ Toutes se règlent dans `config.env` ou depuis WhatsApp avec `.setvar CLÉ=VALEU
 | `SESSION_URL` | Serveur des sessions à ID court | `https://nexora-inky-delta.vercel.app/json/` |
 | `PAIRING_NUMBER` | Connexion par code d'appairage | — |
 | `BOT_NAME` | Nom du bot | `Nyx` |
+| `OWNER_NAME` | Ton nom, dans le message de bienvenue | nom de ton compte |
 | `BOT_LANG` | `fr` ou `en` (redémarrage requis) | `fr` |
 | `PREFIX` | Préfixe(s) : `.` · `.,!` · `false` (aucun) | `.` |
 | `MODE` | `private` ou `public` | `private` |
@@ -77,7 +106,10 @@ Toutes se règlent dans `config.env` ou depuis WhatsApp avec `.setvar CLÉ=VALEU
 | `ALWAYS_ONLINE` | Toujours en ligne | `false` |
 | `SEND_READ` | Marquer les messages comme lus | `false` |
 | `REJECT_CALL` / `REJECT_CALL_MSG` | Rejeter les appels / message envoyé | `false` |
-| `AUTO_STATUS_VIEW` / `STATUS_VIEW_EMOJI` | Voir les statuts / y réagir | `false` |
+| `AUTO_STATUS_VIEW` | Statuts : `false`, `true` ou options (voir « Statuts ») | `false` |
+| `STATUS_VIEW_EMOJI` | Réaction aux statuts (`🔥,❤️`) | — |
+| `STATUS_VIEW_MSG` | Réponse à l'auteur d'un statut | — |
+| `STATUS_FORWARD_JID` | Où recevoir les statuts (vide = ta discussion) | — |
 | `ANTI_DELETE` | `false`, `p` (vers toi), `g` (même discussion) ou un numéro | `false` |
 | `ALIVE_MSG` | Message alive perso (`#name #version #uptime #ram #prefix`) | — |
 | `STICKER_PACKNAME` | `Pack,Auteur` des stickers | `Nyx,Nyx Bot` |
@@ -103,6 +135,7 @@ nyx/
 ├── config.js           configuration (lit config.env)
 ├── config.env.example  modèle de configuration
 ├── lang/               textes du bot (fr, en)
+├── media/welcome.jpg   image des messages de démarrage
 ├── lib/                cœur du bot
 │   ├── client.js       connexion WhatsApp, QR, reconnexion
 │   ├── handler.js      réception des messages, commandes, anti-suppression
@@ -111,6 +144,7 @@ nyx/
 │   ├── session.js      import du SESSION_ID
 │   ├── vars.js         variables (setvar / getvar / delvar)
 │   ├── update.js       mises à jour (git)
+│   ├── status.js       lecture de AUTO_STATUS_VIEW
 │   ├── db.js           petite base de données (data/db.json)
 │   └── utils.js        outils partagés
 ├── plugins/            les commandes

@@ -5,6 +5,11 @@
   "main": "index.js",
   "private": true,
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KyotakaMD45/nyx.git"
+  },
+  "homepage": "https://github.com/KyotakaMD45/nyx#readme",
   "scripts": {
     "start": "pm2 start index.js --name nyx",
     "dev": "node index.js",
