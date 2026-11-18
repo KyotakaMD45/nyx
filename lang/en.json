@@ -24,6 +24,7 @@
       "auto_reject": "🚫 AUTO REJECT CALL",
       "always_online": "🔋 ALWAYS ONLINE",
       "anti_delete": "🛡️ ANTI DELETE MSG",
+      "anti_vv": "👁️ ANTI VIEW ONCE",
       "auto_update": "🔄 AUTO UPDATE BOT"
     },
     "update_available": "🔄 *Update Available!*\n\n*{0} pending update(s):*\n{1}\n\n_Use {2}update now to update now_",

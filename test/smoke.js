@@ -373,6 +373,7 @@ function check(name, ok, detail = '') {
     config.reload()
     const card = client.startCard(sock)
     check('carte : nom, préfixe, menu, version', card.includes('ReadMore') && card.includes('PREFIX    : .') && card.includes('.menu | .help | .list') && card.includes(config.VERSION))
+    check('carte : ligne ANTI VIEW ONCE', card.includes('ANTI VIEW ONCE'))
     check('carte : réglages en ✅ / ❎', card.includes('👀 AUTO STATUS VIEW') && card.includes('✅ (no-dl)') && card.includes('❎'))
     process.env.AUTO_STATUS_VIEW = 'false'
     config.reload()
