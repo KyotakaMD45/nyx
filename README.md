@@ -85,7 +85,7 @@ Les options se combinent : `.status no-dl &delay`, `.status only-view 2250700000
 
 ## Commandes
 
-Préfixe par défaut : `.` (modifiable : `.setvar PREFIX=!`). Liste complète dans le bot : `.menu`.
+Préfixe par défaut : `^[.,!]`, comme Knull et Levanter : `.menu`, `,menu` et `!menu` marchent (modifiable : `.setvar PREFIX=!`). Liste complète dans le bot : `.menu`.
 
 | Catégorie | Commandes |
 |---|---|
@@ -110,7 +110,7 @@ Comme Levanter, `config.env` ne contient que l’essentiel (`SESSION_ID`, `AUTO_
 | `BOT_NAME` | Nom du bot | `Nyx` |
 | `OWNER_NAME` | Ton nom, dans le message de bienvenue | nom de ton compte |
 | `BOT_LANG` | `fr` ou `en` (redémarrage requis) | `fr` |
-| `PREFIX` | Préfixe(s) : `.` · `.,!` · `false` (aucun) | `.` |
+| `PREFIX` | Préfixe : regex `^[.,!]` · un seul `.` · liste `.,!` · `null` (aucun) | `^[.,!]` |
 | `MODE` | `private` ou `public` | `private` |
 | `SUDO` | Numéros sudo, séparés par des virgules | — |
 | `AUTO_UPDATE` | Installer les mises à jour tout seul | `false` |

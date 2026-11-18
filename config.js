@@ -30,7 +30,7 @@ function build() {
     SESSION_URL: (env.SESSION_URL || 'https://nyx-session.vercel.app/json/').trim(),
     PAIRING_NUMBER: String(env.PAIRING_NUMBER || '').replace(/\D/g, ''),
 
-    PREFIX: env.PREFIX === undefined ? '.' : String(env.PREFIX),
+    PREFIX: env.PREFIX === undefined || env.PREFIX === '' ? '^[.,!]' : String(env.PREFIX),
     MODE: (env.MODE || 'private').trim().toLowerCase(),
     SUDO: toList(env.SUDO).map((n) => n.replace(/\D/g, '')).filter(Boolean),
 

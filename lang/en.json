@@ -1,20 +1,19 @@
 {
   "extra": {
     "node_version": "Nyx requires Node.js 20 or newer (current version: {0}).",
-    "starting": "Starting {0} v{1}…",
+    "starting": "{0} {1}",
     "start_failed": "Startup failed: {0}",
-    "plugins_loaded": "{0} commands loaded.",
-    "session_imported": "Session imported from SESSION_ID.",
+    "session_imported": "[{0}] Session imported from SESSION_ID",
     "session_dead": "This SESSION_ID was logged out by WhatsApp: create a new session, or log in with the QR below.",
     "session_invalid": "Invalid SESSION_ID: it must start with \"Nexora~\" or \"Nexora_\" (session site).",
     "session_import_failed": "Could not import the session: {0}",
-    "scan_qr": "Scan this QR in WhatsApp › Linked devices › Link a device:",
-    "pairing_code": "Pairing code: {0}  (WhatsApp › Linked devices › Link with phone number)",
+    "scan_qr": "[{0}] Scan this QR in WhatsApp › Linked devices:",
+    "pairing_code": "[{0}] Pairing code: {1}",
     "pairing_failed": "Could not request the pairing code: {0}",
-    "connected": "Connected to WhatsApp (+{0}).",
+    "connected": "[{0}] Online, ready to help! ⚡ +{1}",
     "logged_out": "Session logged out by WhatsApp. It was removed: log in again (QR, pairing code or a new SESSION_ID).",
     "connection_replaced": "Connection replaced: this account was opened elsewhere with the same session. Not reconnecting.",
-    "reconnecting": "Connection closed ({0}), reconnecting in {1} s…",
+    "reconnecting": "[{0}] Reconnecting... ({1}) 🔄",
     "welcome": "👋 *Welcome to {0}!*\n\nI'm *{0}*, *{1}*'s WhatsApp bot 🔥\nAlways here to handle your chats, groups and media, 24/7.\n\n✨ *What I can do:*\n🛡️ Protection: anti-delete, view once, automatic status view.\n👥 Groups: welcome, anti-link, member management, mentions.\n🎨 Media: stickers from images and videos.\n🤖 AI: ask me anything with *{2}ai*.\n🔄 Updates: *{2}update now*, or automatic.\n\n📖 Send *{2}menu* to see every command, sorted by category.\n\n_Make yourself at home and enjoy!_ 😎",
     "owner_default": "you",
     "start_card": "*{0} is online* ✅\n\n```PREFIX    : {1}\nMENU      : {1}menu | {1}help | {1}list\nVERSION   : {2}\nPLUGINS   : {3}\nMODE      : {4}\nNUMBER    : +{5}\n\n{6}```",
@@ -33,7 +32,10 @@
     "command_error": "❌ Error in *{0}*: {1}",
     "deleted_message": "🗑️ *Message deleted* by @{0} {1}",
     "bot_not_admin": "_I must be a group admin to do that._",
-    "action_failed": "_Action refused by WhatsApp (code {0})._"
+    "action_failed": "_Action refused by WhatsApp (code {0})._",
+    "connecting": "[{0}] Connecting... 📡",
+    "plugin_install": "[{0}] Installing plugins... 📚",
+    "plugins_installed": "[{0}] All plugins are ready! 🎓 ({1})"
   },
   "plugins": {
     "alive": {
@@ -46,17 +48,11 @@
       "result": "🏓 *Pong!* {0} ms"
     },
     "menu": {
-      "desc": "Command list",
-      "header": "*{0}* · v{1}\n› Prefix: {2}\n› Uptime: {3}\n› Commands: {4}",
-      "types": {
-        "system": "⚙️ SYSTEM",
-        "settings": "🛠️ SETTINGS",
-        "owner": "👑 OWNER",
-        "group": "👥 GROUP",
-        "media": "🖼️ MEDIA",
-        "ai": "🤖 AI",
-        "misc": "📦 MISC"
-      }
+      "desc": "Commands menu by category",
+      "help_desc": "Numbered list of commands",
+      "list_desc": "Commands with their description",
+      "menu": "```╭═══ {10} ═══⊷\n┃❃╭──────────────\n┃❃│ Prefix : {0}\n┃❃│ User : {1}\n┃❃│ Time : {2}\n┃❃│ Day : {3}\n┃❃│ Date : {4}\n┃❃│ Version : {5}\n┃❃│ Plugins : {6}\n┃❃│ RAM : {7}\n┃❃│ Uptime : {8}\n┃❃│ Platform : {9}\n┃❃╰───────────────\n╰═════════════════⊷```",
+      "help": "```╭────────────────╮\n      {10}\n╰────────────────╯\n\n╭────────────────\n│ Prefix : {0}\n│ User : {1}\n│ Time : {2}\n│ Day : {3}\n│ Date : {4}\n│ Version : {5}\n│ Plugins : {6}\n│ RAM : {7}\n│ Uptime : {8}\n│ Platform : {9}\n╰────────────────```"
     },
     "restart": {
       "desc": "Restart the bot",
@@ -272,7 +268,7 @@
     "BOT_NAME": "Bot name",
     "OWNER_NAME": "Your name, shown in the welcome message",
     "BOT_LANG": "Language: fr or en (restart required)",
-    "PREFIX": "Command prefix (several: .,! · none: false)",
+    "PREFIX": "Prefix: ^[.,!] (. , or !) · . · .,! · null (none)",
     "MODE": "private (you + sudo) or public",
     "SUDO": "Sudo numbers, comma-separated",
     "SESSION_ID": "Session ID (session site)",

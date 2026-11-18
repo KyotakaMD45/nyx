@@ -124,9 +124,37 @@ function check(name, ok, detail = '') {
     out = await send(raw('.alive'))
     check('.alive répond', /en ligne/.test(textsOf(out)), textsOf(out))
     out = await send(raw('.menu'))
-    check('.menu liste les sections', /SYSTÈME/.test(textsOf(out)) && /GROUPE/.test(textsOf(out)))
+    check('.menu : encadré + catégories', /Préfixe : \./.test(textsOf(out)) && /❏ ꜱʏꜱᴛᴇᴍ ❏/.test(textsOf(out)) && /❏ ɢʀᴏᴜᴘ ❏/.test(textsOf(out)) && textsOf(out).includes('𝙼𝙴𝙽𝚄'), textsOf(out))
+    out = await send(raw('.menu group'))
+    check('.menu group : une seule catégorie', /❏ ɢʀᴏᴜᴘ ❏/.test(textsOf(out)) && !/ꜱʏꜱᴛᴇᴍ/.test(textsOf(out)))
     out = await send(raw('.help'))
-    check('.help (alias de menu)', /SYSTÈME/.test(textsOf(out)))
+    check('.help : liste numérotée', /│ 1 +𝙰/.test(textsOf(out)), textsOf(out))
+    out = await send(raw('.list'))
+    check('.list : nom + description', /- \*menu\*\n/.test(textsOf(out)))
+    {
+      const { parsePrefix } = require('../lib/handler')
+      const knull = parsePrefix('^[.,!]')
+      check('préfixe ^[.,!] : . , ! acceptés, affiché .', knull.shown === '.' && ['.menu', ',menu', '!menu'].every((t) => knull.regex.test(t)) && !knull.regex.test('menu'))
+      check('préfixe null : aucun préfixe', parsePrefix('null').shown === '' && parsePrefix('null').regex.test('menu'))
+      check('préfixe .,! : liste', parsePrefix('.,!').regex.test('!menu') && parsePrefix('.,!').shown === '.')
+      check('préfixe invalide ? : échappé', parsePrefix('?').regex.test('?menu'))
+    }
+    {
+      const lines = []
+      const out1 = process.stdout.write
+      const err1 = process.stderr.write
+      process.stdout.write = (chunk) => (lines.push(String(chunk)), true)
+      process.stderr.write = (chunk) => (lines.push(String(chunk)), true)
+      console.warn('Closing open session in favor of incoming prekey bundle')
+      console.error('Session error:Error: Bad MAC')
+      console.info('Closing session: SessionEntry {}')
+      const hidden = lines.length === 0
+      console.error('vrai avertissement')
+      process.stdout.write = out1
+      process.stderr.write = err1
+      check('logs : messages de libsignal masqués', hidden, lines.join(''))
+      check('logs : format « ERROR [hh:mm:ss jj-mm-aa]: »', /ERROR.* \[\d\d:\d\d:\d\d \d\d-\d\d-\d\d\]: vrai avertissement/.test(lines.join('')), lines.join(''))
+    }
     out = await send(raw('.commandeinconnue'))
     check('commande inconnue : aucune réponse', out.length === 0)
 

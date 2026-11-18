@@ -1,20 +1,19 @@
 {
   "extra": {
     "node_version": "Nyx nécessite Node.js 20 ou plus (version actuelle : {0}).",
-    "starting": "Démarrage de {0} v{1}…",
+    "starting": "{0} {1}",
     "start_failed": "Démarrage impossible : {0}",
-    "plugins_loaded": "{0} commandes chargées.",
-    "session_imported": "Session importée depuis SESSION_ID.",
+    "session_imported": "[{0}] Session importée depuis SESSION_ID",
     "session_dead": "Ce SESSION_ID a été déconnecté de WhatsApp : crée une nouvelle session, ou connecte-toi avec le QR ci-dessous.",
     "session_invalid": "SESSION_ID invalide : il doit commencer par « Nexora~ » ou « Nexora_ » (site de session).",
     "session_import_failed": "Import de la session impossible : {0}",
-    "scan_qr": "Scanne ce QR dans WhatsApp › Appareils connectés › Connecter un appareil :",
-    "pairing_code": "Code d'appairage : {0}  (WhatsApp › Appareils connectés › Connecter avec un numéro)",
+    "scan_qr": "[{0}] Scanne ce QR dans WhatsApp › Appareils connectés :",
+    "pairing_code": "[{0}] Code d’appairage : {1}",
     "pairing_failed": "Demande du code d'appairage impossible : {0}",
-    "connected": "Connecté à WhatsApp (+{0}).",
+    "connected": "[{0}] En ligne, prêt à aider ! ⚡ +{1}",
     "logged_out": "Session déconnectée par WhatsApp. Elle a été supprimée : reconnecte-toi (QR, code d'appairage ou nouveau SESSION_ID).",
     "connection_replaced": "Connexion remplacée : ce compte a été ouvert ailleurs avec la même session. Arrêt de la reconnexion.",
-    "reconnecting": "Connexion fermée ({0}), reconnexion dans {1} s…",
+    "reconnecting": "[{0}] Reconnexion en cours... ({1}) 🔄",
     "welcome": "👋 *Bienvenue sur {0} !*\n\nJe suis *{0}*, le bot WhatsApp de *{1}* 🔥\nToujours là pour gérer tes discussions, tes groupes et tes médias, 24h/24.\n\n✨ *Ce que je sais faire :*\n🛡️ Protection : anti-suppression, vue unique, vue automatique des statuts.\n👥 Groupes : bienvenue, anti-lien, gestion des membres, mentions.\n🎨 Médias : stickers à partir d'images et de vidéos.\n🤖 IA : pose-moi tes questions avec *{2}ai*.\n🔄 Mises à jour : *{2}update now*, ou automatiques.\n\n📖 Tape *{2}menu* pour voir toutes les commandes, classées par catégorie.\n\n_Installe-toi bien, et profite à fond !_ 😎",
     "owner_default": "toi",
     "start_card": "*{0} est en ligne* ✅\n\n```PREFIX    : {1}\nMENU      : {1}menu | {1}help | {1}list\nVERSION   : {2}\nPLUGINS   : {3}\nMODE      : {4}\nNUMÉRO    : +{5}\n\n{6}```",
@@ -33,7 +32,10 @@
     "command_error": "❌ Erreur dans *{0}* : {1}",
     "deleted_message": "🗑️ *Message supprimé* par @{0} {1}",
     "bot_not_admin": "_Je dois être admin du groupe pour faire ça._",
-    "action_failed": "_Action refusée par WhatsApp (code {0})._"
+    "action_failed": "_Action refusée par WhatsApp (code {0})._",
+    "connecting": "[{0}] Connexion en cours... 📡",
+    "plugin_install": "[{0}] Installation des plugins... 📚",
+    "plugins_installed": "[{0}] Tous les plugins sont prêts ! 🎓 ({1})"
   },
   "plugins": {
     "alive": {
@@ -46,17 +48,11 @@
       "result": "🏓 *Pong !* {0} ms"
     },
     "menu": {
-      "desc": "Liste des commandes",
-      "header": "*{0}* · v{1}\n› Préfixe : {2}\n› Actif depuis : {3}\n› Commandes : {4}",
-      "types": {
-        "system": "⚙️ SYSTÈME",
-        "settings": "🛠️ RÉGLAGES",
-        "owner": "👑 PROPRIÉTAIRE",
-        "group": "👥 GROUPE",
-        "media": "🖼️ MÉDIA",
-        "ai": "🤖 IA",
-        "misc": "📦 DIVERS"
-      }
+      "desc": "Menu des commandes par catégorie",
+      "help_desc": "Liste numérotée des commandes",
+      "list_desc": "Commandes avec leur description",
+      "menu": "```╭═══ {10} ═══⊷\n┃❃╭──────────────\n┃❃│ Préfixe : {0}\n┃❃│ Utilisateur : {1}\n┃❃│ Heure : {2}\n┃❃│ Jour : {3}\n┃❃│ Date : {4}\n┃❃│ Version : {5}\n┃❃│ Plugins : {6}\n┃❃│ RAM : {7}\n┃❃│ Temps d’activité : {8}\n┃❃│ Plateforme : {9}\n┃❃╰───────────────\n╰═════════════════⊷```",
+      "help": "```╭────────────────╮\n      {10}\n╰────────────────╯\n\n╭────────────────\n│ Préfixe : {0}\n│ Utilisateur : {1}\n│ Heure : {2}\n│ Jour : {3}\n│ Date : {4}\n│ Version : {5}\n│ Plugins : {6}\n│ RAM : {7}\n│ Temps d’activité : {8}\n│ Plateforme : {9}\n╰────────────────```"
     },
     "restart": {
       "desc": "Redémarre le bot",
@@ -272,7 +268,7 @@
     "BOT_NAME": "Nom du bot",
     "OWNER_NAME": "Ton nom, affiché dans le message de bienvenue",
     "BOT_LANG": "Langue : fr ou en (redémarrage requis)",
-    "PREFIX": "Préfixe des commandes (plusieurs : .,! · aucun : false)",
+    "PREFIX": "Préfixe : ^[.,!] (. , ou !) · . · .,! · null (aucun)",
     "MODE": "private (toi + sudo) ou public",
     "SUDO": "Numéros sudo, séparés par des virgules",
     "SESSION_ID": "Identifiant de session (site de session)",

@@ -1,5 +1,5 @@
 const os = require('os')
-const { bot, lang, config, commands, prefixes, runtime, ram, restart } = require('../lib')
+const { bot, lang, config, commands, prefix, prefixes, runtime, ram, restart, textToStylist, addSpace, getRam, getUptime, getDate, getPlatform } = require('../lib')
 
 bot(
   {
@@ -47,33 +47,79 @@ bot(
   }
 )
 
-const TYPE_ORDER = ['system', 'settings', 'owner', 'group', 'media', 'ai', 'misc']
+const sortedCommands = () => commands.slice().sort((a, b) => a.name.localeCompare(b.name))
+
+function infoBox(template, message) {
+  const { time, day, date } = getDate()
+  return template.format(
+    prefix(),
+    message.pushName || '-',
+    time,
+    day,
+    date,
+    config.VERSION,
+    commands.length,
+    getRam(),
+    getUptime(),
+    getPlatform(),
+    textToStylist(config.BOT_NAME.toUpperCase(), 'smallcaps')
+  )
+}
 
 bot(
   {
     pattern: 'menu ?(.*)',
-    alias: ['help', 'list'],
     desc: lang.plugins.menu.desc,
     type: 'system',
     fromMe: false,
   },
-  async (message) => {
-    const prefix = prefixes()[0] || ''
+  async (message, match) => {
     const groups = {}
-    for (const cmd of commands) (groups[cmd.type] ||= []).push(cmd)
-    const types = Object.keys(groups).sort((a, b) => {
-      const ia = TYPE_ORDER.indexOf(a)
-      const ib = TYPE_ORDER.indexOf(b)
-      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib)
-    })
-    let text = lang.plugins.menu.header.format(config.BOT_NAME, config.VERSION, prefix, runtime(process.uptime()), commands.length)
+    for (const cmd of commands) (groups[cmd.type.toLowerCase()] ||= []).push(cmd.name.trim())
+    const wanted = String(match || '').trim().toLowerCase()
+    const types = wanted && groups[wanted] ? [wanted] : Object.keys(groups).sort()
+    let text = infoBox(lang.plugins.menu.menu, message) + '\n'
     for (const type of types) {
-      text += `\n\n*${lang.plugins.menu.types[type] || type.toUpperCase()}*`
-      for (const cmd of groups[type].sort((a, b) => a.name.localeCompare(b.name))) {
-        text += `\n› ${prefix}${cmd.name}${cmd.desc ? ` — ${cmd.desc}` : ''}`
+      text += ` ╭─❏ ${textToStylist(type, 'smallcaps')} ❏\n`
+      for (const name of groups[type].sort((a, b) => a.localeCompare(b))) {
+        text += ` │ ${textToStylist(name.toUpperCase(), 'mono')}\n`
       }
+      text += ' ╰─────────────────\n'
     }
-    await message.reply(text)
+    await message.send(text.trim())
+  }
+)
+
+bot(
+  {
+    pattern: 'help ?(.*)',
+    desc: lang.plugins.menu.help_desc,
+    type: 'system',
+    fromMe: false,
+  },
+  async (message) => {
+    const list = sortedCommands()
+    const lines = [infoBox(lang.plugins.menu.help, message), '╭────────────────']
+    list.forEach((cmd, i) => {
+      lines.push(`│ ${i + 1} ${addSpace(i + 1, list.length)}${textToStylist(cmd.name.toUpperCase(), 'mono')}`)
+    })
+    lines.push('╰────────────────')
+    await message.send(lines.join('\n'))
+  }
+)
+
+bot(
+  {
+    pattern: 'list ?(.*)',
+    desc: lang.plugins.menu.list_desc,
+    type: 'system',
+    fromMe: false,
+  },
+  async (message) => {
+    const text = sortedCommands()
+      .map((cmd) => `- *${cmd.name}*\n${cmd.desc || ''}\n`)
+      .join('\n')
+    await message.send(text.trim())
   }
 )
 

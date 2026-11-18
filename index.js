@@ -1,3 +1,4 @@
+process.noDeprecation = true
 const config = require('./config')
 const { lang } = require('./lib/lang')
 const { logger } = require('./lib/logger')
