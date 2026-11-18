@@ -1,0 +1,287 @@
+{
+  "extra": {
+    "node_version": "Nyx requires Node.js 20 or newer (current version: {0}).",
+    "starting": "Starting {0} v{1}…",
+    "start_failed": "Startup failed: {0}",
+    "plugins_loaded": "{0} commands loaded.",
+    "session_imported": "Session imported from SESSION_ID.",
+    "session_dead": "This SESSION_ID was logged out by WhatsApp: create a new session, or log in with the QR below.",
+    "session_invalid": "Invalid SESSION_ID: it must start with \"Nexora~\" or \"Nexora_\" (session site).",
+    "session_import_failed": "Could not import the session: {0}",
+    "scan_qr": "Scan this QR in WhatsApp › Linked devices › Link a device:",
+    "pairing_code": "Pairing code: {0}  (WhatsApp › Linked devices › Link with phone number)",
+    "pairing_failed": "Could not request the pairing code: {0}",
+    "connected": "Connected to WhatsApp (+{0}).",
+    "logged_out": "Session logged out by WhatsApp. It was removed: log in again (QR, pairing code or a new SESSION_ID).",
+    "connection_replaced": "Connection replaced: this account was opened elsewhere with the same session. Not reconnecting.",
+    "reconnecting": "Connection closed ({0}), reconnecting in {1} s…",
+    "start_card": "*{0} is online* ✅\n\n› Version: {1}\n› Prefix: {2}\n› Mode: {3}\n› Commands: {4}\n› Number: +{5}\n› Auto update: {6}\n\nSend *{7}* for the command list.",
+    "update_available": "🔄 *Update available* ({0})\n\n{1}\n\nInstall it with *{2}update now*",
+    "auto_update_installing": "🔄 Auto update: installing {0} change(s), restarting…",
+    "only_group": "_This command only works in a group._",
+    "command_error": "❌ Error in *{0}*: {1}",
+    "deleted_message": "🗑️ *Message deleted* by @{0} {1}",
+    "bot_not_admin": "_I must be a group admin to do that._",
+    "action_failed": "_Action refused by WhatsApp (code {0})._"
+  },
+  "plugins": {
+    "alive": {
+      "desc": "Check that the bot is online",
+      "card": "*{0}* is online ✅\n\n› Version: {1}\n› Uptime: {2}\n› RAM: {3}\n› System: {4}"
+    },
+    "ping": {
+      "desc": "Measure the response time",
+      "wait": "_Ping…_",
+      "result": "🏓 *Pong!* {0} ms"
+    },
+    "menu": {
+      "desc": "Command list",
+      "header": "*{0}* · v{1}\n› Prefix: {2}\n› Uptime: {3}\n› Commands: {4}",
+      "types": {
+        "system": "⚙️ SYSTEM",
+        "settings": "🛠️ SETTINGS",
+        "owner": "👑 OWNER",
+        "group": "👥 GROUP",
+        "media": "🖼️ MEDIA",
+        "ai": "🤖 AI",
+        "misc": "📦 MISC"
+      }
+    },
+    "restart": {
+      "desc": "Restart the bot",
+      "restarting": "_Restarting…_"
+    },
+    "setvar": {
+      "desc": "Set a variable (KEY=VALUE)",
+      "usage": "*Example:* setvar PREFIX=!",
+      "invalid_key": "_Invalid variable name (uppercase letters, digits and _ only)._",
+      "protected": "_This system variable cannot be changed._",
+      "done": "✅ *{0}* = {1}",
+      "session_restart": "_New SESSION_ID: removing the old session and restarting…_"
+    },
+    "getvar": {
+      "desc": "Show a variable's value",
+      "usage": "*Example:* getvar PREFIX",
+      "not_set": "_The variable *{0}* is not set._"
+    },
+    "delvar": {
+      "desc": "Delete a variable (back to its default)",
+      "usage": "*Example:* delvar ALIVE_MSG",
+      "done": "🗑️ *{0}* deleted (default value restored)."
+    },
+    "allvar": {
+      "desc": "List all variables",
+      "title": "*Variables*",
+      "default": "_(default)_"
+    },
+    "update": {
+      "desc": "Check for updates · update now to install",
+      "checking": "_Checking for updates…_",
+      "installing": "_Installing the update…_",
+      "up_to_date": "✅ The bot is up to date.",
+      "updated": "✅ Update installed ({0} change(s)). Restarting…",
+      "npm_warning": "⚠️ Installing the dependencies failed: run *npm install* on the server.",
+      "available": "🔄 *{0} update(s) available*\n\n{1}\n\nInstall with *{2}update now*",
+      "more": "… and {0} more",
+      "not_git": "_This folder is not a git repository: clone the bot with git to enable updates._",
+      "no_remote": "_No remote repository (origin): add your GitHub repository to enable updates._",
+      "failed": "❌ Update failed: {0}"
+    },
+    "setsudo": {
+      "desc": "Add a sudo (mention, reply or number)",
+      "usage": "*Example:* setsudo 2250700000000 (or reply to / mention someone)",
+      "already": "_+{0} is already sudo._",
+      "added": "👑 +{0} is now sudo."
+    },
+    "delsudo": {
+      "desc": "Remove a sudo",
+      "usage": "*Example:* delsudo 2250700000000",
+      "not_sudo": "_+{0} is not sudo._",
+      "removed": "+{0} is no longer sudo."
+    },
+    "getsudo": {
+      "desc": "List the sudo users",
+      "empty": "_No sudo yet. Add one with setsudo._",
+      "title": "*Sudo:*"
+    },
+    "block": {
+      "desc": "Block a contact",
+      "usage": "*Example:* block 2250700000000 (or reply to someone)",
+      "blocked": "🚫 +{0} is blocked."
+    },
+    "unblock": {
+      "desc": "Unblock a contact",
+      "usage": "*Example:* unblock 2250700000000",
+      "unblocked": "✅ +{0} is unblocked."
+    },
+    "jid": {
+      "desc": "Show the JID of a chat or a person"
+    },
+    "settings": {
+      "saved": "✅ *{0}*: {1}"
+    },
+    "online": {
+      "desc": "Always online (on/off)",
+      "usage": "Always online: *{0}*\n*Example:* online on"
+    },
+    "read": {
+      "desc": "Mark messages as read (on/off)",
+      "usage": "Auto read: *{0}*\n*Example:* read on"
+    },
+    "call": {
+      "desc": "Reject calls (on/off)",
+      "usage": "Call rejection: *{0}*\n*Example:* call on\nOptional message: setvar REJECT_CALL_MSG=…"
+    },
+    "mode": {
+      "desc": "Bot mode (public/private)",
+      "usage": "Current mode: *{0}*\n*Example:* mode public\n› private: only you and sudo users can use the bot\n› public: everyone can use the public commands",
+      "public": "🌍 *Public* mode: everyone can use the public commands.",
+      "private": "🔒 *Private* mode: only you and sudo users can use the bot."
+    },
+    "status": {
+      "desc": "Auto status view (on/off, emoji)",
+      "usage": "Status view: *{0}* · Emoji: *{1}*\n*Examples:*\n› status on\n› status emoji 🔥,❤️\n› status emoji off"
+    },
+    "antidelete": {
+      "desc": "Recover deleted messages",
+      "usage": "Anti-delete: *{0}*\n*Examples:*\n› antidelete p — to your own chat\n› antidelete g — in the same chat\n› antidelete 2250700000000 — to that number\n› antidelete off"
+    },
+    "kick": {
+      "desc": "Remove a member",
+      "usage": "*Example:* kick @member (or reply to their message)",
+      "done": "👋 @{0} was removed."
+    },
+    "promote": {
+      "desc": "Make a member admin",
+      "usage": "*Example:* promote @member",
+      "done": "⬆️ @{0} is now admin."
+    },
+    "demote": {
+      "desc": "Remove admin rights",
+      "usage": "*Example:* demote @member",
+      "done": "⬇️ @{0} is no longer admin."
+    },
+    "add": {
+      "desc": "Add a member",
+      "usage": "*Example:* add 2250700000000",
+      "done": "✅ @{0} was added.",
+      "privacy": "_Cannot add +{0}: their privacy settings prevent it. Send them the group link._",
+      "already": "_+{0} is already in the group._"
+    },
+    "tagall": {
+      "desc": "Mention every member",
+      "default": "📢 *Attention everyone*"
+    },
+    "tag": {
+      "desc": "Send a message mentioning everyone (hidden mentions)",
+      "usage": "*Example:* tag Meeting at 8 pm (or reply to a message)"
+    },
+    "link": {
+      "desc": "Group invite link"
+    },
+    "revoke": {
+      "desc": "Reset the invite link",
+      "done": "🔄 New link:\n{0}"
+    },
+    "mute": {
+      "desc": "Only admins can send messages",
+      "done": "🔇 Group closed: only admins can send messages."
+    },
+    "unmute": {
+      "desc": "Everyone can send messages",
+      "done": "🔊 Group open: everyone can send messages."
+    },
+    "ginfo": {
+      "desc": "Group information",
+      "card": "*{0}*\n\n› Members: {1}\n› Admins: {2}\n› Created: {3}\n› Closed: {4}\n\n{5}"
+    },
+    "gname": {
+      "desc": "Change the group name",
+      "usage": "*Example:* gname Friends",
+      "done": "✅ Group name changed."
+    },
+    "gdesc": {
+      "desc": "Change the group description",
+      "usage": "*Example:* gdesc Welcome!",
+      "done": "✅ Description changed."
+    },
+    "antilink": {
+      "desc": "Block links in the group",
+      "usage": "Antilink: *{0}*\n*Examples:*\n› antilink on — delete links\n› antilink kick — delete and remove the sender\n› antilink off",
+      "enabled": "🔗 Antilink enabled ({0}).",
+      "disabled": "Antilink disabled.",
+      "warning": "🚫 @{0}, links are not allowed here."
+    },
+    "welcome": {
+      "desc": "Welcome message (on/off/text)",
+      "usage": "Welcome: *{0}*\nMessage: {1}\n*Examples:*\n› welcome on\n› welcome Hi &mention, welcome to &group!\n› welcome off",
+      "enabled": "👋 Welcome message enabled.",
+      "disabled": "Welcome message disabled.",
+      "saved": "✅ Welcome message saved and enabled.",
+      "default": "👋 Welcome &mention to *&group*!"
+    },
+    "goodbye": {
+      "desc": "Goodbye message (on/off/text)",
+      "usage": "Goodbye: *{0}*\nMessage: {1}\n*Examples:*\n› goodbye on\n› goodbye Bye &mention 👋\n› goodbye off",
+      "enabled": "Goodbye message enabled.",
+      "disabled": "Goodbye message disabled.",
+      "saved": "✅ Goodbye message saved and enabled.",
+      "default": "👋 Goodbye &mention."
+    },
+    "sticker": {
+      "desc": "Image or video to sticker",
+      "usage": "_Send or reply to an image / video with *sticker*._",
+      "no_ffmpeg": "Video stickers need ffmpeg on the server (apt install ffmpeg)."
+    },
+    "take": {
+      "desc": "Rename a sticker's pack",
+      "usage": "_Reply to a sticker:_ take Pack,Author"
+    },
+    "toimg": {
+      "desc": "Sticker to image",
+      "usage": "_Reply to a sticker with *toimg*._"
+    },
+    "vv": {
+      "desc": "Reveal a view-once message",
+      "usage": "_Reply to a view-once photo / video / voice note with *vv*._",
+      "caption": "👁️ View once"
+    },
+    "ai": {
+      "desc": "Ask the AI (Gemini / Groq)",
+      "usage": "*Example:* ai Explain photosynthesis",
+      "no_key": "_No AI key configured. Add one:_\n› setvar GEMINI_API_KEY=your_key (aistudio.google.com)\n› setvar GROQ_API_KEY=your_key (console.groq.com)",
+      "describe": "Describe this image in detail.",
+      "image_needs_gemini": "_Image analysis needs GEMINI_API_KEY._",
+      "empty": "_The AI gave no answer, try again._"
+    }
+  },
+  "vars": {
+    "BOT_NAME": "Bot name",
+    "BOT_LANG": "Language: fr or en (restart required)",
+    "PREFIX": "Command prefix (several: .,! · none: false)",
+    "MODE": "private (you + sudo) or public",
+    "SUDO": "Sudo numbers, comma-separated",
+    "SESSION_ID": "Session ID (session site)",
+    "SESSION_URL": "Server for short session IDs",
+    "PAIRING_NUMBER": "Your number, to log in with a pairing code",
+    "AUTO_UPDATE": "Install updates automatically (true/false)",
+    "BRANCH": "Git branch to follow (detected when empty)",
+    "UPDATE_INTERVAL": "Update check interval, in hours",
+    "ALWAYS_ONLINE": "Always online (true/false)",
+    "SEND_READ": "Mark messages as read (true/false)",
+    "REJECT_CALL": "Reject calls (true/false)",
+    "REJECT_CALL_MSG": "Message sent after a rejected call",
+    "AUTO_STATUS_VIEW": "View statuses automatically (true/false)",
+    "STATUS_VIEW_EMOJI": "Status reaction (e.g. 🔥,❤️)",
+    "ANTI_DELETE": "false, p, g or a number",
+    "DISABLE_START_MESSAGE": "No message on startup (true/false)",
+    "ALIVE_MSG": "Custom alive message (#name #version #uptime #ram #prefix)",
+    "STICKER_PACKNAME": "Sticker Pack,Author",
+    "GEMINI_API_KEY": "Gemini API key",
+    "GEMINI_MODEL": "Gemini model",
+    "GROQ_API_KEY": "Groq API key",
+    "GROQ_MODEL": "Groq model",
+    "TZ": "Time zone (e.g. Africa/Abidjan)",
+    "LOG_LEVEL": "Log level: error, warn, info, debug"
+  }
+}

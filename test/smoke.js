@@ -1,0 +1,267 @@
+// Offline smoke test: simulates WhatsApp messages against a fake socket.
+// Safe on a real install: config.env, data/ and session/ are backed up and restored.
+const fs = require('fs')
+const path = require('path')
+const zlib = require('zlib')
+
+const ROOT = path.join(__dirname, '..')
+const ENV = path.join(ROOT, 'config.env')
+const DATA = path.join(ROOT, 'data')
+const SESSION = path.join(ROOT, 'session')
+
+// --- backup ------------------------------------------------------------------
+const backup = path.join(require('os').tmpdir(), `nyx-test-${Date.now()}`)
+fs.mkdirSync(backup, { recursive: true })
+const saved = {}
+for (const [name, p] of Object.entries({ env: ENV, data: DATA, session: SESSION })) {
+  if (fs.existsSync(p)) {
+    fs.cpSync(p, path.join(backup, name), { recursive: true })
+    saved[name] = p
+  }
+}
+function restore() {
+  for (const p of [ENV, DATA, SESSION]) fs.rmSync(p, { recursive: true, force: true })
+  for (const [name, p] of Object.entries(saved)) fs.cpSync(path.join(backup, name), p, { recursive: true })
+  fs.rmSync(backup, { recursive: true, force: true })
+}
+
+process.env.PREFIX = '.'
+process.env.MODE = 'private'
+process.env.SUDO = ''
+process.env.BOT_LANG = 'fr'
+process.env.LOG_LEVEL = 'error'
+process.env.ANTI_DELETE = 'false'
+
+let passed = 0
+let failed = 0
+function check(name, ok, detail = '') {
+  if (ok) passed++
+  else failed++
+  console.log(`${ok ? '✅' : '❌'} ${name}${!ok && detail ? ` — ${detail}` : ''}`)
+}
+
+;(async () => {
+  try {
+    const { loadBaileys } = require('../lib/baileys')
+    const B = await loadBaileys()
+    const config = require('../config')
+    const { logger } = require('../lib/logger')
+    const { loadPlugins, commands } = require('../lib/plugins')
+    const { onMessagesUpsert, trackSends } = require('../lib/handler')
+
+    // --- plugins ---------------------------------------------------------------
+    const count = loadPlugins(path.join(ROOT, 'plugins'), logger)
+    check(`plugins chargés (${count} commandes)`, count >= 35)
+    const names = commands.map((c) => c.name)
+    check('aucun nom de commande en double', new Set(names).size === names.length, names.filter((n, i) => names.indexOf(n) !== i).join(','))
+    check('chaque commande a une description', commands.every((c) => c.desc), commands.filter((c) => !c.desc).map((c) => c.name).join(','))
+
+    // --- fake socket -----------------------------------------------------------
+    const OWNER = '2250700000001'
+    const STRANGER = '2250700000002'
+    const GROUP = '120363000000000001@g.us'
+    let sent = []
+    const calls = []
+    const sock = {
+      user: { id: `${OWNER}:7@s.whatsapp.net`, lid: '90000000000001@lid' },
+      async sendMessage(jid, content, options) {
+        sent.push({ jid, content, options })
+        return { key: { id: `BOT${sent.length}${Math.random()}`, remoteJid: jid, fromMe: true } }
+      },
+      async readMessages() {},
+      async groupMetadata(jid) {
+        return {
+          id: jid,
+          subject: 'Groupe test',
+          creation: 1700000000,
+          announce: false,
+          desc: 'desc',
+          participants: [
+            { id: '90000000000001@lid', phoneNumber: `${OWNER}@s.whatsapp.net`, admin: 'admin' },
+            { id: '90000000000002@lid', phoneNumber: `${STRANGER}@s.whatsapp.net`, admin: null },
+          ],
+        }
+      },
+      async groupParticipantsUpdate(jid, list, action) {
+        calls.push({ fn: 'participants', jid, list, action })
+        return list.map((j) => ({ status: '200', jid: j }))
+      },
+      async groupInviteCode() {
+        return 'INVITE123'
+      },
+      async groupSettingUpdate(jid, value) {
+        calls.push({ fn: 'setting', value })
+      },
+      async updateBlockStatus(jid, action) {
+        calls.push({ fn: 'block', jid, action })
+      },
+    }
+    trackSends(sock)
+
+    let n = 0
+    const raw = (text, { from = OWNER, fromMe = from === OWNER, jid, participant, extra = {} } = {}) => ({
+      key: {
+        remoteJid: jid || `${from}@s.whatsapp.net`,
+        fromMe,
+        id: `MSG${++n}`,
+        ...(participant ? { participant } : {}),
+      },
+      pushName: 'Testeur',
+      message: { extendedTextMessage: { text, ...extra } },
+    })
+    const send = async (msg) => {
+      sent = []
+      await onMessagesUpsert(sock, { messages: [msg], type: 'notify' })
+      return sent
+    }
+    const textsOf = (list) => list.map((s) => s.content?.text || '').join('\n')
+
+    // --- system ----------------------------------------------------------------
+    let out = await send(raw('.ping'))
+    check('.ping répond (Pong)', /Pong/.test(textsOf(out)), textsOf(out))
+    out = await send(raw('.alive'))
+    check('.alive répond', /en ligne/.test(textsOf(out)), textsOf(out))
+    out = await send(raw('.menu'))
+    check('.menu liste les sections', /SYSTÈME/.test(textsOf(out)) && /GROUPE/.test(textsOf(out)))
+    out = await send(raw('.help'))
+    check('.help (alias de menu)', /SYSTÈME/.test(textsOf(out)))
+    out = await send(raw('.commandeinconnue'))
+    check('commande inconnue : aucune réponse', out.length === 0)
+
+    // --- permissions ----------------------------------------------------------
+    out = await send(raw('.alive', { from: STRANGER }))
+    check('mode private : un inconnu est ignoré', out.length === 0)
+    process.env.MODE = 'public'
+    config.reload()
+    out = await send(raw('.alive', { from: STRANGER }))
+    check('mode public : un inconnu peut utiliser .alive', /en ligne/.test(textsOf(out)))
+    out = await send(raw('.setvar PREFIX=!', { from: STRANGER }))
+    check('mode public : un inconnu ne peut PAS utiliser .setvar', out.length === 0 && config.PREFIX === '.')
+    process.env.MODE = 'private'
+    config.reload()
+
+    // --- variables ------------------------------------------------------------
+    out = await send(raw('.setvar PREFIX=!'))
+    check('.setvar PREFIX=! change la config à chaud', config.PREFIX === '!', config.PREFIX)
+    check('.setvar écrit config.env', /PREFIX="!"/.test(fs.readFileSync(ENV, 'utf8')))
+    out = await send(raw('!ping'))
+    check('nouveau préfixe ! fonctionne', /Pong/.test(textsOf(out)))
+    out = await send(raw('.ping'))
+    check('ancien préfixe . ignoré', out.length === 0)
+    out = await send(raw('!getvar PREFIX'))
+    check('.getvar', /PREFIX\* = !/.test(textsOf(out)), textsOf(out))
+    out = await send(raw('!setvar PREFIX=.'))
+    check('retour au préfixe .', config.PREFIX === '.')
+    out = await send(raw('.setvar ALIVE_MSG=Salut #name v#version'))
+    out = await send(raw('.alive'))
+    check('ALIVE_MSG personnalisé', textsOf(out).includes(`Salut ${config.BOT_NAME} v${config.VERSION}`), textsOf(out))
+    out = await send(raw('.delvar ALIVE_MSG'))
+    check('.delvar', !process.env.ALIVE_MSG && !/ALIVE_MSG/.test(fs.readFileSync(ENV, 'utf8')))
+    out = await send(raw('.setvar PATH=x'))
+    check('.setvar refuse une variable système', /système/.test(textsOf(out)) && process.env.PATH !== 'x')
+    out = await send(raw('.allvar'))
+    check('.allvar liste les variables', /AUTO_UPDATE/.test(textsOf(out)))
+    out = await send(raw('.setvar GEMINI_API_KEY=AIzaSECRETVALUE123'))
+    check('.setvar masque les secrets', !textsOf(out).includes('SECRETVALUE'), textsOf(out))
+    await send(raw('.delvar GEMINI_API_KEY'))
+
+    // --- sudo -----------------------------------------------------------------
+    out = await send(raw('.setsudo 2250700000009'))
+    check('.setsudo ajoute un numéro', config.SUDO.includes('2250700000009'))
+    out = await send(raw('.getsudo', { from: '2250700000009' }))
+    check('le nouveau sudo peut utiliser les commandes', /2250700000009/.test(textsOf(out)))
+    out = await send(raw('.delsudo 2250700000009'))
+    check('.delsudo', !config.SUDO.includes('2250700000009'))
+
+    // --- settings ---------------------------------------------------------------
+    await send(raw('.online on'))
+    check('.online on', config.ALWAYS_ONLINE === true)
+    await send(raw('.online off'))
+    await send(raw('.status emoji 🔥,❤️'))
+    check('.status emoji', config.STATUS_VIEW_EMOJI === '🔥,❤️')
+    await send(raw('.status emoji off'))
+    await send(raw('.mode public'))
+    check('.mode public', config.MODE === 'public')
+    await send(raw('.mode private'))
+
+    // --- group ------------------------------------------------------------------
+    const inGroup = (text, opts = {}) => raw(text, { jid: GROUP, participant: `${opts.from || OWNER}@s.whatsapp.net`, ...opts })
+    out = await send(inGroup('.tagall Bonjour'))
+    check('.tagall mentionne tout le monde', out[0]?.content?.mentions?.length === 2)
+    out = await send(inGroup('.tag Message caché'))
+    check('.tag (mentions cachées) ≠ .tagall', out[0]?.content?.text === 'Message caché' && out[0]?.content?.mentions?.length === 2)
+    calls.length = 0
+    out = await send(inGroup('.kick', { extra: { contextInfo: { mentionedJid: ['90000000000002@lid'] } } }))
+    check('.kick retire le membre mentionné', calls.some((c) => c.fn === 'participants' && c.action === 'remove' && c.list[0] === '90000000000002@lid'))
+    out = await send(inGroup('.link'))
+    check('.link', /chat\.whatsapp\.com\/INVITE123/.test(textsOf(out)))
+    out = await send(inGroup('.mute'))
+    check('.mute', calls.some((c) => c.fn === 'setting' && c.value === 'announcement'))
+    out = await send(raw('.kick 2250700000002'))
+    check('commande de groupe hors groupe : refusée', /groupe/.test(textsOf(out)))
+
+    // --- antilink ---------------------------------------------------------------
+    await send(inGroup('.antilink on'))
+    out = await send(inGroup('Rejoins https://chat.whatsapp.com/xyz', { from: STRANGER, fromMe: false }))
+    check('antilink supprime le lien d\'un membre', out.some((s) => s.content?.delete))
+    out = await send(inGroup('Mon lien https://exemple.com'))
+    check('antilink ignore le propriétaire', !out.some((s) => s.content?.delete))
+    await send(inGroup('.antilink off'))
+
+    // --- anti-delete --------------------------------------------------------------
+    await send(raw('.antidelete g'))
+    const original = raw('message secret', { from: STRANGER, fromMe: false })
+    await send(original)
+    out = await send({
+      key: { remoteJid: original.key.remoteJid, fromMe: false, id: 'REVOKE1' },
+      message: { protocolMessage: { type: B.proto.Message.ProtocolMessage.Type.REVOKE, key: { id: original.key.id } } },
+    })
+    check('anti-delete renvoie le message supprimé', out.some((s) => s.content?.forward?.key?.id === original.key.id))
+    await send(raw('.antidelete off'))
+
+    // --- stickers -----------------------------------------------------------------
+    const sharp = require('sharp')
+    const webpmux = require('node-webpmux')
+    const { withExif, imageToWebp } = require('../plugins/sticker')
+    const png = await sharp({ create: { width: 300, height: 200, channels: 4, background: { r: 255, g: 0, b: 0, alpha: 1 } } }).png().toBuffer()
+    const webp = await withExif(await imageToWebp(png), 'MonPack', 'Moi')
+    const meta = await sharp(webp).metadata()
+    const img = new webpmux.Image()
+    await img.load(webp)
+    check('sticker : webp 512x512', meta.format === 'webp' && meta.width === 512 && meta.height === 512)
+    check('sticker : pack et auteur dans l\'EXIF', /MonPack/.test(img.exif.toString()) && /Moi/.test(img.exif.toString()))
+
+    // --- session import (format of the session site) --------------------------------
+    const session = require('../lib/session')
+    session.clearSession()
+    const creds = B.initAuthCreds()
+    const keyId = 'AAAAAAAA'
+    creds.myAppStateKeyId = keyId
+    const appKey = { keyData: Buffer.from('cle-de-test-0123456789'), fingerprint: { rawId: 1, currentIndex: 2, deviceIndexes: [0] }, timestamp: '1700000000' }
+    const json = JSON.stringify({ id: 'Nexora_0123456789abcdef', creds, keys: { 'app-state-sync-key': { [keyId]: appKey } } }, B.BufferJSON.replacer)
+    const portable = `Nexora~${zlib.gzipSync(json).toString('base64url')}`
+    const state = await session.prepareSession({ SESSION_ID: portable, SESSION_URL: '' })
+    check('import d\'un SESSION_ID Nexora~', state === 'imported')
+    const { state: auth } = await B.useMultiFileAuthState(session.SESSION_DIR)
+    check('les clés de session sont relues à l\'identique', Buffer.compare(auth.creds.noiseKey.private, creds.noiseKey.private) === 0)
+    const keys = await auth.keys.get('app-state-sync-key', [keyId])
+    check('la clé app-state est relue', !!keys[keyId] && Buffer.from(keys[keyId].keyData).toString() === 'cle-de-test-0123456789')
+    let invalid = ''
+    session.clearSession()
+    try {
+      await session.prepareSession({ SESSION_ID: 'nimportequoi', SESSION_URL: '' })
+    } catch (error) {
+      invalid = error.message
+    }
+    check('SESSION_ID invalide : refusé', invalid === 'invalid_session_id')
+    session.clearSession()
+  } catch (error) {
+    failed++
+    console.log(`❌ erreur inattendue : ${error?.stack || error}`)
+  } finally {
+    require('../lib/db').db.flush()
+    restore()
+    console.log(`\n${passed} réussi(s), ${failed} échec(s)`)
+    process.exit(failed ? 1 : 0)
+  }
+})()
