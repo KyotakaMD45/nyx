@@ -1,5 +1,5 @@
 const { bot, lang, config, setVar, logger } = require('../lib')
-const { DELETE_SCOPES, parseAntiDelete } = require('../lib/handler')
+const { DELETE_SCOPES } = require('../lib/handler')
 
 function toggle(name, variable) {
   bot(
@@ -30,7 +30,7 @@ function deleteJid(dest) {
   return /^\+?[\d\s-]+(@s\.whatsapp\.net)?$/.test(dest) && digits.length >= 6 ? `${digits}@s.whatsapp.net` : null
 }
 
-function destinationCommand({ name, alias = [], variable, texts, onChange }) {
+function destinationCommand({ name, alias = [], variable, texts, snapshot, onChange }) {
   bot(
     {
       pattern: `${name} ?(.*)`,
@@ -39,9 +39,9 @@ function destinationCommand({ name, alias = [], variable, texts, onChange }) {
       type: 'settings',
     },
     async (message, match) => {
-      const before = config[variable]
+      const before = snapshot ? snapshot() : config[variable]
       const result = await applyDestination(message, match, variable, texts())
-      if (result && onChange) await onChange(message, before, config[variable])
+      if (result && onChange) await onChange(message, before, snapshot ? snapshot() : config[variable])
     }
   )
 }
@@ -87,18 +87,27 @@ async function applyDestination(message, match, variable, t) {
 
 destinationCommand({ name: 'delete', alias: ['antidelete'], variable: 'ANTI_DELETE', texts: () => lang.plugins.delete })
 
+async function applyIdentity(message, before) {
+  const { viewOnceIdentity, reconnect } = require('../lib/client')
+  if (before === viewOnceIdentity() || typeof message.client.end !== 'function') return
+  await message.send(lang.plugins.antivv.reconnecting)
+  setTimeout(reconnect, 1500)
+}
+
 destinationCommand({
   name: 'antivv',
-  variable: 'VV',
+  variable: 'ANTI_VV',
   texts: () => lang.plugins.antivv,
-  onChange: async (message, before, after) => {
-    const wasOn = !!parseAntiDelete(before)
-    const isOn = !!parseAntiDelete(after)
-    if (wasOn === isOn || typeof message.client.end !== 'function') return
-    await message.send(lang.plugins.antivv.reconnecting)
-    setTimeout(() => require('../lib/client').reconnect(), 1500)
+  snapshot: () => {
+    const raw = String(process.env.VV || '').trim().toLowerCase()
+    const before = require('../lib/client').viewOnceIdentity()
+    if (raw && !['true', 'false', 'on', 'off', 'null'].includes(raw)) setVar('VV', 'false')
+    return before
   },
+  onChange: (message, before) => applyIdentity(message, before),
 })
+
+module.exports = { applyIdentity }
 
 bot({ on: 'call' }, async (sock, calls) => {
   if (!config.REJECT_CALL) return

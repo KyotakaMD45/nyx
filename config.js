@@ -18,6 +18,11 @@ const toNumber = (value, fallback) => {
   return Number.isFinite(n) && n > 0 ? n : fallback
 }
 
+function legacyAntiVv(value) {
+  const raw = String(value || '').trim().toLowerCase()
+  return ['', 'true', 'false', 'on', 'off', 'null'].includes(raw) ? 'false' : raw
+}
+
 function build() {
   const env = process.env
   return {
@@ -46,7 +51,8 @@ function build() {
     STATUS_VIEW_EMOJI: (env.STATUS_VIEW_EMOJI || '').trim(),
     STATUS_VIEW_MSG: env.STATUS_VIEW_MSG || '',
     STATUS_FORWARD_JID: (env.STATUS_FORWARD_JID || '').trim(),
-    VV: (env.VV || 'false').trim(),
+    VV: ['true', 'on'].includes(String(env.VV || '').trim().toLowerCase()) || legacyAntiVv(env.VV) !== 'false',
+    ANTI_VV: (env.ANTI_VV || legacyAntiVv(env.VV)).trim().toLowerCase(),
     ANTI_DELETE: (env.ANTI_DELETE || 'false').trim().toLowerCase(),
     DISABLE_START_MESSAGE: toBool(env.DISABLE_START_MESSAGE),
     ALIVE_MSG: env.ALIVE_MSG || '',
@@ -57,6 +63,10 @@ function build() {
     GEMINI_MODEL: (env.GEMINI_MODEL || 'gemini-2.5-flash').trim(),
     GROQ_API_KEY: (env.GROQ_API_KEY || '').trim(),
     GROQ_MODEL: (env.GROQ_MODEL || 'llama-3.3-70b-versatile').trim(),
+
+    YTDLP_PATH: (env.YTDLP_PATH || '').trim(),
+    COBALT_API: (env.COBALT_API || '').trim(),
+    COBALT_KEY: (env.COBALT_KEY || '').trim(),
 
     TZ: (env.TZ || 'Africa/Abidjan').trim(),
     LOG_LEVEL: (env.LOG_LEVEL || 'info').trim().toLowerCase(),

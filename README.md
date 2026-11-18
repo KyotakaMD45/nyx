@@ -98,8 +98,9 @@ Variables : `#uptime` `#quote` `#name` `#version` `#ram` `#prefix`.
 
 **Vues uniques** :
 
-- `.vv` en réponse à une vue unique la révèle ici · `.vv 2250700000000` l’envoie à ce numéro.
-- `.antivv p` renvoie **automatiquement** chaque vue unique reçue dans ta discussion. Mêmes options que `.delete` : `g` (même discussion), un numéro, un groupe, portées `pm` `gm` `no-pm` `no-gm`, `off`.
+- `.vv on` / `.vv off` : le bot reçoit (ou non) les vues uniques — nécessaire pour `.vv`.
+- `.vv` en réponse à une vue unique la révèle, dans n’importe quelle discussion · `.vv 2250700000000` l’envoie à ce numéro.
+- `.antivv p` renvoie **automatiquement** chaque vue unique reçue dans ta discussion (variable `ANTI_VV`). Mêmes options que `.delete` : `g` (même discussion), un numéro, un groupe, portées `pm` `gm` `no-pm` `no-gm`, `off`.
 
 WhatsApp n’envoie le contenu des vues uniques qu’aux téléphones. Quand `antivv` est actif, Nyx se connecte donc en se présentant comme un téléphone Android (comme Knull et Levanter avec `VV`) ; il se reconnecte tout seul quand tu l’actives ou le désactives. Sans `antivv`, `.vv` peut échouer.
 
@@ -114,7 +115,7 @@ Préfixe par défaut : `^[.,!]`, comme Knull et Levanter : `.menu`, `,menu` et `
 | Propriétaire | `pass` `setsudo` `delsudo` `getsudo` `block` `unblock` `jid` |
 | Groupe | `kick` `add` `promote` `demote` `tagall` `tag` `link` `revoke` `mute` `unmute` `ginfo` `gname` `gdesc` `antilink` `welcome` `goodbye` |
 | Médias | `sticker` (`s`) `take` `toimg` `vv` |
-| Téléchargement | `fb` `insta` (`ig`) `tiktok` (`tt`) `url` |
+| Téléchargement | `fb` `insta` (`ig`) `tiktok` (`tt`) `yta` `ytv` `song` (`play`) `video` `yts` `url` |
 | IA | `ai` (`gemini`, `gpt`) |
 
 **Accès** : seuls toi et les sudo utilisent le bot. Pour ouvrir des commandes aux autres dans une discussion, utilise `pass` (l'équivalent de `zushi` dans Knull) :
@@ -151,13 +152,15 @@ Comme Levanter, `config.env` ne contient que l’essentiel (`SESSION_ID`, `AUTO_
 | `STATUS_VIEW_EMOJI` | Réaction aux statuts (`🔥,❤️`) | — |
 | `STATUS_VIEW_MSG` | Réponse à l'auteur d'un statut | — |
 | `STATUS_FORWARD_JID` | Où recevoir les statuts (vide = ta discussion) | — |
-| `VV` | Réglé par `.antivv` : où renvoyer chaque vue unique reçue (`p`, `g`, numéro, groupe + portée) · `false` | `false` |
+| `VV` | Réglé par `.vv on/off` : le bot reçoit les vues uniques | `false` |
+| `ANTI_VV` | Réglé par `.antivv` : où renvoyer chaque vue unique (`p`, `g`, numéro, groupe + portée) · `false` | `false` |
 | `ANTI_DELETE` | Réglé par `.delete` : `p` (vers toi), `g` (même discussion), un numéro ou un groupe, + portée facultative `pm` `gm` `no-pm` `no-gm` (ex. `g gm`) · `false` | `false` |
 | `ALIVE_MSG` | Message alive perso (`#name #version #uptime #ram #prefix`) | — |
 | `STICKER_PACKNAME` | `Pack,Auteur` des stickers | `Nyx,Nyx Bot` |
 | `GEMINI_API_KEY` / `GROQ_API_KEY` | Clé d'IA (une seule suffit) | — |
 | `DISABLE_START_MESSAGE` | Pas de message au démarrage | `false` |
 | `TZ` / `LOG_LEVEL` | Fuseau horaire / niveau des logs | `Africa/Abidjan` / `info` |
+| `YTDLP_PATH` / `COBALT_API` / `COBALT_KEY` | Sources YouTube de secours (yt-dlp, serveur cobalt) | — |
 | `LOG_MSG` | `true` : affiche chaque message reçu dans le terminal | `false` |
 
 ## Mises à jour
@@ -201,9 +204,12 @@ nyx/
 | `.fb <lien>` | vidéo Facebook |
 | `.insta <lien>` | reel, vidéo ou photos Instagram (jusqu’à 10) |
 | `.tiktok <lien>` | vidéo TikTok sans filigrane (ou les photos d’un diaporama) |
+| `.yta <lien ou titre>` · `.song <titre>` | audio YouTube |
+| `.ytv <lien ou titre>` · `.video <titre>` | vidéo YouTube |
+| `.yts <recherche>` | recherche YouTube |
 | `.url` | en réponse à une image, vidéo, audio, sticker ou document : renvoie un lien (catbox.moe) |
 
-Tu peux aussi répondre à un message qui contient le lien. Au-delà de ~95 Mo, le bot envoie le lien au lieu du fichier.
+Chaque commande essaie **plusieurs sources gratuites** à la suite : si l’une tombe, la suivante prend le relais automatiquement (Facebook : snapsave, fbdown, fdownloader · Instagram : snapsave, downloadgram ×2 · TikTok : tikwm, tikmate, ssstik · YouTube : youtubei.js, puis `yt-dlp` s’il est installé, puis `COBALT_API` si configuré). Tu peux aussi répondre à un message qui contient le lien. Au-delà de ~95 Mo, le bot envoie le lien au lieu du fichier.
 
 ## Écrire un plugin
 

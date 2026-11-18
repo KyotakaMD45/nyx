@@ -282,8 +282,38 @@ function check(name, ok, detail = '') {
     out = await send(raw('.delete off'))
     check('.delete off', config.ANTI_DELETE === 'false' && /désactivée/.test(textsOf(out)))
 
+    {
+      const dl = require('../lib/download')
+      const swap = (group, list) => dl.providers[group].splice(0, dl.providers[group].length, ...list)
+      const original = { FACEBOOK: [...dl.providers.FACEBOOK], INSTAGRAM: [...dl.providers.INSTAGRAM], TIKTOK: [...dl.providers.TIKTOK] }
+      const used = []
+      const fail = (name) => async () => (used.push(name), Promise.reject(new Error('down')))
+      const empty = (name) => async () => (used.push(name), [])
+      const ok = (name) => async () => (used.push(name), [`https://cdn/${name}.mp4`])
+      swap('TIKTOK', [fail('a'), empty('b'), ok('c')])
+      const links = await dl.tiktok('https://www.tiktok.com/@x/video/1')
+      check('téléchargement : bascule auto vers la source suivante', links[0] === 'https://cdn/c.mp4' && used.join() === 'a,b,c', used.join())
+      swap('FACEBOOK', [fail('x'), fail('y')])
+      check('téléchargement : toutes les sources en panne → vide', (await dl.facebook('https://www.facebook.com/v/1')).length === 0)
+      check('téléchargement : mauvais site refusé', (await dl.instagram('https://exemple.com/a')).length === 0)
+      for (const g of Object.keys(original)) swap(g, original[g])
+    }
+    out = await send(raw('.vv on'))
+    check('.vv on : réception activée', config.VV === true && /activée/.test(textsOf(out)), textsOf(out))
+    out = await send(raw('.vv'))
+    check('.vv sans réponse : aide avec l’état', /réception : ✅/.test(textsOf(out)))
+    out = await send(raw('.vv off'))
+    check('.vv off', config.VV === false)
+    out = await send(raw('.vv on', { from: STRANGER }))
+    check('.vv on : refusé à un inconnu', out.length === 0 && config.VV === false)
+    {
+      const { setVar } = require('../lib/vars')
+      setVar('VV', 'p')
+      check('ancien VV=p : repris comme ANTI_VV=p', config.VV === true && config.ANTI_VV === 'p')
+      setVar('VV', 'false')
+    }
     out = await send(raw('.antivv p'))
-    check('.antivv p : activé', config.VV === 'p' && /ta discussion/.test(textsOf(out)), textsOf(out))
+    check('.antivv p : activé', config.ANTI_VV === 'p' && /ta discussion/.test(textsOf(out)), textsOf(out))
     {
       const realDownload = B.downloadMediaMessage
       B.downloadMediaMessage = async () => Buffer.from('IMG')
@@ -303,7 +333,7 @@ function check(name, ok, detail = '') {
       B.downloadMediaMessage = realDownload
     }
     out = await send(raw('.antivv off'))
-    check('.antivv off', config.VV === 'false')
+    check('.antivv off', config.ANTI_VV === 'false')
     {
       const { parseAntiDelete, inDeleteScope } = require('../lib/handler')
       check('anti-delete : portées pm/gm/no-pm/no-gm', inDeleteScope('pm', 'a@s.whatsapp.net') && !inDeleteScope('pm', 'g@g.us') && inDeleteScope('no-pm', 'g@g.us') && !inDeleteScope('no-gm', 'g@g.us') && parseAntiDelete('null') === null)

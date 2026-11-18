@@ -1,4 +1,4 @@
-const { bot, lang, num } = require('../lib')
+const { bot, lang, num, config, setVar } = require('../lib')
 
 function targetJid(match, fallback) {
   const text = String(match || '').trim()
@@ -14,10 +14,17 @@ bot(
     desc: lang.plugins.vv.desc,
     type: 'media',
   },
-  async (message, match) => {
+  async (message, match, ctx = {}) => {
     const t = lang.plugins.vv
+    const option = String(match || '').trim().toLowerCase()
+    if (['on', 'off'].includes(option) && ctx.sudo) {
+      const before = require('../lib/client').viewOnceIdentity()
+      setVar('VV', option === 'on' ? 'true' : 'false')
+      await message.send(option === 'on' ? t.enabled : t.disabled)
+      return require('./settings').applyIdentity(message, before)
+    }
     const quoted = message.reply_message
-    if (!quoted || !(quoted.image || quoted.video || quoted.audio)) return message.send(t.usage)
+    if (!quoted || !(quoted.image || quoted.video || quoted.audio)) return message.send(t.usage.format(config.VV ? '✅' : '❎'))
     let media
     try {
       media = await quoted.download()

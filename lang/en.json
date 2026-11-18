@@ -24,6 +24,7 @@
       "auto_reject": "🚫 AUTO REJECT CALL",
       "always_online": "🔋 ALWAYS ONLINE",
       "anti_delete": "🛡️ ANTI DELETE MSG",
+      "vv": "👁️ VIEW ONCE (vv)",
       "anti_vv": "👁️ ANTI VIEW ONCE",
       "auto_update": "🔄 AUTO UPDATE BOT"
     },
@@ -249,9 +250,11 @@
     },
     "vv": {
       "desc": "Reveal a view-once (vv <number> to send it elsewhere)",
-      "usage": "_Reply to a view-once photo / video / voice note with *vv*._\n_To send it elsewhere: *vv 2250700000000*_\n\n💡 If it fails, turn on *antivv*: WhatsApp only sends view-once content to the bot in that mode.",
+      "usage": "*View once* (receiving: {0})\n\n- Reply to a view-once photo / video / voice note with *vv*: it shows here.\n- *vv 2250700000000*: send it to this number.\n- *vv on* / *vv off*: turn view-once receiving on or off (needed for *vv*).\n- *antivv p*: forward them all automatically (like *delete*).",
       "caption": "👁️ View once from @{0}",
-      "failed": "❌ Could not fetch this view-once.\n\n💡 Turn on *antivv* (e.g. *antivv p*): WhatsApp only sends view-once content to the bot in that mode."
+      "failed": "❌ Could not fetch this view-once.\n\n💡 Turn on *vv on* first: WhatsApp only sends view-once content to the bot in that mode.",
+      "enabled": "✅ View-once receiving is on: *vv* now works in all your chats.",
+      "disabled": "❎ View-once receiving is off."
     },
     "ai": {
       "desc": "Ask the AI (Gemini / Groq)",
@@ -324,6 +327,23 @@
     "download": {
       "too_big": "⚠️ File too big for WhatsApp, here is the link:\n{0}",
       "failed": "❌ Download failed. Try again in a moment."
+    },
+    "yt": {
+      "yta_desc": "YouTube audio (link or search)",
+      "ytv_desc": "YouTube video (link or search)",
+      "song_desc": "Search a song on YouTube and send the audio",
+      "video_desc": "Search a video on YouTube and send it",
+      "yts_desc": "YouTube search",
+      "yta_usage": "*Example:* yta https://youtu.be/... _or_ yta title",
+      "ytv_usage": "*Example:* ytv https://youtu.be/... _or_ ytv title",
+      "song_usage": "*Example:* song Burna Boy Last Last",
+      "video_usage": "*Example:* video Burna Boy Last Last",
+      "yts_usage": "*Example:* yts Burna Boy",
+      "yts_title": "🔎 *YouTube results for* _{0}_",
+      "yts_hint": "_Download with *yta <link>* (audio) or *ytv <link>* (video)._",
+      "not_found": "_No result on YouTube._",
+      "failed": "❌ YouTube download failed (every source failed). Try again later.",
+      "too_big": "⚠️ Too big for WhatsApp (over 95 MB): {0}"
     }
   },
   "vars": {
@@ -356,7 +376,8 @@
     "GROQ_MODEL": "Groq model",
     "TZ": "Time zone (e.g. Africa/Abidjan)",
     "LOG_LEVEL": "Log level: error, warn, info, debug",
-    "VV": "Auto view-once: p, g, number or group (+ pm/gm/no-pm/no-gm) · false",
-    "LOG_MSG": "true: print every received message in the terminal"
+    "VV": "true: the bot receives view-once messages (needed for vv) · set with .vv on/off",
+    "LOG_MSG": "true: print every received message in the terminal",
+    "ANTI_VV": "Auto view-once (.antivv): p, g, number or group (+ pm/gm/no-pm/no-gm) · false"
   }
 }

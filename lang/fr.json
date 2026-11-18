@@ -24,6 +24,7 @@
       "auto_reject": "🚫 AUTO REJECT CALL",
       "always_online": "🔋 ALWAYS ONLINE",
       "anti_delete": "🛡️ ANTI DELETE MSG",
+      "vv": "👁️ VIEW ONCE (vv)",
       "anti_vv": "👁️ ANTI VIEW ONCE",
       "auto_update": "🔄 AUTO UPDATE BOT"
     },
@@ -249,9 +250,11 @@
     },
     "vv": {
       "desc": "Révèle une vue unique (vv <numéro> pour l’envoyer ailleurs)",
-      "usage": "_Réponds à une photo / vidéo / note vocale en vue unique avec *vv*._\n_Pour l’envoyer ailleurs : *vv 2250700000000*_\n\n💡 Si ça ne marche pas, active *antivv* : WhatsApp n’envoie les vues uniques au bot que dans ce mode.",
+      "usage": "*Vue unique* (réception : {0})\n\n- Réponds à une photo / vidéo / note vocale en vue unique avec *vv* : elle s’affiche ici.\n- *vv 2250700000000* : l’envoie à ce numéro.\n- *vv on* / *vv off* : active ou coupe la réception des vues uniques (obligatoire pour que *vv* marche).\n- *antivv p* : les renvoie toutes automatiquement (comme *delete*).",
       "caption": "👁️ Vue unique de @{0}",
-      "failed": "❌ Impossible de récupérer cette vue unique.\n\n💡 Active *antivv* (par ex. *antivv p*) : WhatsApp n’envoie le contenu des vues uniques au bot que dans ce mode."
+      "failed": "❌ Impossible de récupérer cette vue unique.\n\n💡 Active d’abord *vv on* : WhatsApp n’envoie le contenu des vues uniques au bot que dans ce mode.",
+      "enabled": "✅ Réception des vues uniques activée : *vv* marche maintenant dans toutes tes discussions.",
+      "disabled": "❎ Réception des vues uniques coupée."
     },
     "ai": {
       "desc": "Pose une question à l'IA (Gemini / Groq)",
@@ -324,6 +327,23 @@
     "download": {
       "too_big": "⚠️ Fichier trop lourd pour WhatsApp, voici le lien :\n{0}",
       "failed": "❌ Le téléchargement a échoué. Réessaie dans un moment."
+    },
+    "yt": {
+      "yta_desc": "Audio YouTube (lien ou recherche)",
+      "ytv_desc": "Vidéo YouTube (lien ou recherche)",
+      "song_desc": "Cherche une chanson sur YouTube et envoie l’audio",
+      "video_desc": "Cherche une vidéo sur YouTube et l’envoie",
+      "yts_desc": "Recherche YouTube",
+      "yta_usage": "*Exemple :* yta https://youtu.be/... _ou_ yta titre",
+      "ytv_usage": "*Exemple :* ytv https://youtu.be/... _ou_ ytv titre",
+      "song_usage": "*Exemple :* song Burna Boy Last Last",
+      "video_usage": "*Exemple :* video Burna Boy Last Last",
+      "yts_usage": "*Exemple :* yts Burna Boy",
+      "yts_title": "🔎 *Résultats YouTube pour* _{0}_",
+      "yts_hint": "_Télécharge avec *yta <lien>* (audio) ou *ytv <lien>* (vidéo)._",
+      "not_found": "_Aucun résultat sur YouTube._",
+      "failed": "❌ Téléchargement YouTube impossible (toutes les sources ont échoué). Réessaie plus tard.",
+      "too_big": "⚠️ Trop lourd pour WhatsApp (plus de 95 Mo) : {0}"
     }
   },
   "vars": {
@@ -356,7 +376,8 @@
     "GROQ_MODEL": "Modèle Groq",
     "TZ": "Fuseau horaire (ex. Africa/Abidjan)",
     "LOG_LEVEL": "Niveau des logs : error, warn, info, debug",
-    "VV": "Vue unique auto : p, g, numéro ou groupe (+ pm/gm/no-pm/no-gm) · false",
-    "LOG_MSG": "true : affiche chaque message reçu dans le terminal"
+    "VV": "true : le bot reçoit les vues uniques (nécessaire pour vv) · réglé par .vv on/off",
+    "LOG_MSG": "true : affiche chaque message reçu dans le terminal",
+    "ANTI_VV": "Vue unique auto (.antivv) : p, g, numéro ou groupe (+ pm/gm/no-pm/no-gm) · false"
   }
 }

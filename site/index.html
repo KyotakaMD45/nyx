@@ -2,122 +2,34 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Nyx · Session WhatsApp</title>
-<meta name="description" content="Connecte ton WhatsApp et obtiens le SESSION_ID de ton bot Nyx." />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23140b33'/%3E%3Cpath d='M40 14a18 18 0 1 0 10 32A15 15 0 0 1 40 14z' fill='%23ede9fe'/%3E%3C/svg%3E" />
+<meta name="description" content="Connecte ton WhatsApp et obtiens le SESSION_ID de ton bot Nyx en quelques secondes." />
+<meta name="theme-color" content="#140b33" />
+<link rel="icon" type="image/svg+xml" href="/logo.svg" />
+<link rel="stylesheet" href="/style.css" />
+<script src="/app.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<style>
-  :root {
-    --bg: #05060f;
-    --card: #0f0b24cc;
-    --line: #2a2150;
-    --text: #ede9fe;
-    --muted: #a5a0c8;
-    --accent: #8b5cf6;
-    --accent2: #c4b5fd;
-    --ok: #34d399;
-    --err: #fb7185;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    min-height: 100vh;
-    color: var(--text);
-    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    background: radial-gradient(900px 500px at 15% 0%, #2d146640, transparent), linear-gradient(160deg, #05060f, #140b33 60%, #2d1466);
-    display: flex;
-    justify-content: center;
-    padding: 28px 16px 60px;
-  }
-  .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-  .wrap { width: 100%; max-width: 460px; position: relative; z-index: 1; }
-  .brand { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 6px 0 22px; }
-  .brand svg { filter: drop-shadow(0 0 14px #8b5cf6aa); }
-  .card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 20px;
-    padding: 22px;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 24px 70px #0009;
-  }
-  .sub { color: var(--muted); text-align: center; font-size: 14.5px; margin: 0 0 18px; line-height: 1.5; }
-  .tabs { display: flex; gap: 6px; background: #0a0719; border: 1px solid var(--line); border-radius: 13px; padding: 5px; margin-bottom: 16px; }
-  .tabs button {
-    flex: 1; padding: 10px; border: 0; border-radius: 9px; background: transparent;
-    color: var(--muted); font-weight: 650; font-size: 14px; cursor: pointer; transition: .15s;
-  }
-  .tabs button.on { background: linear-gradient(110deg, var(--accent), #6d28d9); color: #fff; }
-  label { display: block; font-size: 13px; color: var(--muted); margin: 0 0 6px; }
-  input {
-    width: 100%; padding: 13px 14px; border-radius: 12px; border: 1px solid var(--line);
-    background: #0a0719; color: var(--text); font-size: 16px; outline: none;
-  }
-  input:focus { border-color: var(--accent); }
-  .hint { font-size: 12px; color: var(--muted); margin: 7px 2px 0; }
-  .go {
-    width: 100%; margin-top: 16px; padding: 14px; border: 0; border-radius: 13px; cursor: pointer;
-    font-size: 15px; font-weight: 800; color: #fff; background: linear-gradient(110deg, var(--accent), #6d28d9);
-    box-shadow: 0 8px 26px #8b5cf655;
-  }
-  .go:disabled { opacity: .5; cursor: default; }
-  .stage { margin-top: 18px; }
-  .qrbox { background: #fff; border-radius: 16px; padding: 16px; display: flex; justify-content: center; }
-  .code {
-    font-size: 30px; font-weight: 800; letter-spacing: 4px; text-align: center;
-    background: #0a0719; border: 1px dashed var(--accent); border-radius: 14px; padding: 18px; color: var(--accent2);
-  }
-  .status { text-align: center; color: var(--muted); font-size: 14px; margin-top: 14px; min-height: 20px; }
-  .status.err { color: var(--err); }
-  .spin {
-    display: inline-block; width: 15px; height: 15px; border: 2px solid #ffffff33; border-top-color: var(--accent2);
-    border-radius: 50%; animation: s .8s linear infinite; vertical-align: -2px; margin-right: 7px;
-  }
-  @keyframes s { to { transform: rotate(360deg); } }
-  .ok { color: var(--ok); font-weight: 700; margin-bottom: 10px; }
-  textarea {
-    width: 100%; height: 120px; resize: vertical; padding: 12px; border-radius: 12px; border: 1px solid var(--line);
-    background: #0a0719; color: var(--text); font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11.5px;
-  }
-  .copy {
-    width: 100%; margin-top: 10px; padding: 12px; border: 1px solid var(--accent); border-radius: 12px;
-    background: transparent; color: var(--accent2); font-weight: 700; cursor: pointer;
-  }
-  .copy.done { background: var(--ok); border-color: var(--ok); color: #05060f; }
-  .steps { font-size: 13px; color: var(--muted); line-height: 1.65; margin-top: 16px; }
-  .steps b { color: var(--text); }
-  .steps code { background: #0a0719; border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; font-size: 12px; color: var(--accent2); }
-  .foot { text-align: center; font-size: 12.5px; color: var(--muted); margin-top: 22px; }
-  .foot a { color: var(--accent2); text-decoration: none; }
-  .hidden { display: none; }
-</style>
 </head>
 <body>
 <canvas class="stars" id="stars"></canvas>
-<div class="wrap">
-  <div class="brand">
-    <svg width="58" height="58" viewBox="0 0 64 64" aria-hidden="true">
-      <path d="M40 10a22 22 0 1 0 14 39A19 19 0 0 1 40 10z" fill="#ede9fe" />
-    </svg>
-    <svg width="132" height="48" viewBox="0 0 590 200" aria-label="NYX">
-      <defs>
-        <linearGradient id="ink" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#ffffff" />
-          <stop offset="1" stop-color="#c4b5fd" />
-        </linearGradient>
-      </defs>
-      <g fill="none" stroke="url(#ink)" stroke-width="30" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M15 185 V15 L135 185 V15" />
-        <path d="M235 15 L295 95 L355 15 M295 95 V185" />
-        <path d="M455 15 L575 185 M575 15 L455 185" />
-      </g>
-    </svg>
-  </div>
+<header class="top"><div class="bar">
+  <a class="brand" href="/"><img src="/logo.svg" alt="" /><span>NYX</span></a>
+  <nav><a class="on" href="/">Session</a><a href="/guide">Guide</a><a href="/guide#variables">Variables</a></nav>
+  <button class="tbtn" id="theme" type="button" aria-label="Changer de thème">
+    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  </button>
+</div></header>
 
-  <div class="card">
-    <p class="sub">Connecte ton WhatsApp et récupère le <b>SESSION_ID</b> de ton bot Nyx.</p>
+<main>
+  <section class="hero">
+    <img src="/logo.svg" alt="Logo Nyx" />
+    <h1>Ta session WhatsApp, <b>prête en 30 secondes</b></h1>
+    <p>Connecte ton WhatsApp à <b>Nyx</b> par QR code ou par code d'appairage, puis colle ton <code>SESSION_ID</code> dans le bot.</p>
+  </section>
 
+  <div class="card narrow">
     <div id="form">
       <div class="tabs">
         <button id="tabQr" class="on" type="button">QR code</button>
@@ -128,20 +40,30 @@
         <input id="phone" inputmode="numeric" autocomplete="tel" placeholder="ex. 2250700000000" />
         <div class="hint">Côte d'Ivoire : <b>225</b> puis ton numéro.</div>
       </div>
-      <button id="go" class="go" type="button">Générer mon SESSION_ID</button>
+      <button id="go" class="btn" type="button">Générer mon SESSION_ID</button>
     </div>
-
     <div id="stage" class="stage hidden"></div>
     <div id="status" class="status"></div>
   </div>
 
-  <div class="steps" id="help">
-    <div id="helpQr"><b>QR :</b> WhatsApp › Appareils connectés › Connecter un appareil › scanne le QR.</div>
-    <div id="helpCode" class="hidden"><b>Code :</b> WhatsApp › Appareils connectés › Connecter un appareil › Connecter avec un numéro › entre le code.</div>
+  <div class="grid">
+    <div class="card step"><div class="n">1</div><h3>Connecte-toi</h3><p>WhatsApp › Appareils connectés › Connecter un appareil, puis scanne le QR ou entre le code.</p></div>
+    <div class="card step"><div class="n">2</div><h3>Récupère ton ID</h3><p>Un <code>SESSION_ID</code> court s'affiche ici. Il t'est aussi envoyé dans ta propre discussion WhatsApp.</p></div>
+    <div class="card step"><div class="n">3</div><h3>Lance Nyx</h3><p>Colle-le dans <code>config.env</code> ou installe tout d'un coup avec l'installation rapide.</p></div>
   </div>
 
-  <div class="foot">Nyx · <a href="https://github.com/KyotakaMD45/nyx" target="_blank" rel="noopener">installer le bot</a></div>
-</div>
+  <h2>Installation rapide (VPS)</h2>
+  <div class="copyline"><pre><code id="install">bash &lt;(curl -fsSL https://tinyurl.com/nyx-install)</code></pre><button data-copy="install" type="button">Copier</button></div>
+  <p class="hint">Ubuntu, Debian, Fedora, Arch, Alpine, macOS, Termux. L'installateur te demande ton SESSION_ID et lance le bot avec PM2.</p>
+
+  <h2>Questions fréquentes</h2>
+  <details><summary>Mon SESSION_ID est-il en sécurité ?</summary><p>Ne le partage avec personne : il donne accès à ton WhatsApp. Si tu penses qu'il a fuité, supprime l'appareil dans WhatsApp › Appareils connectés et crée une nouvelle session.</p></details>
+  <details><summary>Le QR ne s'affiche pas ou expire</summary><p>Clique à nouveau sur « Générer ». Un QR dure environ une minute. Utilise le code d'appairage si tu n'as qu'un seul téléphone.</p></details>
+  <details><summary>Le bot dit « session invalide »</summary><p>Vérifie que <code>SESSION_ID</code> est entre guillemets, sans espace, et commence par <code>Nyx_</code>. Les anciens formats <code>Nexora_</code> et <code>Nexora~</code> marchent aussi.</p></details>
+  <details><summary>Le bot se déconnecte après un moment</summary><p>L'appareil a été retiré dans WhatsApp, ou le même compte tourne sur deux bots à la fois. Crée une nouvelle session.</p></details>
+
+  <div class="foot">Nyx · <a href="https://github.com/KyotakaMD45/nyx" target="_blank" rel="noopener">GitHub</a> · <a href="/guide">Guide</a></div>
+</main>
 
 <script>
   const $ = (id) => document.getElementById(id)
@@ -153,8 +75,6 @@
     $('tabQr').classList.toggle('on', next === 'qr')
     $('tabCode').classList.toggle('on', next === 'code')
     $('phoneWrap').classList.toggle('hidden', next !== 'code')
-    $('helpQr').classList.toggle('hidden', next !== 'qr')
-    $('helpCode').classList.toggle('hidden', next !== 'code')
   }
 
   function setStatus(html, isError) {
@@ -171,10 +91,7 @@
   function start() {
     stop()
     const phone = ($('phone').value || '').replace(/\D/g, '')
-    if (mode === 'code' && (phone.length < 8 || phone.length > 15)) {
-      setStatus('Numéro invalide : indicatif du pays + numéro.', true)
-      return
-    }
+    if (mode === 'code' && (phone.length < 8 || phone.length > 15)) return setStatus('Numéro invalide : indicatif du pays + numéro.', true)
     $('go').disabled = true
     $('stage').className = 'stage'
     $('stage').innerHTML = ''
@@ -191,15 +108,15 @@
       if (data.event === 'qr') {
         $('stage').innerHTML = '<div class="qrbox" id="qr"></div>'
         new QRCode($('qr'), { text: data.qr, width: 236, height: 236, correctLevel: QRCode.CorrectLevel.L })
-        setStatus('Scanne ce QR dans WhatsApp.')
+        setStatus('Scanne ce QR dans WhatsApp › Appareils connectés.')
       } else if (data.event === 'code') {
         $('stage').innerHTML = '<div class="code"></div>'
         $('stage').firstChild.textContent = data.code
-        setStatus('Entre ce code dans WhatsApp.')
+        setStatus('Entre ce code dans WhatsApp › Connecter avec un numéro.')
       } else if (data.event === 'connected') {
         setStatus('<span class="spin"></span>Connecté ! Préparation de ta session…')
       } else if (data.event === 'saved') {
-        showResult(data.sessionId)
+        showResult(data.sessionId, data.sent)
         stop()
       } else if (data.event === 'error') {
         setStatus('', true)
@@ -214,56 +131,22 @@
     }
   }
 
-  function showResult(sessionId) {
+  function showResult(sessionId, sent) {
     $('stage').innerHTML =
       '<div class="ok">✅ Ta session est prête</div>' +
-      '<textarea id="sid" readonly></textarea>' +
-      '<button class="copy" id="copy" type="button">Copier le SESSION_ID</button>' +
-      '<div class="steps">Colle-le dans <code>config.env</code> :<br><code>SESSION_ID="…"</code><br>' +
-      'ou envoie à ton bot : <code>.setvar SESSION_ID=…</code><br><br>' +
-      '⚠️ Ne le partage avec personne : il donne accès à ton WhatsApp.</div>'
-    $('sid').value = sessionId
-    $('copy').onclick = () => {
-      const text = $('sid').value
-      const done = () => {
-        $('copy').textContent = 'Copié ✓'
-        $('copy').classList.add('done')
-      }
-      if (navigator.clipboard) navigator.clipboard.writeText(text).then(done).catch(() => {
-        $('sid').select()
-        document.execCommand('copy')
-        done()
-      })
-      else {
-        $('sid').select()
-        document.execCommand('copy')
-        done()
-      }
-    }
+      '<div class="sid" id="sid"></div>' +
+      '<button class="btn" id="copy" type="button">Copier le SESSION_ID</button>' +
+      '<p class="hint">' + (sent ? '📩 Il t\'a aussi été envoyé dans ta discussion WhatsApp.<br>' : '') +
+      'Colle-le dans <code>config.env</code> : <code>SESSION_ID="…"</code>, ou envoie à ton bot <code>.setvar SESSION_ID=…</code></p>' +
+      '<p class="hint">⚠️ Ne le partage avec personne : il donne accès à ton WhatsApp.</p>'
+    $('sid').textContent = sessionId
+    $('copy').onclick = () => copyText(sessionId, $('copy'))
     setStatus('')
   }
 
   $('tabQr').onclick = () => setMode('qr')
   $('tabCode').onclick = () => setMode('code')
   $('go').onclick = start
-
-  const canvas = $('stars')
-  const ctx = canvas.getContext('2d')
-  function drawStars() {
-    canvas.width = innerWidth
-    canvas.height = innerHeight
-    let seed = 7
-    const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280)
-    for (let i = 0; i < 120; i++) {
-      ctx.globalAlpha = rnd() * 0.6 + 0.2
-      ctx.fillStyle = '#fff'
-      ctx.beginPath()
-      ctx.arc(rnd() * canvas.width, rnd() * canvas.height, rnd() * 1.4 + 0.3, 0, Math.PI * 2)
-      ctx.fill()
-    }
-  }
-  drawStars()
-  addEventListener('resize', drawStars)
 </script>
 </body>
 </html>

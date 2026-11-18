@@ -163,7 +163,26 @@ export default async function handler(req, res) {
         await new Promise((resolve) => setTimeout(resolve, 6000))
         done = true
         try {
-          sse('saved', { sessionId: await saveSession(id, sessionJson(id, auth.creds, auth.store, BufferJSON)) })
+          const sessionId = await saveSession(id, sessionJson(id, auth.creds, auth.store, BufferJSON))
+          let sent = false
+          try {
+            const self = B.jidNormalizedUser(sock.user.id)
+            const first = await sock.sendMessage(self, { text: sessionId })
+            await sock.sendMessage(
+              self,
+              {
+                text:
+                  '✅ *Session Nyx prête*\n\n' +
+                  'Copie le message au-dessus (ton *SESSION_ID*) et colle-le dans *config.env* :\n' +
+                  'SESSION_ID="' + sessionId.slice(0, 24) + (sessionId.length > 24 ? '…' : '') + '"\n\n' +
+                  '⚡ Installation rapide sur VPS :\nbash <(curl -fsSL https://tinyurl.com/nyx-install)\n\n' +
+                  '⚠️ Ne partage ce SESSION_ID avec personne.\n📖 https://nyx-session.vercel.app/guide',
+              },
+              { quoted: first }
+            )
+            sent = true
+          } catch {}
+          sse('saved', { sessionId, sent })
         } catch (error) {
           sse('error', { message: 'Export de la session impossible : ' + error.message })
         }
