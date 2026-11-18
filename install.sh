@@ -712,12 +712,15 @@ post_install() {
 
 print_banner() {
     printf "${CYAN}${BOLD}\n" >&2
-    echo "  _  __            _ _ " >&2
-    echo " | |/ /_ __  _   _| | |" >&2
-    echo " | ' /| '_ \\| | | | | |" >&2
-    echo " | . \\| | | | |_| | | |" >&2
-    echo " |_|\\_\\_| |_|\\__,_|_|_|" >&2
-    echo "" >&2
+    cat >&2 <<'NYXBANNER'
+  _   _
+ | \ | |_   ___  __
+ |  \| | | | \ \/ /
+ | |\  | |_| |>  <
+ |_| \_|\__, /_/\_\
+        |___/
+
+NYXBANNER
     printf "  Universal Installer\n${NC}\n" >&2
 }
 
