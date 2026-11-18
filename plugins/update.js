@@ -1,4 +1,4 @@
-const { bot, lang, prefixes, checkUpdates, updateNow, restart } = require('../lib')
+const { bot, lang, checkUpdates, updateNow, restart } = require('../lib')
 
 function errorText(result) {
   const t = lang.plugins.update
@@ -15,20 +15,15 @@ bot(
   },
   async (message, match) => {
     const t = lang.plugins.update
-    if ((match || '').trim().toLowerCase() === 'now') {
-      await message.reply(t.installing)
-      const result = await updateNow()
-      if (result.error) return message.reply(errorText(result))
-      if (result.upToDate) return message.reply(t.up_to_date)
-      await message.reply(t.updated.format(result.commits.length) + (result.npmOk ? '' : `\n\n${t.npm_warning}`))
-      return restart()
-    }
-    await message.reply(t.checking)
     const result = await checkUpdates()
-    if (result.error) return message.reply(errorText(result))
-    if (!result.commits.length) return message.reply(t.up_to_date)
-    const list = result.commits.slice(0, 10).map((c) => `• ${c}`).join('\n')
-    const more = result.commits.length > 10 ? `\n${t.more.format(result.commits.length - 10)}` : ''
-    await message.reply(t.available.format(result.commits.length, list + more, prefixes()[0] || ''))
+    if (result.error) return message.send(errorText(result))
+    const now = (match || '').trim().toLowerCase() === 'now'
+    if (!result.commits.length) return message.send(now ? t.up_to_date_now : t.up_to_date)
+    if (!now) return message.send(t.available.format(result.commits.length, result.commits.join('\n')))
+    await message.send(t.installing)
+    const done = await updateNow()
+    if (done.error) return message.send(errorText(done))
+    await message.send(t.updated + (done.npmOk === false ? `\n\n${t.npm_warning}` : ''))
+    return restart()
   }
 )

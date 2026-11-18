@@ -84,16 +84,15 @@
     },
     "update": {
       "desc": "Vérifie les mises à jour · update now pour installer",
-      "checking": "_Recherche de mises à jour…_",
-      "installing": "_Installation de la mise à jour…_",
-      "up_to_date": "✅ Le bot est à jour.",
-      "updated": "✅ Mise à jour installée ({0} changement(s)). Redémarrage…",
+      "installing": "Mise à jour du bot en cours...",
+      "up_to_date": "Le bot est déjà à jour.",
+      "updated": "Le bot a été mis à jour avec succès !",
       "npm_warning": "⚠️ L'installation des dépendances a échoué : lance *npm install* sur le serveur.",
-      "available": "🔄 *{0} mise(s) à jour disponible(s)*\n\n{1}\n\nInstalle avec *{2}update now*",
-      "more": "… et {0} autre(s)",
+      "available": "{0} nouvelles mises à jour disponibles :\n{1}",
       "not_git": "_Ce dossier n'est pas un dépôt git : clone le bot avec git pour activer les mises à jour._",
       "no_remote": "_Aucun dépôt distant (origin) : ajoute ton dépôt GitHub pour activer les mises à jour._",
-      "failed": "❌ Mise à jour impossible : {0}"
+      "failed": "❌ Mise à jour impossible : {0}",
+      "up_to_date_now": "Le bot est déjà à jour. Aucune mise à jour disponible."
     },
     "setsudo": {
       "desc": "Ajoute un sudo (mention, réponse ou numéro)",

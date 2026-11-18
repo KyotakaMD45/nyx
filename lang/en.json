@@ -84,16 +84,15 @@
     },
     "update": {
       "desc": "Check for updates · update now to install",
-      "checking": "_Checking for updates…_",
-      "installing": "_Installing the update…_",
-      "up_to_date": "✅ The bot is up to date.",
-      "updated": "✅ Update installed ({0} change(s)). Restarting…",
+      "installing": "Updating the bot...",
+      "up_to_date": "Bot is already up to date.",
+      "updated": "The bot has been updated successfully!",
       "npm_warning": "⚠️ Installing the dependencies failed: run *npm install* on the server.",
-      "available": "🔄 *{0} update(s) available*\n\n{1}\n\nInstall with *{2}update now*",
-      "more": "… and {0} more",
+      "available": "{0} new updates available:\n{1}",
       "not_git": "_This folder is not a git repository: clone the bot with git to enable updates._",
       "no_remote": "_No remote repository (origin): add your GitHub repository to enable updates._",
-      "failed": "❌ Update failed: {0}"
+      "failed": "❌ Update failed: {0}",
+      "up_to_date_now": "Bot is already up to date. No update available."
     },
     "setsudo": {
       "desc": "Add a sudo (mention, reply or number)",
