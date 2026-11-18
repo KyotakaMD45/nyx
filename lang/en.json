@@ -63,7 +63,7 @@
     },
     "restart": {
       "desc": "Restart the bot",
-      "restarting": "_Restarting…_"
+      "restarting": "_Restarting..._"
     },
     "setvar": {
       "desc": "Set a variable (KEY=VALUE)",

@@ -132,6 +132,7 @@ bot(
 bot(
   {
     pattern: 'restart ?(.*)',
+    alias: ['reboot'],
     desc: lang.plugins.restart.desc,
     type: 'system',
   },

@@ -63,7 +63,7 @@
     },
     "restart": {
       "desc": "Redémarre le bot",
-      "restarting": "_Redémarrage…_"
+      "restarting": "_Redémarrage en cours..._"
     },
     "setvar": {
       "desc": "Définit une variable (CLÉ=VALEUR)",
