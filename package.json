@@ -11,7 +11,7 @@
   },
   "homepage": "https://github.com/KyotakaMD45/nyx#readme",
   "scripts": {
-    "start": "pm2 start index.js --name nyx",
+    "start": "pm2 start index.js --name nyx --time",
     "dev": "node index.js",
     "stop": "pm2 stop nyx",
     "restart": "pm2 restart nyx",
@@ -26,7 +26,6 @@
     "dotenv": "^17.2.0",
     "node-webpmux": "^3.2.1",
     "pino": "^10.4.0",
-    "pm2": "^6.0.0",
     "qrcode-terminal": "^0.12.0",
     "sharp": "^0.34.0"
   }

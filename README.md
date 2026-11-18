@@ -30,6 +30,7 @@ Installation automatique : `SESSION_ID="Nyx_…" bash <(curl -fsSL https://tinyu
 ```bash
 sudo apt update && sudo apt install -y git ffmpeg
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt install -y nodejs
+sudo npm install -g pm2
 git clone https://github.com/KyotakaMD45/nyx.git
 cd nyx
 npm install
