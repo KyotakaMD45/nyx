@@ -34,12 +34,22 @@ function memoryAuthState(initAuthCreds, proto) {
   return { creds, keys, store }
 }
 
-function portableId(id, creds, store, BufferJSON) {
+function sessionJson(id, creds, store, BufferJSON) {
   const keys = {}
   const appKeyId = creds?.myAppStateKeyId
   const appKey = appKeyId && store?.['app-state-sync-key']?.[appKeyId]
   if (appKey) keys['app-state-sync-key'] = { [appKeyId]: appKey }
-  const json = JSON.stringify({ id, creds, keys }, BufferJSON.replacer)
+  return JSON.stringify({ id, creds, keys }, BufferJSON.replacer)
+}
+
+async function saveSession(id, json) {
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      const { put } = await import('@vercel/blob')
+      await put('s/' + id, json, { access: 'public', contentType: 'application/json', addRandomSuffix: true })
+      return id
+    } catch {}
+  }
   return PORTABLE_PREFIX + zlib.gzipSync(json, { level: 9 }).toString('base64url')
 }
 
@@ -153,7 +163,7 @@ export default async function handler(req, res) {
         await new Promise((resolve) => setTimeout(resolve, 6000))
         done = true
         try {
-          sse('saved', { sessionId: portableId(id, auth.creds, auth.store, BufferJSON) })
+          sse('saved', { sessionId: await saveSession(id, sessionJson(id, auth.creds, auth.store, BufferJSON)) })
         } catch (error) {
           sse('error', { message: 'Export de la session impossible : ' + error.message })
         }

@@ -47,7 +47,7 @@ Trois façons, au choix :
 
 | Méthode | Comment |
 |---|---|
-| **SESSION_ID** | Crée ta session sur https://nyx-session.vercel.app, puis `SESSION_ID="Nyx~…"` dans `config.env` (les formats `Nexora~` / `Nexora_` marchent aussi). |
+| **SESSION_ID** | Crée ta session sur https://nyx-session.vercel.app, puis `SESSION_ID="Nyx_…"` dans `config.env` (ID court, comme Levanter ; `Nexora_…` et `Nexora~…` marchent aussi). |
 | **QR code** | Laisse `SESSION_ID` vide : un QR s'affiche dans les logs, scanne-le dans WhatsApp › Appareils connectés. |
 | **Code d'appairage** | `PAIRING_NUMBER="2250700000000"` : un code à 8 caractères s'affiche dans les logs. |
 
@@ -103,7 +103,7 @@ Comme Levanter, `config.env` ne contient que l’essentiel (`SESSION_ID`, `AUTO_
 | Variable | Rôle | Défaut |
 |---|---|---|
 | `SESSION_ID` | Session venant du site de session | — |
-| `SESSION_URL` | Serveur des sessions à ID court | `https://nexora-inky-delta.vercel.app/json/` |
+| `SESSION_URL` | Serveur des sessions à ID court (`Nyx_…`) | `https://nyx-session.vercel.app/json/` |
 | `PAIRING_NUMBER` | Connexion par code d'appairage | — |
 | `BOT_NAME` | Nom du bot | `Nyx` |
 | `OWNER_NAME` | Ton nom, dans le message de bienvenue | nom de ton compte |

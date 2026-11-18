@@ -1,5 +1,17 @@
 {
   "functions": {
-    "api/pair.mjs": { "maxDuration": 300 }
-  }
+    "api/pair.mjs": {
+      "maxDuration": 300
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/json/:id/:rest*",
+      "destination": "/api/json?id=:id"
+    },
+    {
+      "source": "/json/:id",
+      "destination": "/api/json?id=:id"
+    }
+  ]
 }

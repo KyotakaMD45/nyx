@@ -27,7 +27,7 @@ function build() {
     BOT_LANG: (env.BOT_LANG || 'fr').trim().toLowerCase(),
 
     SESSION_ID: (env.SESSION_ID || '').trim(),
-    SESSION_URL: (env.SESSION_URL || 'https://nexora-inky-delta.vercel.app/json/').trim(),
+    SESSION_URL: (env.SESSION_URL || 'https://nyx-session.vercel.app/json/').trim(),
     PAIRING_NUMBER: String(env.PAIRING_NUMBER || '').replace(/\D/g, ''),
 
     PREFIX: env.PREFIX === undefined ? '.' : String(env.PREFIX),
