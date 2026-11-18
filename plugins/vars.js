@@ -1,4 +1,4 @@
-const { bot, lang, setVar, getVar, delVar, listVars, isSecret, mask, session, restart } = require('../lib')
+const { bot, lang, setVar, getVar, delVar, setVars, isSecret, mask, session, restart } = require('../lib')
 
 function parse(match) {
   const m = /^\s*([A-Za-z][A-Za-z0-9_]*)\s*(?:=|\s)\s*([\s\S]*)$/.exec(match || '')
@@ -76,10 +76,8 @@ bot(
     type: 'settings',
   },
   async (message) => {
-    const lines = listVars().map(({ key, value, set }) => {
-      const desc = lang.vars[key] ? `\n   _${lang.vars[key]}_` : ''
-      return `• *${key}* = ${set ? value || '""' : lang.plugins.allvar.default}${desc}`
-    })
-    await message.reply(`${lang.plugins.allvar.title}\n\n${lines.join('\n')}`)
+    const vars = setVars()
+    if (!vars.length) return message.send(lang.plugins.allvar.empty)
+    await message.send(vars.map(({ key, value }) => `${key} = ${value}`).join('\n\n'))
   }
 )

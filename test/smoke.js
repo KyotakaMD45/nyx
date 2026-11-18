@@ -199,7 +199,7 @@ function check(name, ok, detail = '') {
     out = await send(raw('.setvar PATH=x'))
     check('.setvar refuse une variable système', /système/.test(textsOf(out)) && process.env.PATH !== 'x')
     out = await send(raw('.allvar'))
-    check('.allvar liste les variables', /AUTO_UPDATE/.test(textsOf(out)))
+    check('.allvar : seulement les variables de config.env, triées', /^PREFIX = /m.test(textsOf(out)) && !/AUTO_UPDATE/.test(textsOf(out)) && !/GEMINI_MODEL/.test(textsOf(out)), textsOf(out))
     out = await send(raw('.setvar GEMINI_API_KEY=AIzaSECRETVALUE123'))
     check('.setvar masque les secrets', !textsOf(out).includes('SECRETVALUE'), textsOf(out))
     await send(raw('.delvar GEMINI_API_KEY'))

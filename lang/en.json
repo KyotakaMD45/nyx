@@ -79,8 +79,7 @@
     },
     "allvar": {
       "desc": "List all variables",
-      "title": "*Variables*",
-      "default": "_(default)_"
+      "empty": "_No variable set in config.env._"
     },
     "update": {
       "desc": "Check for updates · update now to install",
