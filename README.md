@@ -1,240 +1,115 @@
-# Nyx
+# Nyx — bot WhatsApp
 
-Bot WhatsApp léger, autonome et extensible par plugins.
-Même architecture que Levanter (`config.js`, `config.env`, `lib/`, `plugins/`, `lang/`),
-écrit de zéro sur la bibliothèque **Baileys officielle** (open source).
+Un bot WhatsApp léger et rapide, écrit sur la bibliothèque **Baileys** officielle,
+avec un système de plugins, des outils de groupe, des téléchargements et des mises à jour automatiques.
 
-- 42 commandes essentielles : système, réglages, propriétaire, groupe, médias, IA
-- Variables modifiables depuis WhatsApp (`.setvar`) sans redémarrage
-- Mises à jour : `.update`, `.update now` et `AUTO_UPDATE`
-- Connexion par SESSION_ID (site de session), QR code ou code d'appairage
-- Français par défaut, anglais disponible (`BOT_LANG=en`)
+## Fonctionnalités
+
+- **Plugins** – commandes intégrées et plugins externes (`eplugins`).
+- **Groupes** – antilink, bienvenue / au revoir, tag, promotion, sourdine.
+- **Protection** – anti-suppression (`delete`) et vues uniques (`vv`, `antivv`).
+- **Statuts** – vue automatique, réaction, transfert.
+- **Téléchargement** – YouTube, TikTok, Facebook, Instagram, avec plusieurs sources de secours.
+- **Médias et IA** – stickers, conversions, Gemini / Groq.
+- **Mises à jour** – `.update`, `.update now` ou `AUTO_UPDATE=true`.
+- **Langues** – français et anglais.
+
+## Langues
+
+Choisis la langue avec `BOT_LANG` dans `config.env`.
+
+| Code | Langue |
+|------|--------|
+| `fr` | Français (défaut) |
+| `en` | English |
+
+```env
+BOT_LANG=fr
+```
 
 ---
 
-## Installation rapide (VPS)
+## Session
 
-Une seule commande (Ubuntu, Debian, Fedora, Arch, Alpine, macOS, Termux) :
+Crée ton `SESSION_ID` sur **https://nyx-session.vercel.app** (QR code ou code d'appairage).
+Il t'est aussi envoyé dans ta propre discussion WhatsApp.
 
-```bash
+---
+
+## Déploiement
+
+### VPS, PC ou téléphone
+
+**Installation rapide** — Debian/Ubuntu, Fedora, Arch, Alpine, macOS et Termux (Android). Elle installe Node.js, ffmpeg et yarn, télécharge Nyx, crée `config.env` et lance le bot :
+
+```sh
 bash <(curl -fsSL https://tinyurl.com/nyx-install)
 ```
 
-Elle installe Node.js, git, ffmpeg et les modules, clone Nyx, te demande ton `SESSION_ID`, écrit `config.env` puis lance le bot avec PM2.
-Installation automatique : `SESSION_ID="Nyx_…" bash <(curl -fsSL https://tinyurl.com/nyx-install) -y --start`.
+Sans questions : `SESSION_ID=ta_session bash <(curl -fsSL https://tinyurl.com/nyx-install) -y --start`.
 
-**SESSION_ID** : https://nyx-session.vercel.app (QR code ou code d’appairage).
+**Panel** (Pterodactyl, bot-hosting…) : récupère le script `index.js` sur https://nyx-session.vercel.app/deploy#panel.
 
-## Installation manuelle
+**Installation manuelle :**
 
-```bash
-sudo apt update && sudo apt install -y git ffmpeg
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt install -y nodejs
-sudo npm install -g yarn
-yarn global add pm2
-git clone https://github.com/KyotakaMD45/nyx.git
-cd nyx
-yarn install
-cp config.env.example config.env
-nano config.env
-npm start
-npm run logs
-```
+1. **Paquets système :**
 
-Le bot doit être installé avec `git clone` pour que les mises à jour fonctionnent.
+   ```sh
+   sudo apt update && sudo apt install -y git ffmpeg curl
+   ```
 
-## Se connecter
+2. **Node.js 20 :**
 
-Trois façons, au choix :
+   ```sh
+   curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+   sudo apt install -y nodejs
+   ```
 
-| Méthode | Comment |
-|---|---|
-| **SESSION_ID** | Crée ta session sur https://nyx-session.vercel.app, puis `SESSION_ID="Nyx_…"` dans `config.env` (ID court, comme Levanter ; `Nexora_…` et `Nexora~…` marchent aussi). |
-| **QR code** | Laisse `SESSION_ID` vide : un QR s'affiche dans les logs, scanne-le dans WhatsApp › Appareils connectés. |
-| **Code d'appairage** | `PAIRING_NUMBER="2250700000000"` : un code à 8 caractères s'affiche dans les logs. |
+3. **Yarn :**
 
-La session est ensuite enregistrée dans le dossier `session/`. Si WhatsApp la déconnecte, Nyx la supprime et redemande un QR, sans boucler.
+   ```sh
+   sudo npm install -g yarn
+   ```
 
-## Messages de démarrage
+4. **Cloner et installer :**
 
-Comme Knull, Nyx t'envoie deux messages dans ta propre discussion :
+   ```sh
+   git clone https://github.com/KyotakaMD45/nyx.git
+   cd nyx
+   yarn install
+   ```
 
-1. **Bienvenue** : une seule fois, quand une nouvelle session se connecte. Image + présentation (« Je suis *Nyx*, le bot WhatsApp de *toi* »). Ton nom vient de `OWNER_NAME`, ou à défaut du nom de ton compte WhatsApp.
-2. **Carte d'état** : à chaque démarrage ou redémarrage du bot (pas à chaque reconnexion). Image + préfixe, menu, version, nombre de plugins, l'état de tes réglages en ✅ / ❎ (sudo, lecture auto, statuts, appels, en ligne, anti-suppression, mise à jour auto) et le lien du dépôt.
+5. **Configurer `config.env` :**
 
-Les deux messages utilisent le nom du bot (`BOT_NAME`) et l'image `media/welcome.jpg`. Remplace ce fichier par ta propre image si tu veux. `DISABLE_START_MESSAGE=true` coupe la carte d'état.
+   ```sh
+   cp config.env.example config.env
+   nano config.env
+   ```
 
-## Statuts
+   ```env
+   SESSION_ID="Nyx_xxxxxxxxxxxxxxxx"
+   AUTO_UPDATE="false"
+   ```
 
-Tout passe par `AUTO_STATUS_VIEW`, comme dans Knull et Levanter. Le plus simple est la commande `.status` :
+6. **Lancer avec PM2 :**
 
-| Commande | Effet |
-|---|---|
-| `.status on` | voit chaque statut et **te l'envoie** dans ta discussion |
-| `.status off` | désactive |
-| `.status no-dl` | voit seulement, sans t'envoyer les statuts |
-| `.status hide-view` | voit sans envoyer le « vu » à l'auteur |
-| `.status &delay` | attend un délai aléatoire (1 s à 5 min) avant de voir |
-| `.status only-view 225…,225…` | seulement les statuts de ces numéros |
-| `.status except-view 225…` | tout le monde sauf ces numéros |
-| `.status emoji 🔥,❤️` | réagit aux statuts (un emoji au hasard) · `emoji off` pour arrêter |
-| `.status msg Joli statut !` | répond à l'auteur (une fois toutes les 12 h par contact) · `msg off` |
-| `.status forward 225…` | t'envoie les statuts vers ce numéro · `forward me` = ta discussion |
+   ```sh
+   npm start          # démarrer
+   npx pm2 logs nyx   # voir les logs
+   npx pm2 stop nyx   # arrêter
+   ```
 
-Les options se combinent : `.status no-dl &delay`, `.status only-view 2250700000000 hide-view`…
+---
 
-## Alive, vues uniques
+## 🛠 Besoin d'aide ?
 
-**Alive personnalisable** (comme Knull) :
+- [Liste des commandes](https://nyx-session.vercel.app/commands)
+- [Liste des variables](https://nyx-session.vercel.app/env)
+- [Questions fréquentes](https://nyx-session.vercel.app/faq)
+- [Signaler un problème](https://github.com/KyotakaMD45/nyx/issues)
 
-| Commande | Effet |
-|---|---|
-| `.alive Je suis là ! #uptime` | enregistre ton message |
-| `.alive https://lien/image.jpg Salut #quote` | avec une image (ou une vidéo / un GIF : ajoute `&gif`) |
-| `.alive get` | affiche le texte enregistré |
-| `.alive reset` | revient au message par défaut |
+---
 
-Variables : `#uptime` `#quote` `#name` `#version` `#ram` `#prefix`.
+## Licence
 
-**Vues uniques** :
-
-- `.vv` en réponse à une vue unique la réexpédie en message normal, comme Levanter (même média, même légende), dans n’importe quelle discussion · `.vv <jid ou numéro>` l’envoie ailleurs.
-- `.antivv p` renvoie **automatiquement** chaque vue unique reçue dans ta discussion (variable `ANTI_VV`). Mêmes options que `.delete` : `g` (même discussion), un numéro, un groupe, portées `pm` `gm` `no-pm` `no-gm`, `off`.
-
-WhatsApp n’envoie le contenu des vues uniques qu’aux téléphones. Avec `VV=true` (`.setvar VV=true`, comme Levanter) ou quand `antivv` est actif, Nyx se connecte en se présentant comme un téléphone Android pour les recevoir.
-
-## Commandes
-
-Préfixe par défaut : `^[.,!]`, comme Knull et Levanter : `.menu`, `,menu` et `!menu` marchent (modifiable : `.setvar PREFIX=!`). Liste complète dans le bot : `.menu`.
-
-| Catégorie | Commandes |
-|---|---|
-| Système | `alive` `ping` `menu` (`help`, `list`) `restart` `update` |
-| Réglages | `setvar` `getvar` `delvar` `allvar` `online` `read` `call` `status` `delete` `antivv` |
-| Propriétaire | `pass` `setsudo` `delsudo` `getsudo` `block` `unblock` `jid` |
-| Groupe | `kick` `add` `promote` `demote` `tagall` `tag` `link` `revoke` `mute` `unmute` `ginfo` `gname` `gdesc` `antilink` `welcome` `goodbye` |
-| Médias | `sticker` (`s`) `take` `toimg` `vv` |
-| Téléchargement | `fb` `insta` (`ig`) `tiktok` (`tt`) `yta` `ytv` `song` (`play`) `video` `yts` `url` |
-| IA | `ai` (`gemini`, `gpt`) |
-
-**Accès** : seuls toi et les sudo utilisent le bot. Pour ouvrir des commandes aux autres dans une discussion, utilise `pass` (l'équivalent de `zushi` dans Knull) :
-
-| Commande | Effet |
-|---|---|
-| `.pass ping sticker` | autorise ces commandes ici (dans un groupe : pour tous les membres ; en privé : pour cette personne, partout) |
-| `.pass` | liste les commandes autorisées ici |
-| `.pass del ping` | retire une commande · `.pass del all` retire tout |
-
-Certaines commandes restent toujours réservées au propriétaire : `setvar` `getvar` `delvar` `allvar` `setsudo` `delsudo` `getsudo` `update` `restart` `block` `unblock` `pass`.
-
-## Variables
-
-Comme Levanter, `config.env` ne contient que l’essentiel (`SESSION_ID`, `AUTO_UPDATE`) : les valeurs par défaut sont dans `config.js`. Ajoute une ligne `CLÉ="valeur"` dans `config.env`, ou envoie `.setvar CLÉ=VALEUR` sur WhatsApp, seulement pour ce que tu veux changer. `.allvar` les liste.
-
-| Variable | Rôle | Défaut |
-|---|---|---|
-| `SESSION_ID` | Session venant du site de session | — |
-| `SESSION_URL` | Serveur des sessions à ID court (`Nyx_…`) | `https://nyx-session.vercel.app/json/` |
-| `PAIRING_NUMBER` | Connexion par code d'appairage | — |
-| `BOT_NAME` | Nom du bot | `Nyx` |
-| `OWNER_NAME` | Ton nom, dans le message de bienvenue | nom de ton compte |
-| `BOT_LANG` | `fr` ou `en` (redémarrage requis) | `fr` |
-| `PREFIX` | Préfixe : regex `^[.,!]` · un seul `.` · liste `.,!` · `null` (aucun) | `^[.,!]` |
-| `SUDO` | Numéros sudo, séparés par des virgules | — |
-| `AUTO_UPDATE` | Installer les mises à jour tout seul | `false` |
-| `UPDATE_INTERVAL` | Vérification des mises à jour (heures) | `6` |
-| `BRANCH` | Branche git suivie (détectée si vide) | — |
-| `ALWAYS_ONLINE` | Toujours en ligne | `false` |
-| `SEND_READ` | Marquer les messages comme lus | `false` |
-| `REJECT_CALL` / `REJECT_CALL_MSG` | Rejeter les appels / message envoyé | `false` |
-| `AUTO_STATUS_VIEW` | Statuts : `false`, `true` ou options (voir « Statuts ») | `false` |
-| `STATUS_VIEW_EMOJI` | Réaction aux statuts (`🔥,❤️`) | — |
-| `STATUS_VIEW_MSG` | Réponse à l'auteur d'un statut | — |
-| `STATUS_FORWARD_JID` | Où recevoir les statuts (vide = ta discussion) | — |
-| `VV` | `true` : le bot reçoit les vues uniques (comme Levanter) · `.setvar VV=true` | `false` |
-| `ANTI_VV` | Réglé par `.antivv` : où renvoyer chaque vue unique (`p`, `g`, numéro, groupe + portée) · `false` | `false` |
-| `ANTI_DELETE` | Réglé par `.delete` : `p` (vers toi), `g` (même discussion), un numéro ou un groupe, + portée facultative `pm` `gm` `no-pm` `no-gm` (ex. `g gm`) · `false` | `false` |
-| `ALIVE_MSG` | Message alive perso (`#name #version #uptime #ram #prefix`) | — |
-| `STICKER_PACKNAME` | `Pack,Auteur` des stickers | `Nyx,Nyx Bot` |
-| `GEMINI_API_KEY` / `GROQ_API_KEY` | Clé d'IA (une seule suffit) | — |
-| `DISABLE_START_MESSAGE` | Pas de message au démarrage | `false` |
-| `TZ` / `LOG_LEVEL` | Fuseau horaire / niveau des logs | `Africa/Abidjan` / `info` |
-| `YTDLP_PATH` / `COBALT_API` / `COBALT_KEY` | Sources YouTube de secours (yt-dlp, serveur cobalt) | — |
-| `LOG_MSG` | `true` : affiche chaque message reçu dans le terminal | `false` |
-
-## Mises à jour
-
-Nyx est un dépôt git : quand tu pousses une nouvelle version sur ton GitHub, ton bot peut la récupérer.
-
-- `.update` : liste les nouveautés disponibles
-- `.update now` : installe (`git reset --hard`, puis `npm install`) et redémarre
-- `AUTO_UPDATE=true` : vérifie toutes les `UPDATE_INTERVAL` heures et installe tout seul. Avec `false`, il te prévient seulement.
-
-`config.env`, `session/` et `data/` ne sont jamais touchés par une mise à jour (ils sont hors de git).
-
-## Structure
-
-```
-nyx/
-├── index.js            point d'entrée
-├── config.js           configuration (lit config.env)
-├── config.env.example  modèle de configuration
-├── lang/               textes du bot (fr, en)
-├── media/welcome.jpg   image des messages de démarrage
-├── lib/                cœur du bot
-│   ├── client.js       connexion WhatsApp, QR, reconnexion
-│   ├── handler.js      réception des messages, commandes, anti-suppression
-│   ├── plugins.js      système de plugins : bot({ pattern, desc, type }, handler)
-│   ├── message.js      objet message donné aux plugins
-│   ├── session.js      import du SESSION_ID
-│   ├── vars.js         variables (setvar / getvar / delvar)
-│   ├── update.js       mises à jour (git)
-│   ├── status.js       lecture de AUTO_STATUS_VIEW
-│   ├── db.js           petite base de données (data/db.json)
-│   └── utils.js        outils partagés
-├── plugins/            les commandes
-└── test/smoke.js       test automatique (npm test)
-```
-
-## Téléchargement
-
-| Commande | Effet |
-|---|---|
-| `.fb <lien>` | vidéo Facebook |
-| `.insta <lien>` | reel, vidéo ou photos Instagram (jusqu’à 10) |
-| `.tiktok <lien>` | vidéo TikTok sans filigrane (ou les photos d’un diaporama) |
-| `.yta <lien ou titre>` · `.song <titre>` | audio YouTube |
-| `.ytv <lien ou titre>` · `.video <titre>` | vidéo YouTube |
-| `.yts <recherche>` | recherche YouTube |
-| `.url` | en réponse à une image, vidéo, audio, sticker ou document : renvoie un lien (catbox.moe) |
-
-Chaque commande essaie **plusieurs sources gratuites** à la suite : si l’une tombe, la suivante prend le relais automatiquement (Facebook : snapsave, fbdown, fdownloader · Instagram : snapsave, downloadgram ×2 · TikTok : tikwm, tikmate, ssstik · YouTube : youtubei.js, puis `yt-dlp` s’il est installé, puis `COBALT_API` si configuré). Tu peux aussi répondre à un message qui contient le lien. Au-delà de ~95 Mo, le bot envoie le lien au lieu du fichier.
-
-## Écrire un plugin
-
-Crée un fichier dans `plugins/` (ou `eplugins/` pour tes plugins externes, comme Knull) : il est chargé au démarrage.
-
-```js
-const { bot } = require('../lib')
-
-bot(
-  {
-    pattern: 'bonjour ?(.*)',     // la commande .bonjour, avec des arguments facultatifs
-    desc: 'Dit bonjour',
-    type: 'misc',
-  },
-  async (message, match) => {
-    await message.reply(`Bonjour ${match || message.pushName} !`)
-  }
-)
-```
-
-`message` contient notamment `jid`, `isGroup`, `sender`, `text`, `reply_message`, et les méthodes `send()`, `reply()`, `react()`, `download()`.
-
-## Tester
-
-```bash
-npm test
-```
-
-Ce test simule des messages WhatsApp sans connexion (commandes, permissions, variables, groupe, antilink, anti-suppression, stickers, import de session). Il ne modifie pas ta configuration.
+Nyx est publié sous la [licence MIT](LICENSE).
