@@ -24,7 +24,7 @@ function legacyAntiVv(value) {
 }
 
 const SEP = ';_;'
-const SHARED = new Set(['SESSION_ID', 'SESSION_URL', 'STATUS_URL', 'SESSION_CHECK', 'AUTO_UPDATE', 'UPDATE_INTERVAL', 'BRANCH', 'TZ', 'LOG_LEVEL', 'LOG_MSG', 'YTDLP_PATH', 'COBALT_API', 'COBALT_KEY', 'GEMINI_API_KEY', 'GEMINI_MODEL', 'GROQ_API_KEY', 'GROQ_MODEL'])
+const SHARED = new Set(['SESSION_ID', 'SESSION_URL', 'AUTO_UPDATE', 'UPDATE_INTERVAL', 'BRANCH', 'TZ', 'LOG_LEVEL', 'LOG_MSG', 'YTDLP_PATH', 'COBALT_API', 'COBALT_KEY', 'GEMINI_API_KEY', 'GEMINI_MODEL', 'GROQ_API_KEY', 'GROQ_MODEL'])
 const sessionIndex = () => Math.max(0, (Number(process.env.NYX_INSTANCE) || 1) - 1)
 
 function pick(key, value) {
@@ -61,8 +61,6 @@ function build() {
 
     SESSION_ID: (env.SESSION_ID || '').trim(),
     SESSION_URL: (env.SESSION_URL || 'https://nyx-session.vercel.app/json/').trim(),
-    STATUS_URL: (env.STATUS_URL || '').trim(),
-    SESSION_CHECK: toBool(env.SESSION_CHECK, true),
     PAIRING_NUMBER: String(env.PAIRING_NUMBER || '').replace(/\D/g, ''),
 
     PREFIX: env.PREFIX === undefined || env.PREFIX === '' ? '^[.,!]' : String(env.PREFIX),

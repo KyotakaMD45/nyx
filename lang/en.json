@@ -40,8 +40,7 @@
     "view_once": "👁️ *View once* from @{0} {1}",
     "error_message": "```--- ⚠️ ERROR REPORT ⚠️ ---\n\nVersion  : {0}\nMessage  : {1}\nError    : {2}\nJid      : {3}\nCommand  : {4}\nPlatform : {5}```\n\n```-----``` *{6} ❣* ```-----```",
     "install_external_plugin": "[{0}] Installing external plugins... 📦",
-    "installed_external_plugin": "[{0}] External plugins installed! 🎒",
-    "session_revoked": "[{0}] Session disconnected remotely from the site. Waiting to be re-enabled… ⛔"
+    "installed_external_plugin": "[{0}] External plugins installed! 🎒"
   },
   "plugins": {
     "alive": {

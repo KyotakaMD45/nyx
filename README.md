@@ -59,16 +59,6 @@ Restent communes à tous : `SESSION_ID`, `AUTO_UPDATE`, `UPDATE_INTERVAL`, `BRAN
 
 ---
 
-## Déconnexion à distance (comme Levanter)
-
-Les SESSION_ID à ID court (`Nyx_…`) sont hébergés sur le site de session. Depuis le **tableau de bord privé** du site (`/admin`, protégé par `ADMIN_KEY`), l'opérateur du site voit les sessions actives et peut **déconnecter** l'une d'elles à distance, puis la **reconnecter**.
-
-Pour ça, le bot demande régulièrement au site si sa session est toujours active (`SESSION_URL`). Si elle a été révoquée, il se déconnecte sous quelques minutes sans délier le WhatsApp ; dès qu'elle est réactivée, il se reconnecte seul. Si le site est injoignable, le bot continue normalement (aucune coupure sur une panne).
-
-C'est volontairement transparent : qui héberge le site de session peut couper l'accès aux sessions qu'il sert (les identifiants y sont déjà stockés). Pour un bot auto-hébergé qui ne dépend pas de ce service, mets `SESSION_CHECK="false"` pour désactiver cette vérification, ou `STATUS_URL` pour pointer vers ton propre serveur.
-
----
-
 ## Déploiement
 
 ### VPS, PC ou téléphone
