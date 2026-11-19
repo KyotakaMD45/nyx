@@ -46,7 +46,16 @@ Mets plusieurs SESSION_ID séparés par des virgules dans `config.env` :
 SESSION_ID="Nyx_compte1,Nyx_compte2,Nyx_compte3"
 ```
 
-Chaque compte tourne dans le même bot avec ses propres données (commandes autorisées, alive, anti-suppression…). Les variables de `config.env` sont communes. Une session qui plante redémarre seule ; `.restart` et les mises à jour redémarrent toutes les sessions.
+Ou depuis WhatsApp : `.setvar SESSION_ID=Nyx_compte1,Nyx_compte2` (le bot redémarre avec la nouvelle liste).
+
+Chaque compte a ses propres données (commandes autorisées, alive, anti-suppression…) et **ses propres variables**, comme Knull : un `.setvar` envoyé depuis un compte ne change que ce compte. Dans `config.env`, les valeurs par compte sont séparées par `;_;` :
+
+```env
+PREFIX=".;_;!"
+STATUS_VIEW_EMOJI="🔥;_;❤️"
+```
+
+Restent communes à tous : `SESSION_ID`, `AUTO_UPDATE`, `UPDATE_INTERVAL`, `BRANCH`, `TZ`, `LOG_LEVEL`, `LOG_MSG`, les clés d'IA et les sources YouTube. Une session qui plante redémarre seule ; `.restart` et les mises à jour redémarrent toutes les sessions.
 
 ---
 

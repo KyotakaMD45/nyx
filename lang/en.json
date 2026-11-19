@@ -96,7 +96,7 @@
       "protected": "_This system variable cannot be changed._",
       "done": "✅ *{0}* = {1}",
       "session_restart": "_New SESSION_ID: removing the old session and restarting…_",
-      "multi_session": "_Multi-session mode: edit the SESSION_ID list in config.env (comma separated), then restart._"
+      "sessions_restart": "_{0} sessions: each account will connect with its SESSION_ID, restarting…_"
     },
     "getvar": {
       "desc": "Show a variable's value",
@@ -173,7 +173,8 @@
       "desc": "Statuses: auto view, emoji, reply, forward",
       "usage": "*Statuses*\n› Auto view: *{0}*\n› Emoji: *{1}*\n› Reply: *{2}*\n› Sent to: *{3}*\n\n*Examples:*\n› status on — view and receive every status\n› status off\n› status no-dl — view only, without receiving them\n› status hide-view — view without the \"seen\" receipt\n› status &delay — wait a little before viewing\n› status only-view 2250700000000,2250700000001\n› status except-view 2250700000000\n› status emoji 🔥,❤️ · status emoji off\n› status msg Nice status! · status msg off\n› status forward 2250700000000 · status forward me\n\n_Options combine: status no-dl &delay_",
       "header": "📥 *Status from {0}* (+{1})",
-      "own_chat": "your chat"
+      "own_chat": "your chat",
+      "needs_on": "\n\n_⚠️ Status view is off: send *{0}status on* so the bot reacts._"
     },
     "kick": {
       "desc": "Remove a member",
@@ -283,7 +284,8 @@
       "no_key": "_No AI key configured. Add one:_\n› setvar GEMINI_API_KEY=your_key (aistudio.google.com)\n› setvar GROQ_API_KEY=your_key (console.groq.com)",
       "describe": "Describe this image in detail.",
       "image_needs_gemini": "_Image analysis needs GEMINI_API_KEY._",
-      "empty": "_The AI gave no answer, try again._"
+      "empty": "_The AI gave no answer, try again._",
+      "failed": "❌ _The AI is not answering right now (invalid key or quota reached). Try again later._"
     },
     "pass": {
       "desc": "Allow commands for others in this chat",

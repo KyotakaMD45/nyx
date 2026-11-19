@@ -23,8 +23,23 @@ function legacyAntiVv(value) {
   return ['', 'true', 'false', 'on', 'off', 'null'].includes(raw) ? 'false' : raw
 }
 
+const SEP = ';_;'
+const SHARED = new Set(['SESSION_ID', 'SESSION_URL', 'AUTO_UPDATE', 'UPDATE_INTERVAL', 'BRANCH', 'TZ', 'LOG_LEVEL', 'LOG_MSG', 'YTDLP_PATH', 'COBALT_API', 'COBALT_KEY', 'GEMINI_API_KEY', 'GEMINI_MODEL', 'GROQ_API_KEY', 'GROQ_MODEL'])
+const sessionIndex = () => Math.max(0, (Number(process.env.NYX_INSTANCE) || 1) - 1)
+
+function pick(key, value) {
+  if (value === undefined || SHARED.has(key) || !String(value).includes(SEP)) return value
+  return String(value).split(SEP)[sessionIndex()] ?? ''
+}
+
+function sessionEnv() {
+  const env = {}
+  for (const [key, value] of Object.entries(process.env)) env[key] = pick(key, value)
+  return env
+}
+
 function build() {
-  const env = process.env
+  const env = sessionEnv()
   return {
     VERSION: require('./package.json').version,
     REPO_URL: 'https://github.com/KyotakaMD45/nyx',
@@ -84,5 +99,7 @@ Object.defineProperty(config, 'reload', {
     return config
   },
 })
+
+Object.defineProperty(config, 'session', { enumerable: false, value: { SEP, SHARED, sessionIndex, pick } })
 
 module.exports = config

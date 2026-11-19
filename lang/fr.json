@@ -96,7 +96,7 @@
       "protected": "_Cette variable système ne peut pas être modifiée._",
       "done": "✅ *{0}* = {1}",
       "session_restart": "_Nouveau SESSION_ID : suppression de l'ancienne session et redémarrage…_",
-      "multi_session": "_Mode multi-session : change la liste des SESSION_ID dans config.env (séparés par des virgules), puis redémarre._"
+      "sessions_restart": "_{0} sessions : chaque compte va se connecter avec son SESSION_ID, redémarrage…_"
     },
     "getvar": {
       "desc": "Affiche la valeur d'une variable",
@@ -173,7 +173,8 @@
       "desc": "Statuts : vue auto, emoji, réponse, renvoi",
       "usage": "*Statuts*\n› Vue auto : *{0}*\n› Emoji : *{1}*\n› Réponse : *{2}*\n› Renvoi vers : *{3}*\n\n*Exemples :*\n› status on — voir et recevoir tous les statuts\n› status off\n› status no-dl — voir seulement, sans les recevoir\n› status hide-view — voir sans le « vu »\n› status &delay — attendre un peu avant de voir\n› status only-view 2250700000000,2250700000001\n› status except-view 2250700000000\n› status emoji 🔥,❤️ · status emoji off\n› status msg Joli statut ! · status msg off\n› status forward 2250700000000 · status forward me\n\n_Les options se combinent : status no-dl &delay_",
       "header": "📥 *Statut de {0}* (+{1})",
-      "own_chat": "ta discussion"
+      "own_chat": "ta discussion",
+      "needs_on": "\n\n_⚠️ La vue des statuts est désactivée : envoie *{0}status on* pour que le bot réagisse._"
     },
     "kick": {
       "desc": "Retire un membre",
@@ -283,7 +284,8 @@
       "no_key": "_Aucune clé d'IA configurée. Ajoute-en une :_\n› setvar GEMINI_API_KEY=ta_clé (aistudio.google.com)\n› setvar GROQ_API_KEY=ta_clé (console.groq.com)",
       "describe": "Décris cette image en détail.",
       "image_needs_gemini": "_L'analyse d'image nécessite GEMINI_API_KEY._",
-      "empty": "_L'IA n'a rien répondu, réessaie._"
+      "empty": "_L'IA n'a rien répondu, réessaie._",
+      "failed": "❌ _L'IA ne répond pas pour le moment (clé invalide ou quota atteint). Réessaie plus tard._"
     },
     "pass": {
       "desc": "Autorise des commandes pour les autres dans cette discussion",

@@ -35,6 +35,30 @@ async function forwardStatus(sock, raw, number) {
   await sock.relayMessage(target, generated.message, { messageId: generated.key.id })
 }
 
+function statusEmojis(value) {
+  const raw = String(value || '').trim()
+  if (!raw || ['false', 'off', 'null'].includes(raw.toLowerCase())) return []
+  const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter(undefined, { granularity: 'grapheme' }) : null
+  const out = []
+  for (const part of raw.split(/[\s,;|]+/).filter(Boolean)) {
+    const graphemes = segmenter ? [...segmenter.segment(part)].map((s) => s.segment) : [part]
+    if (graphemes.length > 1 && graphemes.every((g) => /\p{Extended_Pictographic}/u.test(g))) out.push(...graphemes)
+    else out.push(part)
+  }
+  return out
+}
+
+function rememberLid(sock, raw) {
+  const ids = [raw.key.participant || raw.participant, raw.key.participantAlt || raw.key.participantPn].filter(Boolean)
+  const lid = ids.find((j) => j.endsWith('@lid'))
+  const pn = ids.find((j) => j.endsWith('@s.whatsapp.net'))
+  if (!lid || !pn) return
+  try {
+    const B = getBaileys()
+    sock.signalRepository?.lidMapping?.storeLIDPNMappings?.([{ lid: B.jidNormalizedUser(lid), pn: B.jidNormalizedUser(pn) }])?.catch?.(() => {})
+  } catch {}
+}
+
 async function handleStatus(sock, raw) {
   const options = parseStatusView(config.AUTO_STATUS_VIEW)
   if (!options.enabled) return
@@ -46,15 +70,16 @@ async function handleStatus(sock, raw) {
   if (options.only && !numbers.some((n) => options.only.has(n))) return
   if (options.except && numbers.some((n) => options.except.has(n))) return
 
+  rememberLid(sock, raw)
   const run = async () => {
     if (!options.hideView) await sock.readMessages([raw.key]).catch(() => {})
 
-    const emojis = config.STATUS_VIEW_EMOJI.split(',').map((e) => e.trim()).filter(Boolean)
+    const emojis = statusEmojis(config.STATUS_VIEW_EMOJI)
     if (emojis.length) {
       const emoji = emojis[Math.floor(Math.random() * emojis.length)]
       await sock
-        .sendMessage('status@broadcast', { react: { text: emoji, key: raw.key } }, { statusJidList: [author, bare(sock.user.id)] })
-        .catch((error) => logger.debug(`réaction statut : ${error.message}`))
+        .sendMessage('status@broadcast', { react: { text: emoji, key: raw.key } }, { statusJidList: [author, sock.user.id] })
+        .catch((error) => logger.warn(`réaction statut : ${error.message}`))
     }
 
     if (config.STATUS_VIEW_MSG) {
@@ -75,6 +100,7 @@ async function handleStatus(sock, raw) {
 
 bot({ on: 'status' }, handleStatus)
 
+
 const OPTION_WORDS = ['no-dl', 'hide-view', 'delay', 'only-view', 'except-view']
 
 bot(
@@ -93,7 +119,8 @@ bot(
     if (emoji) {
       const v = emoji[1].trim().toLowerCase() === 'off' ? '' : emoji[1].trim()
       setVar('STATUS_VIEW_EMOJI', v)
-      return saved('STATUS_VIEW_EMOJI', v || 'off')
+      const hint = v && !parseStatusView(config.AUTO_STATUS_VIEW).enabled ? t.needs_on.format(require('../lib').prefix()) : ''
+      return message.reply(lang.plugins.settings.saved.format('STATUS_VIEW_EMOJI', v || 'off') + hint)
     }
     const msg = /^msg\s+([\s\S]+)$/i.exec(value)
     if (msg) {
@@ -132,4 +159,4 @@ bot(
   }
 )
 
-module.exports = { handleStatus, forwardTarget }
+module.exports = { handleStatus, forwardTarget, statusEmojis }

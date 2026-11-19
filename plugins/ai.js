@@ -55,16 +55,30 @@ bot(
     const wantsImage = !!(quoted?.image || message.image)
     if (!prompt && !wantsImage) return message.reply(lang.plugins.ai.usage)
 
+    if (!config.GEMINI_API_KEY && wantsImage && !prompt) return message.reply(lang.plugins.ai.image_needs_gemini)
     await message.react('⏳').catch(() => {})
-    let answer
+    const errors = []
+    let answer = ''
     if (config.GEMINI_API_KEY) {
-      const image = wantsImage
-        ? { data: await (message.image ? message : quoted).download(), mimetype: (message.image ? message : quoted).mimetype || 'image/jpeg' }
-        : null
-      answer = await askGemini(prompt || lang.plugins.ai.describe, image)
-    } else {
-      if (wantsImage && !prompt) return message.reply(lang.plugins.ai.image_needs_gemini)
-      answer = await askGroq(prompt)
+      try {
+        const source = message.image ? message : quoted
+        const image = wantsImage ? { data: await source.download(), mimetype: source.mimetype || 'image/jpeg' } : null
+        answer = await askGemini(prompt || lang.plugins.ai.describe, image)
+      } catch (error) {
+        errors.push(`Gemini : ${error.message}`)
+      }
+    }
+    if (!answer && config.GROQ_API_KEY && prompt) {
+      try {
+        answer = await askGroq(prompt)
+      } catch (error) {
+        errors.push(`Groq : ${error.message}`)
+      }
+    }
+    if (!answer && errors.length) {
+      await message.react('❌').catch(() => {})
+      await message.reportError?.(new Error(errors.join(' | ')))
+      return message.reply(lang.plugins.ai.failed)
     }
     await message.react('').catch(() => {})
     await message.reply(answer || lang.plugins.ai.empty)

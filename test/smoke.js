@@ -277,6 +277,27 @@ function check(name, ok, detail = '') {
       check('erreur interceptée (fb) : rapport aussi dans le PV', fbReport && fbReport.jid === `${OWNER}@s.whatsapp.net` && /panne fb/.test(fbReport.content.text) && /Command  : fb/.test(fbReport.content.text), JSON.stringify(out.map((s) => s.jid)))
       dl.facebook = realFb
     }
+    {
+      const realFetch = global.fetch
+      const asked = []
+      global.fetch = async (url) => {
+        asked.push(String(url))
+        if (String(url).includes('generativelanguage')) return new Response(JSON.stringify({ error: { message: 'quota' } }), { status: 429 })
+        return new Response(JSON.stringify({ choices: [{ message: { content: 'Réponse Groq' } }] }))
+      }
+      process.env.GEMINI_API_KEY = 'g'
+      process.env.GROQ_API_KEY = 'q'
+      config.reload()
+      out = await send(raw('.ai Bonjour'))
+      check('.ai : Gemini en panne → bascule sur Groq', /Réponse Groq/.test(textsOf(out)) && asked.length === 2, textsOf(out))
+      global.fetch = async () => new Response('{}', { status: 500 })
+      out = await send(raw('.ai Bonjour'))
+      check('.ai : les deux en panne → message + rapport', /ne répond pas/.test(textsOf(out)) && out.some((s) => /ERROR REPORT/.test(s.content?.text || '')), textsOf(out))
+      global.fetch = realFetch
+      delete process.env.GEMINI_API_KEY
+      delete process.env.GROQ_API_KEY
+      config.reload()
+    }
     out = await send(inGroup('.tagall Bonjour'))
     check('.tagall mentionne tout le monde', out[0]?.content?.mentions?.length === 2)
     out = await send(inGroup('.tag Message caché'))
@@ -391,6 +412,14 @@ function check(name, ok, detail = '') {
     await send(raw('.status emoji 🔥'))
     out = await postStatus(statusMsg(STRANGER))
     check('status emoji : réaction envoyée', out.some((s) => s.jid === 'status@broadcast' && s.content?.react?.text === '🔥'))
+    await send(raw('.status emoji 🔥❤️'))
+    out = await postStatus(statusMsg(STRANGER))
+    const react = out.find((s) => s.jid === 'status@broadcast')
+    check('status emoji collés (🔥❤️) : un seul emoji valide envoyé', react && ['🔥', '❤️'].includes(react.content?.react?.text), react?.content?.react?.text)
+    check('status emoji : envoyé à l’auteur et à toi', react && react.options?.statusJidList?.includes(`${STRANGER}@s.whatsapp.net`) && react.options.statusJidList.length === 2, JSON.stringify(react?.options))
+    await send(raw('.status emoji false'))
+    out = await postStatus(statusMsg(STRANGER))
+    check('status emoji false : pas de réaction « false »', !out.some((s) => s.jid === 'status@broadcast'))
     await send(raw('.status emoji off'))
 
     await send(raw('.status no-dl'))
@@ -480,6 +509,27 @@ function check(name, ok, detail = '') {
       const { execFileSync } = require('child_process')
       const dir = execFileSync(process.execPath, ['-e', "console.log(require('./lib/instance').sessionDir)"], { cwd: ROOT, env: { ...process.env, NYX_INSTANCE: '2' } }).toString().trim()
       check('multi-session : session 2 dans sessions/2', dir.split(path.sep).join('/').endsWith('sessions/2/session'), dir)
+      const savedEnv = fs.existsSync(ENV) ? fs.readFileSync(ENV, 'utf8') : null
+      fs.writeFileSync(ENV, 'SESSION_ID="Nyx_aaa,Nyx_bbb"\nPREFIX="."\nAUTO_UPDATE="false"\n')
+      const envFor = (extra) => {
+        const env = { ...process.env, ...extra }
+        delete env.PREFIX
+        delete env.AUTO_UPDATE
+        return env
+      }
+      const asSession2 = (code) => execFileSync(process.execPath, ['-e', code], { cwd: ROOT, env: envFor({ NYX_INSTANCE: '2', SESSION_ID: 'Nyx_bbb' }) }).toString().trim()
+      const got = asSession2("const v=require('./lib/vars');v.setVar('PREFIX','!');v.setVar('AUTO_UPDATE','true');console.log(require('./config').PREFIX+'|'+v.getVar('PREFIX'))")
+      const file = fs.readFileSync(ENV, 'utf8')
+      check('multi-session : setvar de la session 2 ne touche que la session 2', got === '!|!' && /PREFIX=".;_;!"/.test(file), got + ' / ' + file)
+      check('multi-session : variable commune (AUTO_UPDATE) pour toutes', /AUTO_UPDATE="true"/.test(file) && !/AUTO_UPDATE=".*;_;/.test(file), file)
+      const first = execFileSync(process.execPath, ['-e', "console.log(require('./config').PREFIX)"], { cwd: ROOT, env: envFor({ NYX_INSTANCE: '1', SESSION_ID: 'Nyx_aaa' }) }).toString().trim()
+      check('multi-session : la session 1 garde son préfixe', first === '.', first)
+      const cleared = asSession2("const v=require('./lib/vars');v.delVar('PREFIX');console.log(require('./config').PREFIX)")
+      check('multi-session : delvar dans la session 2 = valeur par défaut, session 1 intacte', cleared === '^[.,!]' && fs.readFileSync(ENV, 'utf8').includes('PREFIX=".;_;"'), cleared + ' / ' + fs.readFileSync(ENV, 'utf8'))
+      const list = asSession2("const v=require('./lib/vars');v.setVar('SESSION_ID','Nyx_aaa,Nyx_bbb,Nyx_ccc');console.log(require('./lib/multi').sessionIds(require('dotenv').parse(require('fs').readFileSync('config.env')).SESSION_ID).length)")
+      check('multi-session : .setvar SESSION_ID depuis WhatsApp ajoute une session', list === '3', list)
+      if (savedEnv === null) fs.rmSync(ENV, { force: true })
+      else fs.writeFileSync(ENV, savedEnv)
     }
     const session = require('../lib/session')
     session.clearSession()
@@ -491,6 +541,11 @@ function check(name, ok, detail = '') {
     const portable = `Nexora~${zlib.gzipSync(json).toString('base64url')}`
     const state = await session.prepareSession({ SESSION_ID: portable, SESSION_URL: '' })
     check('import d\'un SESSION_ID Nexora~', state === 'imported')
+    check('même SESSION_ID au redémarrage : session gardée', (await session.prepareSession({ SESSION_ID: portable, SESSION_URL: '' })) === 'existing')
+    const other = `Nyx~${zlib.gzipSync(json).toString('base64url')}`
+    check('nouveau SESSION_ID : ancienne session remplacée', (await session.prepareSession({ SESSION_ID: other, SESSION_URL: '' })) === 'imported')
+    check('nouveau SESSION_ID : puis gardé', (await session.prepareSession({ SESSION_ID: other, SESSION_URL: '' })) === 'existing')
+    await session.prepareSession({ SESSION_ID: portable, SESSION_URL: '' })
     const { state: auth } = await B.useMultiFileAuthState(session.SESSION_DIR)
     check('les clés de session sont relues à l\'identique', Buffer.compare(auth.creds.noiseKey.private, creds.noiseKey.private) === 0)
     const keys = await auth.keys.get('app-state-sync-key', [keyId])

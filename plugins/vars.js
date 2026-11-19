@@ -1,4 +1,4 @@
-const { bot, lang, setVar, getVar, delVar, setVars, isSecret, mask, session, restart } = require('../lib')
+const { bot, lang, setVar, getVar, delVar, setVars, isSecret, mask, session, restart, instance } = require('../lib')
 
 function parse(match) {
   const m = /^\s*([A-Za-z][A-Za-z0-9_]*)\s*(?:=|\s)\s*([\s\S]*)$/.exec(match || '')
@@ -8,7 +8,6 @@ function parse(match) {
 function explain(error) {
   if (error.message === 'invalid_key') return lang.plugins.setvar.invalid_key
   if (error.message === 'protected_key') return lang.plugins.setvar.protected
-  if (error.message === 'multi_session_key') return lang.plugins.setvar.multi_session
   return error.message
 }
 
@@ -29,8 +28,9 @@ bot(
     const shown = isSecret(parsed.key) ? mask(parsed.value) : parsed.value
     await message.reply(lang.plugins.setvar.done.format(parsed.key, shown))
     if (parsed.key === 'SESSION_ID') {
-      await message.reply(lang.plugins.setvar.session_restart)
-      session.clearSession()
+      const count = parsed.value.split(',').filter((id) => id.trim()).length
+      await message.reply(count > 1 ? lang.plugins.setvar.sessions_restart.format(count) : lang.plugins.setvar.session_restart)
+      if (!instance.isChild) session.clearSession()
       restart()
     }
   }
