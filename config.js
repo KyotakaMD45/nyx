@@ -51,7 +51,6 @@ function build() {
     STATUS_VIEW_EMOJI: (env.STATUS_VIEW_EMOJI || '').trim(),
     STATUS_VIEW_MSG: env.STATUS_VIEW_MSG || '',
     STATUS_FORWARD_JID: (env.STATUS_FORWARD_JID || '').trim(),
-    VV: ['true', 'on'].includes(String(env.VV || '').trim().toLowerCase()) || legacyAntiVv(env.VV) !== 'false',
     ANTI_VV: (env.ANTI_VV || legacyAntiVv(env.VV)).trim().toLowerCase(),
     ANTI_DELETE: (env.ANTI_DELETE || 'false').trim().toLowerCase(),
     DISABLE_START_MESSAGE: toBool(env.DISABLE_START_MESSAGE),

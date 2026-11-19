@@ -7,7 +7,8 @@ avec un système de plugins, des outils de groupe, des téléchargements et des 
 
 - **Plugins** – commandes intégrées et plugins externes (`eplugins`).
 - **Groupes** – antilink, bienvenue / au revoir, tag, promotion, sourdine.
-- **Protection** – anti-suppression (`delete`) et vues uniques (`vv`, `antivv`).
+- **Protection** – anti-suppression (`delete`) et vues uniques automatiques (`antivv`).
+- **Rapports d'erreur** – quand une commande échoue, un rapport arrive dans ton PV.
 - **Statuts** – vue automatique, réaction, transfert.
 - **Téléchargement** – YouTube, TikTok, Facebook, Instagram, avec plusieurs sources de secours.
 - **Médias et IA** – stickers, conversions, Gemini / Groq.

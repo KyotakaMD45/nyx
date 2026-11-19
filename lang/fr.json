@@ -24,7 +24,6 @@
       "auto_reject": "🚫 AUTO REJECT CALL",
       "always_online": "🔋 ALWAYS ONLINE",
       "anti_delete": "🛡️ ANTI DELETE MSG",
-      "vv": "👁️ VIEW ONCE (vv)",
       "anti_vv": "👁️ ANTI VIEW ONCE",
       "auto_update": "🔄 AUTO UPDATE BOT"
     },
@@ -61,8 +60,30 @@
       "desc": "Menu des commandes par catégorie",
       "help_desc": "Liste numérotée des commandes",
       "list_desc": "Commandes avec leur description",
-      "menu": "```╭═══ {10} ═══⊷\n┃❃╭──────────────\n┃❃│ Préfixe : {0}\n┃❃│ Utilisateur : {1}\n┃❃│ Heure : {2}\n┃❃│ Jour : {3}\n┃❃│ Date : {4}\n┃❃│ Version : {5}\n┃❃│ Plugins : {6}\n┃❃│ RAM : {7}\n┃❃│ Temps d’activité : {8}\n┃❃│ Plateforme : {9}\n┃❃╰───────────────\n╰═════════════════⊷```",
-      "help": "```╭────────────────╮\n      {10}\n╰────────────────╯\n\n╭────────────────\n│ Préfixe : {0}\n│ Utilisateur : {1}\n│ Heure : {2}\n│ Jour : {3}\n│ Date : {4}\n│ Version : {5}\n│ Plugins : {6}\n│ RAM : {7}\n│ Temps d’activité : {8}\n│ Plateforme : {9}\n╰────────────────```"
+      "menu": "╭━━━〔 🌙 *{10}* 〕━━━┈⊷\n┃ ✦ ᴜᴛɪʟɪꜱᴀᴛᴇᴜʀ : {1}\n┃ ✦ ᴘʀéꜰɪxᴇ : {0}\n┃ ✦ ᴅᴀᴛᴇ : {3} {4} · {2}\n┃ ✦ ᴀᴄᴛɪꜰ ᴅᴇᴘᴜɪꜱ : {8}\n┃ ✦ ʀᴀᴍ : {7}\n┃ ✦ ᴘʟᴀᴛᴇꜰᴏʀᴍᴇ : {9}\n┃ ✦ ᴠᴇʀꜱɪᴏɴ : {5} · {6} ᴄᴏᴍᴍᴀɴᴅᴇꜱ\n╰━━━━━━━━━━━━━━━━┈⊷",
+      "help": "╭─────〔 🌙 *{10}* · ʜᴇʟᴘ 〕─────\n│ 👤 {1}\n│ 🕒 {3} {4} · {2}\n│ ⚙️ {6} commandes · préfixe {0}\n╰──────────────────────",
+      "footer": "✨ _{0}menu <catégorie> · {0}list pour les descriptions_",
+      "help_footer": "💡 _{0}list : chaque commande avec sa description_",
+      "categories": {
+        "system": "⚙️ ꜱʏꜱᴛèᴍᴇ",
+        "settings": "🛠️ ʀéɢʟᴀɢᴇꜱ",
+        "owner": "👑 ᴘʀᴏᴘʀɪéᴛᴀɪʀᴇ",
+        "group": "👥 ɢʀᴏᴜᴘᴇ",
+        "media": "🎨 ᴍéᴅɪᴀꜱ",
+        "download": "📥 ᴛéʟéᴄʜᴀʀɢᴇᴍᴇɴᴛ",
+        "ai": "🤖 ɪᴀ",
+        "misc": "✨ ᴅɪᴠᴇʀꜱ"
+      },
+      "category_names": {
+        "system": "systeme",
+        "settings": "reglages",
+        "owner": "proprietaire",
+        "group": "groupe",
+        "media": "medias",
+        "download": "telechargement",
+        "ai": "ia",
+        "misc": "divers"
+      }
     },
     "restart": {
       "desc": "Redémarre le bot",
@@ -255,11 +276,6 @@
       "done_local": "✨ Image agrandie (×{0}) · les serveurs IA sont indisponibles, agrandissement local",
       "failed": "❌ Impossible d’améliorer cette image, réessaie plus tard."
     },
-    "vv": {
-      "desc": "antiViewOnce : révèle une vue unique",
-      "usage": "*Exemple*\n- réponds à une photo, vidéo ou note vocale en vue unique avec *vv*\n- vv jid (facultatif)",
-      "failed": "❌ Impossible de récupérer cette vue unique.\n💡 Mets *VV=true* (`.setvar VV=true`) pour que le bot reçoive les vues uniques."
-    },
     "ai": {
       "desc": "Pose une question à l'IA (Gemini / Groq)",
       "usage": "*Exemple :* ai Explique-moi la photosynthèse",
@@ -361,7 +377,8 @@
       "yts_hint": "_Télécharge avec *yta <lien>* (audio) ou *ytv <lien>* (vidéo)._",
       "not_found": "_Aucun résultat sur YouTube._",
       "failed": "❌ Téléchargement YouTube impossible (toutes les sources ont échoué). Réessaie plus tard.",
-      "too_big": "⚠️ Trop lourd pour WhatsApp (plus de 95 Mo) : {0}"
+      "too_big": "⚠️ Trop lourd pour WhatsApp (plus de 95 Mo) : {0}",
+      "audio_card": "🎧 *{0}*\n👤 {1}   ⏱️ {2}\n\n_⏳ Téléchargement de l’audio…_"
     }
   },
   "vars": {
@@ -394,7 +411,6 @@
     "GROQ_MODEL": "Modèle Groq",
     "TZ": "Fuseau horaire (ex. Africa/Abidjan)",
     "LOG_LEVEL": "Niveau des logs : error, warn, info, debug",
-    "VV": "true : le bot reçoit les vues uniques (comme Levanter) · .setvar VV=true",
     "LOG_MSG": "true : affiche chaque message reçu dans le terminal",
     "ANTI_VV": "Vue unique auto (.antivv) : p, g, numéro ou groupe (+ pm/gm/no-pm/no-gm) · false"
   }

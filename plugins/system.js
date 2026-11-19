@@ -24,6 +24,7 @@ bot(
       try {
         await alive.setAlive(input)
       } catch (error) {
+        await message.reportError?.(error)
         return message.send(t.media_failed.format(error.message))
       }
     }
@@ -72,6 +73,17 @@ function infoBox(template, message) {
   )
 }
 
+const categoryName = (type) => lang.plugins.menu.categories?.[type] || `✨ ${textToStylist(type, 'smallcaps')}`
+const plain = (text) => String(text).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+
+function findCategory(groups, wanted) {
+  if (!wanted) return null
+  if (groups[wanted]) return wanted
+  const key = plain(wanted)
+  const names = lang.plugins.menu.category_names || {}
+  return Object.keys(groups).find((type) => plain(names[type] || '').startsWith(key)) || null
+}
+
 bot(
   {
     pattern: 'menu ?(.*)',
@@ -80,19 +92,16 @@ bot(
     fromMe: false,
   },
   async (message, match) => {
+    const t = lang.plugins.menu
     const groups = {}
     for (const cmd of commands) (groups[cmd.type.toLowerCase()] ||= []).push(cmd.name.trim())
-    const wanted = String(match || '').trim().toLowerCase()
-    const types = wanted && groups[wanted] ? [wanted] : Object.keys(groups).sort()
-    let text = infoBox(lang.plugins.menu.menu, message) + '\n'
-    for (const type of types) {
-      text += ` ╭─❏ ${textToStylist(type, 'smallcaps')} ❏\n`
-      for (const name of groups[type].sort((a, b) => a.localeCompare(b))) {
-        text += ` │ ${textToStylist(name.toUpperCase(), 'mono')}\n`
-      }
-      text += ' ╰─────────────────\n'
-    }
-    await message.send(text.trim())
+    const only = findCategory(groups, String(match || '').trim().toLowerCase())
+    const types = only ? [only] : Object.keys(groups).sort((a, b) => plain(categoryName(a).replace(/^\S+\s/, '')).localeCompare(plain(categoryName(b).replace(/^\S+\s/, ''))))
+    const sections = types.map((type) => {
+      const names = groups[type].sort((a, b) => a.localeCompare(b))
+      return [`┏━━ ❮ ${categoryName(type)} ❯ ━━`, ...names.map((name) => `┃ ◈ ${textToStylist(name, 'smallcaps')}`), '┗━━━━━━━━━━━━━━'].join('\n')
+    })
+    await message.send([infoBox(t.menu, message), ...sections, t.footer.format(prefix())].join('\n\n'))
   }
 )
 
@@ -104,13 +113,14 @@ bot(
     fromMe: false,
   },
   async (message) => {
+    const t = lang.plugins.menu
     const list = sortedCommands()
-    const lines = [infoBox(lang.plugins.menu.help, message), '╭────────────────']
-    list.forEach((cmd, i) => {
-      lines.push(`│ ${i + 1} ${addSpace(i + 1, list.length)}${textToStylist(cmd.name.toUpperCase(), 'mono')}`)
-    })
-    lines.push('╰────────────────')
-    await message.send(lines.join('\n'))
+    const width = String(list.length).length
+    const names = list.map((cmd, i) => `${String(i + 1).padStart(width, '0')} ◦ ${cmd.name}`)
+    const column = Math.max(...names.map((n) => n.length)) + 2
+    const rows = []
+    for (let i = 0; i < names.length; i += 2) rows.push(names[i].padEnd(column) + (names[i + 1] || ''))
+    await message.send([infoBox(t.help, message), '```' + rows.join('\n') + '```', t.help_footer.format(prefix())].join('\n\n'))
   }
 )
 
@@ -123,9 +133,9 @@ bot(
   },
   async (message) => {
     const text = sortedCommands()
-      .map((cmd) => `- *${cmd.name}*\n${cmd.desc || ''}\n`)
-      .join('\n')
-    await message.send(text.trim())
+      .map((cmd) => `◈ *${prefix()}${cmd.name}*\n   ↳ _${cmd.desc || '-'}_`)
+      .join('\n\n')
+    await message.send(`🌙 *${config.BOT_NAME}* · ${commands.length}\n\n${text}`)
   }
 )
 

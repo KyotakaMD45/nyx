@@ -140,13 +140,15 @@ function check(name, ok, detail = '') {
     out = await send(raw('.alive reset'))
     check('.alive reset : retour au message par défaut', /par défaut/.test(textsOf(out)) && !require('../lib/alive').getAlive())
     out = await send(raw('.menu'))
-    check('.menu : encadré + catégories', /Préfixe : \./.test(textsOf(out)) && /❏ ꜱʏꜱᴛᴇᴍ ❏/.test(textsOf(out)) && /❏ ɢʀᴏᴜᴘ ❏/.test(textsOf(out)) && textsOf(out).includes('𝙼𝙴𝙽𝚄'), textsOf(out))
+    check('.menu : encadré + catégories', textsOf(out).includes('ᴘʀéꜰɪxᴇ : .') && textsOf(out).includes('❮ ⚙️ ꜱʏꜱᴛèᴍᴇ ❯') && textsOf(out).includes('❮ 👥 ɢʀᴏᴜᴘᴇ ❯') && textsOf(out).includes('◈ ᴍᴇɴᴜ'), textsOf(out))
     out = await send(raw('.menu group'))
-    check('.menu group : une seule catégorie', /❏ ɢʀᴏᴜᴘ ❏/.test(textsOf(out)) && !/ꜱʏꜱᴛᴇᴍ/.test(textsOf(out)))
+    check('.menu group : une seule catégorie', textsOf(out).includes('❮ 👥 ɢʀᴏᴜᴘᴇ ❯') && !textsOf(out).includes('ꜱʏꜱᴛèᴍᴇ ❯'))
+    out = await send(raw('.menu telechargement'))
+    check('.menu en français : téléchargement', textsOf(out).includes('❮ 📥 ᴛéʟéᴄʜᴀʀɢᴇᴍᴇɴᴛ ❯') && !textsOf(out).includes('ɢʀᴏᴜᴘᴇ ❯'), textsOf(out))
     out = await send(raw('.help'))
-    check('.help : liste numérotée', /│ 1 +𝙰/.test(textsOf(out)), textsOf(out))
+    check('.help : liste numérotée en colonnes', /01 ◦ \w+ +02 ◦ \w+/.test(textsOf(out)), textsOf(out))
     out = await send(raw('.list'))
-    check('.list : nom + description', /- \*menu\*\n/.test(textsOf(out)))
+    check('.list : nom + description', /◈ \*\.menu\*\n   ↳ _/.test(textsOf(out)), textsOf(out).slice(0, 200))
     {
       const { parsePrefix } = require('../lib/handler')
       const knull = parsePrefix('^[.,!]')
@@ -264,6 +266,15 @@ function check(name, ok, detail = '') {
       check('erreur de commande : rapport dans le PV du propriétaire, pas dans le groupe', report && report.jid === `${OWNER}@s.whatsapp.net` && /Error    : boum/.test(report.content.text) && /Command  : plante/.test(report.content.text) && !out.some((s) => s.jid === GROUP), JSON.stringify(out.map((s) => s.jid)))
       const { commands } = require('../lib/plugins')
       commands.splice(commands.findIndex((c) => c.name === 'plante'), 1)
+      const dl = require('../lib/download')
+      const realFb = dl.facebook
+      dl.facebook = async () => {
+        throw new Error('panne fb')
+      }
+      out = await send(inGroup('.fb https://www.facebook.com/v/1'))
+      const fbReport = out.find((s) => /ERROR REPORT/.test(s.content?.text || ''))
+      check('erreur interceptée (fb) : rapport aussi dans le PV', fbReport && fbReport.jid === `${OWNER}@s.whatsapp.net` && /panne fb/.test(fbReport.content.text) && /Command  : fb/.test(fbReport.content.text), JSON.stringify(out.map((s) => s.jid)))
+      dl.facebook = realFb
     }
     out = await send(inGroup('.tagall Bonjour'))
     check('.tagall mentionne tout le monde', out[0]?.content?.mentions?.length === 2)
@@ -325,11 +336,11 @@ function check(name, ok, detail = '') {
       for (const g of Object.keys(original)) swap(g, original[g])
     }
     out = await send(raw('.vv'))
-    check('.vv sans réponse : exemple comme Levanter', textsOf(out).includes('vv jid (facultatif)'), textsOf(out))
+    check('.vv retiré : aucune réponse', out.length === 0)
     {
       const { setVar } = require('../lib/vars')
       setVar('VV', 'p')
-      check('ancien VV=p : repris comme ANTI_VV=p', config.VV === true && config.ANTI_VV === 'p')
+      check('ancien VV=p : repris comme ANTI_VV=p', config.VV === undefined && config.ANTI_VV === 'p')
       setVar('VV', 'false')
     }
     out = await send(raw('.antivv p'))
@@ -348,11 +359,6 @@ function check(name, ok, detail = '') {
       const plain = { ...vo, key: { ...vo.key, id: `VO${++n}` }, message: { imageMessage: { mimetype: 'image/jpeg' } } }
       out = await send(plain)
       check('antivv : une photo normale n’est pas renvoyée', !out.some((s) => s.content?.image))
-      out = await send(raw('.vv', { extra: { contextInfo: { stanzaId: vo.key.id, participant: vo.key.remoteJid, quotedMessage: vo.message } } }))
-      const relayed = out.find((s) => s.relay)
-      check('.vv : réexpédie la vue unique comme Levanter (sans viewOnce)', relayed && relayed.jid === `${OWNER}@s.whatsapp.net` && relayed.relay.imageMessage && !relayed.relay.imageMessage.viewOnce && relayed.relay.imageMessage.caption === 'secret', JSON.stringify(out.map((s) => Object.keys(s.relay || s.content))))
-      out = await send(raw('.vv 2250700000009', { extra: { contextInfo: { stanzaId: vo.key.id, participant: vo.key.remoteJid, quotedMessage: vo.message } } }))
-      check('.vv <numéro> : envoyé à ce numéro', out.some((s) => s.relay && s.jid === '2250700000009@s.whatsapp.net'))
       B.downloadMediaMessage = realDownload
     }
     out = await send(raw('.antivv off'))
@@ -379,7 +385,7 @@ function check(name, ok, detail = '') {
     await send(raw('.status on'))
     out = await postStatus(statusMsg(STRANGER))
     check('status on : statut vu', reads.length === 1)
-    check('status on : statut renvoyé dans ta discussion', out.some((s) => s.jid === OWN_CHAT && s.content?.forward))
+    check('status on : statut renvoyé dans ta discussion', out.some((s) => s.jid === OWN_CHAT && s.relay?.imageMessage))
 
     await send(raw('.status emoji 🔥'))
     out = await postStatus(statusMsg(STRANGER))
@@ -388,11 +394,11 @@ function check(name, ok, detail = '') {
 
     await send(raw('.status no-dl'))
     out = await postStatus(statusMsg(STRANGER))
-    check('status no-dl : vu mais pas renvoyé', reads.length === 1 && !out.some((s) => s.content?.forward))
+    check('status no-dl : vu mais pas renvoyé', reads.length === 1 && !out.some((s) => s.relay))
 
     await send(raw('.status hide-view'))
     out = await postStatus(statusMsg(STRANGER))
-    check('status hide-view : pas de « vu » mais renvoyé', reads.length === 0 && out.some((s) => s.content?.forward))
+    check('status hide-view : pas de « vu » mais renvoyé', reads.length === 0 && out.some((s) => s.relay?.imageMessage))
 
     await send(raw('.status only-view 2250700000099'))
     out = await postStatus(statusMsg(STRANGER))
@@ -417,8 +423,12 @@ function check(name, ok, detail = '') {
 
     await send(raw('.status forward 2250700000055'))
     out = await postStatus(statusMsg(STRANGER))
-    check('status forward : renvoyé vers le numéro choisi', out.some((s) => s.jid === '2250700000055@s.whatsapp.net' && s.content?.forward))
+    check('status forward : renvoyé vers le numéro choisi', out.some((s) => s.jid === '2250700000055@s.whatsapp.net' && s.relay?.imageMessage))
     await send(raw('.status forward me'))
+    out = await postStatus(statusMsg(OWNER))
+    check('statut : ton propre statut est ignoré', reads.length === 0 && !out.some((s) => s.relay))
+    out = await postStatus(statusMsg(STRANGER, { protocolMessage: { type: 0 } }))
+    check('statut supprimé : ni vu ni renvoyé', reads.length === 0 && out.length === 0)
     out = await postStatus(statusMsg(STRANGER, { extendedTextMessage: { text: 'statut texte' } }))
     check('statut texte : renvoyé avec l\'auteur', out.some((s) => s.jid === OWN_CHAT && /Statut de Ami/.test(s.content?.text || '') && /statut texte/.test(s.content?.text || '')))
     await send(raw('.status off'))
@@ -437,6 +447,12 @@ function check(name, ok, detail = '') {
     const card = client.startCard(sock)
     check('carte : nom, préfixe, menu, version', card.includes('ReadMore') && card.includes('PREFIX    : .') && card.includes('.menu | .help | .list') && card.includes(config.VERSION))
     check('carte : ligne ANTI VIEW ONCE', card.includes('ANTI VIEW ONCE'))
+    check('carte : plus de ligne VIEW ONCE (vv)', !card.includes('VIEW ONCE (vv)'))
+    process.env.ANTI_VV = '+2250700000009 gm'
+    config.reload()
+    check('carte : antivv vers un numéro → JID complet', client.startCard(sock).includes('✅ (2250700000009@s.whatsapp.net gm)'), client.startCard(sock).split('\n').find((l) => l.includes('ANTI VIEW ONCE')))
+    delete process.env.ANTI_VV
+    config.reload()
     check('carte : réglages en ✅ / ❎', card.includes('👀 AUTO STATUS VIEW') && card.includes('✅ (no-dl)') && card.includes('❎'))
     process.env.AUTO_STATUS_VIEW = 'false'
     config.reload()

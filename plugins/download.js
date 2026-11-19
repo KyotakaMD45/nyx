@@ -1,9 +1,12 @@
 const { bot, lang } = require('../lib')
 const dl = require('../lib/download')
 
+const report = (message, error) => message.reportError?.(error)
+
 async function sendLinks(message, links) {
   const t = lang.plugins.download
   let sent = 0
+  let lastError = null
   for (const link of links) {
     try {
       const media = await dl.fetchMedia(link)
@@ -13,8 +16,11 @@ async function sendLinks(message, links) {
       }
       await message.send(media.buffer, { quoted: message.data, mimetype: media.type === 'video' ? 'video/mp4' : undefined }, media.type)
       sent++
-    } catch {}
+    } catch (error) {
+      lastError = error
+    }
   }
+  if (!sent && lastError) await report(message, lastError)
   return sent
 }
 
@@ -31,8 +37,12 @@ function downloader(name, alias, fetchLinks) {
       const url = dl.findUrl(match, message.reply_message?.text)
       if (!url) return message.send(t.usage)
       await message.react('⏳').catch(() => {})
-      const links = await fetchLinks(url).catch(() => [])
-      if (!links.length) {
+      const links = await fetchLinks(url).catch((error) => {
+        report(message, error)
+        return null
+      })
+      if (!links || !links.length) {
+        if (links) await report(message, new Error(`aucune source n'a répondu pour ${url}`))
         await message.react('❌').catch(() => {})
         return message.send(t.not_found, { quoted: message.data })
       }
@@ -43,9 +53,9 @@ function downloader(name, alias, fetchLinks) {
   )
 }
 
-downloader('fb', ['facebook'], dl.facebook)
-downloader('insta', ['ig', 'instagram'], dl.instagram)
-downloader('tiktok', ['tt'], dl.tiktok)
+downloader('fb', ['facebook'], (url) => dl.facebook(url))
+downloader('insta', ['ig', 'instagram'], (url) => dl.instagram(url))
+downloader('tiktok', ['tt'], (url) => dl.tiktok(url))
 
 bot(
   {
@@ -63,6 +73,7 @@ bot(
       const link = await dl.uploadFile(buffer, `nyx.${ext}`)
       await message.send(link, { quoted: message.data })
     } catch (error) {
+      await report(message, error)
       await message.send(t.failed.format(error.message))
     }
   }
@@ -72,13 +83,23 @@ async function sendYoutube(message, id, kind, title) {
   const t = lang.plugins.yt
   await message.react('⏳').catch(() => {})
   try {
-    const buffer = await dl.youtube(id, kind)
-    const name = title || (await dl.youtubeTitle(id))
-    if (kind === 'audio') await message.send(buffer, { quoted: message.data, mimetype: 'audio/mp4', fileName: `${name}.m4a` }, 'audio')
-    else await message.send(buffer, { quoted: message.data, mimetype: 'video/mp4', caption: `*${name}*` }, 'video')
+    const info = await dl.youtubeInfo(id)
+    const name = title || info.title
+    if (kind === 'audio') {
+      await message.send(info.thumbnail, { quoted: message.data, caption: t.audio_card.format(name, info.author || '-', info.duration || '-') }, 'image').catch(() => {})
+      const raw = await dl.youtube(id, 'audio')
+      const audio = await dl.toMp3(raw, { title: name, author: info.author, thumbnail: info.thumbnail }).catch(() => null)
+      if (audio) await message.send(audio, { quoted: message.data, mimetype: 'audio/mpeg', fileName: `${name}.mp3` }, 'audio')
+      else await message.send(raw, { quoted: message.data, mimetype: 'audio/mp4', fileName: `${name}.m4a` }, 'document')
+    } else {
+      const buffer = await dl.youtube(id, 'video')
+      await message.send(buffer, { quoted: message.data, mimetype: 'video/mp4', caption: `🎬 *${name}*${info.author ? `
+👤 ${info.author}` : ''}` }, 'video')
+    }
     await message.react('✅').catch(() => {})
   } catch (error) {
     await message.react('❌').catch(() => {})
+    if (error.message !== 'too_big') await report(message, error)
     await message.send(error.message === 'too_big' ? t.too_big.format(`https://youtu.be/${id}`) : t.failed, { quoted: message.data })
   }
 }
@@ -88,7 +109,10 @@ async function resolveYoutube(message, input) {
   if (id) return { id }
   const query = String(input || '').trim()
   if (!query) return null
-  const [first] = await dl.youtubeSearch(query, 1).catch(() => [])
+  const [first] = await dl.youtubeSearch(query, 1).catch((error) => {
+    report(message, error)
+    return []
+  })
   return first ? { id: first.id, title: first.title } : { notFound: true }
 }
 
@@ -126,7 +150,10 @@ bot(
     const t = lang.plugins.yt
     const query = String(match || '').trim()
     if (!query) return message.send(t.yts_usage)
-    const results = await dl.youtubeSearch(query, 8).catch(() => [])
+    const results = await dl.youtubeSearch(query, 8).catch((error) => {
+      report(message, error)
+      return []
+    })
     if (!results.length) return message.send(t.not_found, { quoted: message.data })
     const lines = results.map((v, i) => `*${i + 1}.* ${v.title}\n   ⏱️ ${v.duration || '-'} · 👤 ${v.author || '-'}\n   https://youtu.be/${v.id}`)
     await message.send(`${t.yts_title.format(query)}\n\n${lines.join('\n\n')}\n\n${t.yts_hint}`, { quoted: message.data })

@@ -24,7 +24,6 @@
       "auto_reject": "🚫 AUTO REJECT CALL",
       "always_online": "🔋 ALWAYS ONLINE",
       "anti_delete": "🛡️ ANTI DELETE MSG",
-      "vv": "👁️ VIEW ONCE (vv)",
       "anti_vv": "👁️ ANTI VIEW ONCE",
       "auto_update": "🔄 AUTO UPDATE BOT"
     },
@@ -61,8 +60,30 @@
       "desc": "Commands menu by category",
       "help_desc": "Numbered list of commands",
       "list_desc": "Commands with their description",
-      "menu": "```╭═══ {10} ═══⊷\n┃❃╭──────────────\n┃❃│ Prefix : {0}\n┃❃│ User : {1}\n┃❃│ Time : {2}\n┃❃│ Day : {3}\n┃❃│ Date : {4}\n┃❃│ Version : {5}\n┃❃│ Plugins : {6}\n┃❃│ RAM : {7}\n┃❃│ Uptime : {8}\n┃❃│ Platform : {9}\n┃❃╰───────────────\n╰═════════════════⊷```",
-      "help": "```╭────────────────╮\n      {10}\n╰────────────────╯\n\n╭────────────────\n│ Prefix : {0}\n│ User : {1}\n│ Time : {2}\n│ Day : {3}\n│ Date : {4}\n│ Version : {5}\n│ Plugins : {6}\n│ RAM : {7}\n│ Uptime : {8}\n│ Platform : {9}\n╰────────────────```"
+      "menu": "╭━━━〔 🌙 *{10}* 〕━━━┈⊷\n┃ ✦ ᴜꜱᴇʀ : {1}\n┃ ✦ ᴘʀᴇꜰɪx : {0}\n┃ ✦ ᴅᴀᴛᴇ : {3} {4} · {2}\n┃ ✦ ᴜᴘᴛɪᴍᴇ : {8}\n┃ ✦ ʀᴀᴍ : {7}\n┃ ✦ ᴘʟᴀᴛꜰᴏʀᴍ : {9}\n┃ ✦ ᴠᴇʀꜱɪᴏɴ : {5} · {6} ᴄᴏᴍᴍᴀɴᴅꜱ\n╰━━━━━━━━━━━━━━━━┈⊷",
+      "help": "╭─────〔 🌙 *{10}* · ʜᴇʟᴘ 〕─────\n│ 👤 {1}\n│ 🕒 {3} {4} · {2}\n│ ⚙️ {6} commands · prefix {0}\n╰──────────────────────",
+      "footer": "✨ _{0}menu <category> · {0}list for descriptions_",
+      "help_footer": "💡 _{0}list: every command with its description_",
+      "categories": {
+        "system": "⚙️ ꜱʏꜱᴛᴇᴍ",
+        "settings": "🛠️ ꜱᴇᴛᴛɪɴɢꜱ",
+        "owner": "👑 ᴏᴡɴᴇʀ",
+        "group": "👥 ɢʀᴏᴜᴘ",
+        "media": "🎨 ᴍᴇᴅɪᴀ",
+        "download": "📥 ᴅᴏᴡɴʟᴏᴀᴅ",
+        "ai": "🤖 ᴀɪ",
+        "misc": "✨ ᴍɪꜱᴄ"
+      },
+      "category_names": {
+        "system": "system",
+        "settings": "settings",
+        "owner": "owner",
+        "group": "group",
+        "media": "media",
+        "download": "download",
+        "ai": "ai",
+        "misc": "misc"
+      }
     },
     "restart": {
       "desc": "Restart the bot",
@@ -255,11 +276,6 @@
       "done_local": "✨ Image enlarged (×{0}) · AI servers unavailable, local upscale",
       "failed": "❌ Could not enhance this image, try again later."
     },
-    "vv": {
-      "desc": "antiViewOnce: reveal a view-once",
-      "usage": "*Example*\n- reply to a viewOnce image, video or audio with *vv*\n- vv jid (optional)",
-      "failed": "❌ Could not fetch this view-once.\n💡 Set *VV=true* (`.setvar VV=true`) so the bot receives view-once messages."
-    },
     "ai": {
       "desc": "Ask the AI (Gemini / Groq)",
       "usage": "*Example:* ai Explain photosynthesis",
@@ -361,7 +377,8 @@
       "yts_hint": "_Download with *yta <link>* (audio) or *ytv <link>* (video)._",
       "not_found": "_No result on YouTube._",
       "failed": "❌ YouTube download failed (every source failed). Try again later.",
-      "too_big": "⚠️ Too big for WhatsApp (over 95 MB): {0}"
+      "too_big": "⚠️ Too big for WhatsApp (over 95 MB): {0}",
+      "audio_card": "🎧 *{0}*\n👤 {1}   ⏱️ {2}\n\n_⏳ Downloading the audio…_"
     }
   },
   "vars": {
@@ -394,7 +411,6 @@
     "GROQ_MODEL": "Groq model",
     "TZ": "Time zone (e.g. Africa/Abidjan)",
     "LOG_LEVEL": "Log level: error, warn, info, debug",
-    "VV": "true: the bot receives view-once messages (like Levanter) · .setvar VV=true",
     "LOG_MSG": "true: print every received message in the terminal",
     "ANTI_VV": "Auto view-once (.antivv): p, g, number or group (+ pm/gm/no-pm/no-gm) · false"
   }

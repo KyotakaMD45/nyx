@@ -11,25 +11,37 @@ function forwardTarget(sock) {
   return digits ? toJid(digits) : bare(sock.user.id)
 }
 
-async function forwardStatus(sock, raw, number) {
+const SKIP_TYPES = new Set(['protocolMessage', 'reactionMessage', 'senderKeyDistributionMessage', 'messageContextInfo'])
+
+function statusType(raw) {
   const B = getBaileys()
   const content = B.normalizeMessageContent(raw.message) || {}
   const type = B.getContentType(content)
-  if (!type || type === 'protocolMessage' || type === 'reactionMessage' || type === 'senderKeyDistributionMessage') return
+  return { content, type: type && !SKIP_TYPES.has(type) ? type : null }
+}
+
+async function forwardStatus(sock, raw, number) {
+  const B = getBaileys()
+  const { content, type } = statusType(raw)
+  if (!type) return
   const target = forwardTarget(sock)
   const header = lang.plugins.status.header.format(raw.pushName || '', number)
   if (type === 'conversation' || type === 'extendedTextMessage') {
     const text = content.conversation || content.extendedTextMessage?.text || ''
     return sock.sendMessage(target, { text: `${header}\n\n${text}` }, { quoted: raw })
   }
-  await sock.sendMessage(target, { forward: raw }, { quoted: raw })
+  const copy = B.proto.Message.decode(B.proto.Message.encode(raw.message).finish())
+  const generated = B.generateWAMessageFromContent(target, copy, { quoted: raw, userJid: sock.user.id })
+  await sock.relayMessage(target, generated.message, { messageId: generated.key.id })
 }
 
 async function handleStatus(sock, raw) {
   const options = parseStatusView(config.AUTO_STATUS_VIEW)
   if (!options.enabled) return
   const author = raw.key.participant || raw.participant
-  if (!author) return
+  if (!author || !statusType(raw).type) return
+  const own = [sock.user?.id, sock.user?.lid].filter(Boolean).map(bare)
+  if (own.includes(bare(author))) return
   const numbers = [raw.key.participantAlt, raw.key.participantPn, author].filter(Boolean).map(num)
   if (options.only && !numbers.some((n) => options.only.has(n))) return
   if (options.except && numbers.some((n) => options.except.has(n))) return

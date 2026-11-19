@@ -98,12 +98,7 @@ destinationCommand({
   name: 'antivv',
   variable: 'ANTI_VV',
   texts: () => lang.plugins.antivv,
-  snapshot: () => {
-    const raw = String(process.env.VV || '').trim().toLowerCase()
-    const before = require('../lib/client').viewOnceIdentity()
-    if (raw && !['true', 'false', 'on', 'off', 'null'].includes(raw)) setVar('VV', 'false')
-    return before
-  },
+  snapshot: () => require('../lib/client').viewOnceIdentity(),
   onChange: (message, before) => applyIdentity(message, before),
 })
 

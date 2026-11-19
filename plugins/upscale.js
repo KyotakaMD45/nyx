@@ -23,7 +23,8 @@ bot(
       if (asDocument) await message.send(buffer, { quoted: message.data, mimetype: 'image/jpeg', fileName: `nyx-hd-x${scale}.jpg`, caption }, 'document')
       else await message.send(buffer, { quoted: message.data, caption }, 'image')
       await message.react('✅').catch(() => {})
-    } catch {
+    } catch (error) {
+      await message.reportError?.(error)
       await message.react('❌').catch(() => {})
       await message.send(t.failed, { quoted: message.data })
     }
