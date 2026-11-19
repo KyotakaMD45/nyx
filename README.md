@@ -5,6 +5,7 @@ avec un système de plugins, des outils de groupe, des téléchargements et des 
 
 ## Fonctionnalités
 
+- **Multi-session** – plusieurs comptes WhatsApp dans un seul bot.
 - **Plugins** – commandes intégrées et plugins externes (`eplugins`).
 - **Groupes** – antilink, bienvenue / au revoir, tag, promotion, sourdine.
 - **Protection** – anti-suppression (`delete`) et vues uniques automatiques (`antivv`).
@@ -34,6 +35,18 @@ BOT_LANG=fr
 
 Crée ton `SESSION_ID` sur **https://nyx-session.vercel.app** (QR code ou code d'appairage).
 Il t'est aussi envoyé dans ta propre discussion WhatsApp.
+
+---
+
+## Multi-session
+
+Mets plusieurs SESSION_ID séparés par des virgules dans `config.env` :
+
+```env
+SESSION_ID="Nyx_compte1,Nyx_compte2,Nyx_compte3"
+```
+
+Chaque compte tourne dans le même bot avec ses propres données (commandes autorisées, alive, anti-suppression…). Les variables de `config.env` sont communes. Une session qui plante redémarre seule ; `.restart` et les mises à jour redémarrent toutes les sessions.
 
 ---
 

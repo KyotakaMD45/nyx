@@ -60,19 +60,19 @@
       "desc": "Menu des commandes par catégorie",
       "help_desc": "Liste numérotée des commandes",
       "list_desc": "Commandes avec leur description",
-      "menu": "╭━━━〔 🌙 *{10}* 〕━━━┈⊷\n┃ ✦ ᴜᴛɪʟɪꜱᴀᴛᴇᴜʀ : {1}\n┃ ✦ ᴘʀéꜰɪxᴇ : {0}\n┃ ✦ ᴅᴀᴛᴇ : {3} {4} · {2}\n┃ ✦ ᴀᴄᴛɪꜰ ᴅᴇᴘᴜɪꜱ : {8}\n┃ ✦ ʀᴀᴍ : {7}\n┃ ✦ ᴘʟᴀᴛᴇꜰᴏʀᴍᴇ : {9}\n┃ ✦ ᴠᴇʀꜱɪᴏɴ : {5} · {6} ᴄᴏᴍᴍᴀɴᴅᴇꜱ\n╰━━━━━━━━━━━━━━━━┈⊷",
-      "help": "╭─────〔 🌙 *{10}* · ʜᴇʟᴘ 〕─────\n│ 👤 {1}\n│ 🕒 {3} {4} · {2}\n│ ⚙️ {6} commandes · préfixe {0}\n╰──────────────────────",
-      "footer": "✨ _{0}menu <catégorie> · {0}list pour les descriptions_",
-      "help_footer": "💡 _{0}list : chaque commande avec sa description_",
+      "menu": "╭━━━〔 *{10}* 〕━━━┈⊷\n┃ ✦ ᴜᴛɪʟɪꜱᴀᴛᴇᴜʀ : {1}\n┃ ✦ ᴘʀéꜰɪxᴇ : {0}\n┃ ✦ ᴅᴀᴛᴇ : {3} {4} · {2}\n┃ ✦ ᴀᴄᴛɪꜰ ᴅᴇᴘᴜɪꜱ : {8}\n┃ ✦ ʀᴀᴍ : {7}\n┃ ✦ ᴘʟᴀᴛᴇꜰᴏʀᴍᴇ : {9}\n┃ ✦ ᴠᴇʀꜱɪᴏɴ : {5} · {6} ᴄᴏᴍᴍᴀɴᴅᴇꜱ\n╰━━━━━━━━━━━━━━━━┈⊷",
+      "help": "╭─────〔 *{10}* · ʜᴇʟᴘ 〕─────\n│ ᴜᴛɪʟɪꜱᴀᴛᴇᴜʀ : {1}\n│ ᴅᴀᴛᴇ : {3} {4} · {2}\n│ {6} commandes · préfixe {0}\n╰──────────────────────",
+      "footer": "_{0}menu <catégorie> · {0}list pour les descriptions_",
+      "help_footer": "_{0}list : chaque commande avec sa description_",
       "categories": {
-        "system": "⚙️ ꜱʏꜱᴛèᴍᴇ",
-        "settings": "🛠️ ʀéɢʟᴀɢᴇꜱ",
-        "owner": "👑 ᴘʀᴏᴘʀɪéᴛᴀɪʀᴇ",
-        "group": "👥 ɢʀᴏᴜᴘᴇ",
-        "media": "🎨 ᴍéᴅɪᴀꜱ",
-        "download": "📥 ᴛéʟéᴄʜᴀʀɢᴇᴍᴇɴᴛ",
-        "ai": "🤖 ɪᴀ",
-        "misc": "✨ ᴅɪᴠᴇʀꜱ"
+        "system": "ꜱʏꜱᴛèᴍᴇ",
+        "settings": "ʀéɢʟᴀɢᴇꜱ",
+        "owner": "ᴘʀᴏᴘʀɪéᴛᴀɪʀᴇ",
+        "group": "ɢʀᴏᴜᴘᴇ",
+        "media": "ᴍéᴅɪᴀꜱ",
+        "download": "ᴛéʟéᴄʜᴀʀɢᴇᴍᴇɴᴛ",
+        "ai": "ɪᴀ",
+        "misc": "ᴅɪᴠᴇʀꜱ"
       },
       "category_names": {
         "system": "systeme",
@@ -95,7 +95,8 @@
       "invalid_key": "_Nom de variable invalide (lettres majuscules, chiffres et _ uniquement)._",
       "protected": "_Cette variable système ne peut pas être modifiée._",
       "done": "✅ *{0}* = {1}",
-      "session_restart": "_Nouveau SESSION_ID : suppression de l'ancienne session et redémarrage…_"
+      "session_restart": "_Nouveau SESSION_ID : suppression de l'ancienne session et redémarrage…_",
+      "multi_session": "_Mode multi-session : change la liste des SESSION_ID dans config.env (séparés par des virgules), puis redémarre._"
     },
     "getvar": {
       "desc": "Affiche la valeur d'une variable",

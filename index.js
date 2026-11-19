@@ -14,9 +14,17 @@ process.on('uncaughtException', (error) => logger.error(`uncaughtException: ${er
 
 logger.info(lang.extra.starting.format(config.BOT_NAME, config.VERSION))
 
-require('./lib/client')
-  .start()
-  .catch((error) => {
-    logger.error(lang.extra.start_failed.format(error?.stack || error))
-    process.exit(1)
-  })
+const multi = require('./lib/multi')
+const ids = multi.sessionIds(config.SESSION_ID)
+
+if (!process.env.NYX_INSTANCE && ids.length > 1) {
+  multi.run(ids)
+} else {
+  multi.attachChild()
+  require('./lib/client')
+    .start()
+    .catch((error) => {
+      logger.error(lang.extra.start_failed.format(error?.stack || error))
+      process.exit(1)
+    })
+}

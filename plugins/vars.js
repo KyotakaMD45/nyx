@@ -8,6 +8,7 @@ function parse(match) {
 function explain(error) {
   if (error.message === 'invalid_key') return lang.plugins.setvar.invalid_key
   if (error.message === 'protected_key') return lang.plugins.setvar.protected
+  if (error.message === 'multi_session_key') return lang.plugins.setvar.multi_session
   return error.message
 }
 

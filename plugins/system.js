@@ -73,7 +73,7 @@ function infoBox(template, message) {
   )
 }
 
-const categoryName = (type) => lang.plugins.menu.categories?.[type] || `✨ ${textToStylist(type, 'smallcaps')}`
+const categoryName = (type) => lang.plugins.menu.categories?.[type] || textToStylist(type, 'smallcaps')
 const plain = (text) => String(text).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
 
 function findCategory(groups, wanted) {
@@ -96,7 +96,7 @@ bot(
     const groups = {}
     for (const cmd of commands) (groups[cmd.type.toLowerCase()] ||= []).push(cmd.name.trim())
     const only = findCategory(groups, String(match || '').trim().toLowerCase())
-    const types = only ? [only] : Object.keys(groups).sort((a, b) => plain(categoryName(a).replace(/^\S+\s/, '')).localeCompare(plain(categoryName(b).replace(/^\S+\s/, ''))))
+    const types = only ? [only] : Object.keys(groups).sort((a, b) => plain(categoryName(a)).localeCompare(plain(categoryName(b))))
     const sections = types.map((type) => {
       const names = groups[type].sort((a, b) => a.localeCompare(b))
       return [`┏━━ ❮ ${categoryName(type)} ❯ ━━`, ...names.map((name) => `┃ ◈ ${textToStylist(name, 'smallcaps')}`), '┗━━━━━━━━━━━━━━'].join('\n')
@@ -133,9 +133,9 @@ bot(
   },
   async (message) => {
     const text = sortedCommands()
-      .map((cmd) => `◈ *${prefix()}${cmd.name}*\n   ↳ _${cmd.desc || '-'}_`)
-      .join('\n\n')
-    await message.send(`🌙 *${config.BOT_NAME}* · ${commands.length}\n\n${text}`)
+      .map((cmd) => `- *${cmd.name}*\n${cmd.desc || ''}\n`)
+      .join('\n')
+    await message.send(text.trim())
   }
 )
 

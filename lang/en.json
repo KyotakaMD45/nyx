@@ -60,19 +60,19 @@
       "desc": "Commands menu by category",
       "help_desc": "Numbered list of commands",
       "list_desc": "Commands with their description",
-      "menu": "╭━━━〔 🌙 *{10}* 〕━━━┈⊷\n┃ ✦ ᴜꜱᴇʀ : {1}\n┃ ✦ ᴘʀᴇꜰɪx : {0}\n┃ ✦ ᴅᴀᴛᴇ : {3} {4} · {2}\n┃ ✦ ᴜᴘᴛɪᴍᴇ : {8}\n┃ ✦ ʀᴀᴍ : {7}\n┃ ✦ ᴘʟᴀᴛꜰᴏʀᴍ : {9}\n┃ ✦ ᴠᴇʀꜱɪᴏɴ : {5} · {6} ᴄᴏᴍᴍᴀɴᴅꜱ\n╰━━━━━━━━━━━━━━━━┈⊷",
-      "help": "╭─────〔 🌙 *{10}* · ʜᴇʟᴘ 〕─────\n│ 👤 {1}\n│ 🕒 {3} {4} · {2}\n│ ⚙️ {6} commands · prefix {0}\n╰──────────────────────",
-      "footer": "✨ _{0}menu <category> · {0}list for descriptions_",
-      "help_footer": "💡 _{0}list: every command with its description_",
+      "menu": "╭━━━〔 *{10}* 〕━━━┈⊷\n┃ ✦ ᴜꜱᴇʀ : {1}\n┃ ✦ ᴘʀᴇꜰɪx : {0}\n┃ ✦ ᴅᴀᴛᴇ : {3} {4} · {2}\n┃ ✦ ᴜᴘᴛɪᴍᴇ : {8}\n┃ ✦ ʀᴀᴍ : {7}\n┃ ✦ ᴘʟᴀᴛꜰᴏʀᴍ : {9}\n┃ ✦ ᴠᴇʀꜱɪᴏɴ : {5} · {6} ᴄᴏᴍᴍᴀɴᴅꜱ\n╰━━━━━━━━━━━━━━━━┈⊷",
+      "help": "╭─────〔 *{10}* · ʜᴇʟᴘ 〕─────\n│ ᴜꜱᴇʀ : {1}\n│ ᴅᴀᴛᴇ : {3} {4} · {2}\n│ {6} commands · prefix {0}\n╰──────────────────────",
+      "footer": "_{0}menu <category> · {0}list for descriptions_",
+      "help_footer": "_{0}list: every command with its description_",
       "categories": {
-        "system": "⚙️ ꜱʏꜱᴛᴇᴍ",
-        "settings": "🛠️ ꜱᴇᴛᴛɪɴɢꜱ",
-        "owner": "👑 ᴏᴡɴᴇʀ",
-        "group": "👥 ɢʀᴏᴜᴘ",
-        "media": "🎨 ᴍᴇᴅɪᴀ",
-        "download": "📥 ᴅᴏᴡɴʟᴏᴀᴅ",
-        "ai": "🤖 ᴀɪ",
-        "misc": "✨ ᴍɪꜱᴄ"
+        "system": "ꜱʏꜱᴛᴇᴍ",
+        "settings": "ꜱᴇᴛᴛɪɴɢꜱ",
+        "owner": "ᴏᴡɴᴇʀ",
+        "group": "ɢʀᴏᴜᴘ",
+        "media": "ᴍᴇᴅɪᴀ",
+        "download": "ᴅᴏᴡɴʟᴏᴀᴅ",
+        "ai": "ᴀɪ",
+        "misc": "ᴍɪꜱᴄ"
       },
       "category_names": {
         "system": "system",
@@ -95,7 +95,8 @@
       "invalid_key": "_Invalid variable name (uppercase letters, digits and _ only)._",
       "protected": "_This system variable cannot be changed._",
       "done": "✅ *{0}* = {1}",
-      "session_restart": "_New SESSION_ID: removing the old session and restarting…_"
+      "session_restart": "_New SESSION_ID: removing the old session and restarting…_",
+      "multi_session": "_Multi-session mode: edit the SESSION_ID list in config.env (comma separated), then restart._"
     },
     "getvar": {
       "desc": "Show a variable's value",
