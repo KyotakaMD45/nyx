@@ -249,12 +249,9 @@
       "usage": "_Reply to a sticker with *toimg*._"
     },
     "vv": {
-      "desc": "Reveal a view-once (vv <number> to send it elsewhere)",
-      "usage": "*View once* (receiving: {0})\n\n- Reply to a view-once photo / video / voice note with *vv*: it shows here.\n- *vv 2250700000000*: send it to this number.\n- *vv on* / *vv off*: turn view-once receiving on or off (needed for *vv*).\n- *antivv p*: forward them all automatically (like *delete*).",
-      "caption": "👁️ View once from @{0}",
-      "failed": "❌ Could not fetch this view-once.\n\n💡 Turn on *vv on* first: WhatsApp only sends view-once content to the bot in that mode.",
-      "enabled": "✅ View-once receiving is on: *vv* now works in all your chats.",
-      "disabled": "❎ View-once receiving is off."
+      "desc": "antiViewOnce: reveal a view-once",
+      "usage": "*Example*\n- reply to a viewOnce image, video or audio with *vv*\n- vv jid (optional)",
+      "failed": "❌ Could not fetch this view-once.\n💡 Set *VV=true* (`.setvar VV=true`) so the bot receives view-once messages."
     },
     "ai": {
       "desc": "Ask the AI (Gemini / Groq)",
@@ -376,7 +373,7 @@
     "GROQ_MODEL": "Groq model",
     "TZ": "Time zone (e.g. Africa/Abidjan)",
     "LOG_LEVEL": "Log level: error, warn, info, debug",
-    "VV": "true: the bot receives view-once messages (needed for vv) · set with .vv on/off",
+    "VV": "true: the bot receives view-once messages (like Levanter) · .setvar VV=true",
     "LOG_MSG": "true: print every received message in the terminal",
     "ANTI_VV": "Auto view-once (.antivv): p, g, number or group (+ pm/gm/no-pm/no-gm) · false"
   }

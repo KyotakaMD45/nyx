@@ -249,12 +249,9 @@
       "usage": "_Réponds à un sticker avec *toimg*._"
     },
     "vv": {
-      "desc": "Révèle une vue unique (vv <numéro> pour l’envoyer ailleurs)",
-      "usage": "*Vue unique* (réception : {0})\n\n- Réponds à une photo / vidéo / note vocale en vue unique avec *vv* : elle s’affiche ici.\n- *vv 2250700000000* : l’envoie à ce numéro.\n- *vv on* / *vv off* : active ou coupe la réception des vues uniques (obligatoire pour que *vv* marche).\n- *antivv p* : les renvoie toutes automatiquement (comme *delete*).",
-      "caption": "👁️ Vue unique de @{0}",
-      "failed": "❌ Impossible de récupérer cette vue unique.\n\n💡 Active d’abord *vv on* : WhatsApp n’envoie le contenu des vues uniques au bot que dans ce mode.",
-      "enabled": "✅ Réception des vues uniques activée : *vv* marche maintenant dans toutes tes discussions.",
-      "disabled": "❎ Réception des vues uniques coupée."
+      "desc": "antiViewOnce : révèle une vue unique",
+      "usage": "*Exemple*\n- réponds à une photo, vidéo ou note vocale en vue unique avec *vv*\n- vv jid (facultatif)",
+      "failed": "❌ Impossible de récupérer cette vue unique.\n💡 Mets *VV=true* (`.setvar VV=true`) pour que le bot reçoive les vues uniques."
     },
     "ai": {
       "desc": "Pose une question à l'IA (Gemini / Groq)",
@@ -376,7 +373,7 @@
     "GROQ_MODEL": "Modèle Groq",
     "TZ": "Fuseau horaire (ex. Africa/Abidjan)",
     "LOG_LEVEL": "Niveau des logs : error, warn, info, debug",
-    "VV": "true : le bot reçoit les vues uniques (nécessaire pour vv) · réglé par .vv on/off",
+    "VV": "true : le bot reçoit les vues uniques (comme Levanter) · .setvar VV=true",
     "LOG_MSG": "true : affiche chaque message reçu dans le terminal",
     "ANTI_VV": "Vue unique auto (.antivv) : p, g, numéro ou groupe (+ pm/gm/no-pm/no-gm) · false"
   }

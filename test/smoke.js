@@ -68,6 +68,10 @@ function check(name, ok, detail = '') {
         sent.push({ jid, content, options })
         return { key: { id: `BOT${sent.length}${Math.random()}`, remoteJid: jid, fromMe: true } }
       },
+      async relayMessage(jid, message, options) {
+        sent.push({ jid, relay: message, options, content: {} })
+        return options?.messageId
+      },
       async readMessages(keys) {
         reads.push(...keys)
       },
@@ -298,14 +302,8 @@ function check(name, ok, detail = '') {
       check('téléchargement : mauvais site refusé', (await dl.instagram('https://exemple.com/a')).length === 0)
       for (const g of Object.keys(original)) swap(g, original[g])
     }
-    out = await send(raw('.vv on'))
-    check('.vv on : réception activée', config.VV === true && /activée/.test(textsOf(out)), textsOf(out))
     out = await send(raw('.vv'))
-    check('.vv sans réponse : aide avec l’état', /réception : ✅/.test(textsOf(out)))
-    out = await send(raw('.vv off'))
-    check('.vv off', config.VV === false)
-    out = await send(raw('.vv on', { from: STRANGER }))
-    check('.vv on : refusé à un inconnu', out.length === 0 && config.VV === false)
+    check('.vv sans réponse : exemple comme Levanter', textsOf(out).includes('vv jid (facultatif)'), textsOf(out))
     {
       const { setVar } = require('../lib/vars')
       setVar('VV', 'p')
@@ -329,7 +327,10 @@ function check(name, ok, detail = '') {
       out = await send(plain)
       check('antivv : une photo normale n’est pas renvoyée', !out.some((s) => s.content?.image))
       out = await send(raw('.vv', { extra: { contextInfo: { stanzaId: vo.key.id, participant: vo.key.remoteJid, quotedMessage: vo.message } } }))
-      check('.vv : révèle la vue unique citée', out.some((s) => s.content?.image && /Vue unique/.test(s.content.caption)), JSON.stringify(out))
+      const relayed = out.find((s) => s.relay)
+      check('.vv : réexpédie la vue unique comme Levanter (sans viewOnce)', relayed && relayed.jid === `${OWNER}@s.whatsapp.net` && relayed.relay.imageMessage && !relayed.relay.imageMessage.viewOnce && relayed.relay.imageMessage.caption === 'secret', JSON.stringify(out.map((s) => Object.keys(s.relay || s.content))))
+      out = await send(raw('.vv 2250700000009', { extra: { contextInfo: { stanzaId: vo.key.id, participant: vo.key.remoteJid, quotedMessage: vo.message } } }))
+      check('.vv <numéro> : envoyé à ce numéro', out.some((s) => s.relay && s.jid === '2250700000009@s.whatsapp.net'))
       B.downloadMediaMessage = realDownload
     }
     out = await send(raw('.antivv off'))

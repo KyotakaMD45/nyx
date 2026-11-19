@@ -98,11 +98,10 @@ Variables : `#uptime` `#quote` `#name` `#version` `#ram` `#prefix`.
 
 **Vues uniques** :
 
-- `.vv on` / `.vv off` : le bot reçoit (ou non) les vues uniques — nécessaire pour `.vv`.
-- `.vv` en réponse à une vue unique la révèle, dans n’importe quelle discussion · `.vv 2250700000000` l’envoie à ce numéro.
+- `.vv` en réponse à une vue unique la réexpédie en message normal, comme Levanter (même média, même légende), dans n’importe quelle discussion · `.vv <jid ou numéro>` l’envoie ailleurs.
 - `.antivv p` renvoie **automatiquement** chaque vue unique reçue dans ta discussion (variable `ANTI_VV`). Mêmes options que `.delete` : `g` (même discussion), un numéro, un groupe, portées `pm` `gm` `no-pm` `no-gm`, `off`.
 
-WhatsApp n’envoie le contenu des vues uniques qu’aux téléphones. Quand `antivv` est actif, Nyx se connecte donc en se présentant comme un téléphone Android (comme Knull et Levanter avec `VV`) ; il se reconnecte tout seul quand tu l’actives ou le désactives. Sans `antivv`, `.vv` peut échouer.
+WhatsApp n’envoie le contenu des vues uniques qu’aux téléphones. Avec `VV=true` (`.setvar VV=true`, comme Levanter) ou quand `antivv` est actif, Nyx se connecte en se présentant comme un téléphone Android pour les recevoir.
 
 ## Commandes
 
@@ -152,7 +151,7 @@ Comme Levanter, `config.env` ne contient que l’essentiel (`SESSION_ID`, `AUTO_
 | `STATUS_VIEW_EMOJI` | Réaction aux statuts (`🔥,❤️`) | — |
 | `STATUS_VIEW_MSG` | Réponse à l'auteur d'un statut | — |
 | `STATUS_FORWARD_JID` | Où recevoir les statuts (vide = ta discussion) | — |
-| `VV` | Réglé par `.vv on/off` : le bot reçoit les vues uniques | `false` |
+| `VV` | `true` : le bot reçoit les vues uniques (comme Levanter) · `.setvar VV=true` | `false` |
 | `ANTI_VV` | Réglé par `.antivv` : où renvoyer chaque vue unique (`p`, `g`, numéro, groupe + portée) · `false` | `false` |
 | `ANTI_DELETE` | Réglé par `.delete` : `p` (vers toi), `g` (même discussion), un numéro ou un groupe, + portée facultative `pm` `gm` `no-pm` `no-gm` (ex. `g gm`) · `false` | `false` |
 | `ALIVE_MSG` | Message alive perso (`#name #version #uptime #ram #prefix`) | — |
