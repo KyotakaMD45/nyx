@@ -248,6 +248,13 @@
       "desc": "Sticker en image",
       "usage": "_Réponds à un sticker avec *toimg*._"
     },
+    "upscale": {
+      "desc": "Améliore la qualité d’une image (IA) · upscale 4 pour ×4, doc pour la qualité maximale",
+      "usage": "_Réponds à une image avec *upscale*._\n_Options : *upscale 4* (×4) · *upscale doc* (envoi en document, sans compression)._",
+      "done": "✨ Image améliorée (×{0})",
+      "done_local": "✨ Image agrandie (×{0}) · les serveurs IA sont indisponibles, agrandissement local",
+      "failed": "❌ Impossible d’améliorer cette image, réessaie plus tard."
+    },
     "vv": {
       "desc": "antiViewOnce : révèle une vue unique",
       "usage": "*Exemple*\n- réponds à une photo, vidéo ou note vocale en vue unique avec *vv*\n- vv jid (facultatif)",

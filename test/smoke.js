@@ -55,6 +55,9 @@ function check(name, ok, detail = '') {
     const names = commands.map((c) => c.name)
     check('aucun nom de commande en double', new Set(names).size === names.length, names.filter((n, i) => names.indexOf(n) !== i).join(','))
     check('chaque commande a une description', commands.every((c) => c.desc), commands.filter((c) => !c.desc).map((c) => c.name).join(','))
+    const up = commands.find((c) => c.name === 'upscale')
+    check('upscale et son alias hd', up && up.regex.test('upscale') && up.regex.test('hd 4 doc'))
+    check('upscale exporté par lib/download', typeof require('../lib/download').upscale === 'function')
 
     const OWNER = '2250700000001'
     const STRANGER = '2250700000002'

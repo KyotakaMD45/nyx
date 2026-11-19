@@ -10,7 +10,7 @@ avec un système de plugins, des outils de groupe, des téléchargements et des 
 - **Protection** – anti-suppression (`delete`) et vues uniques (`vv`, `antivv`).
 - **Statuts** – vue automatique, réaction, transfert.
 - **Téléchargement** – YouTube, TikTok, Facebook, Instagram, avec plusieurs sources de secours.
-- **Médias et IA** – stickers, conversions, Gemini / Groq.
+- **Médias et IA** – stickers, conversions, `upscale` (image en HD), Gemini / Groq.
 - **Mises à jour** – `.update`, `.update now` ou `AUTO_UPDATE=true`.
 - **Langues** – français et anglais.
 

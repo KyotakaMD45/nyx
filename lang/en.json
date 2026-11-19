@@ -248,6 +248,13 @@
       "desc": "Sticker to image",
       "usage": "_Reply to a sticker with *toimg*._"
     },
+    "upscale": {
+      "desc": "Improve image quality (AI) · upscale 4 for ×4, doc for full quality",
+      "usage": "_Reply to an image with *upscale*._\n_Options: *upscale 4* (×4) · *upscale doc* (send as document, no compression)._",
+      "done": "✨ Image enhanced (×{0})",
+      "done_local": "✨ Image enlarged (×{0}) · AI servers unavailable, local upscale",
+      "failed": "❌ Could not enhance this image, try again later."
+    },
     "vv": {
       "desc": "antiViewOnce: reveal a view-once",
       "usage": "*Example*\n- reply to a viewOnce image, video or audio with *vv*\n- vv jid (optional)",
