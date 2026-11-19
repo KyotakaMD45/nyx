@@ -6,7 +6,7 @@ avec un système de plugins, des outils de groupe, des téléchargements et des 
 ## Fonctionnalités
 
 - **Multi-session** – plusieurs comptes WhatsApp dans un seul bot.
-- **Plugins** – commandes intégrées et plugins externes (`eplugins`). Un plugin tiers écrit pour Levanter/Knull reste compatible : `message.client.nyxId` est aussi exposé sous `levanterId` et `knullId`.
+- **Plugins** – commandes intégrées et plugins externes (`eplugins`). Un plugin tiers écrit pour Levanter/Knull reste compatible : `message.client.nyxId` est aussi exposé sous `levanterId` / `knullId`, et le bus d'évènements `require('../lib').nyx` (alias `levanter` / `knull`) émet `incoming.message` pour chaque message reçu.
 - **Groupes** – antilink, bienvenue / au revoir, tag, promotion, sourdine.
 - **Protection** – anti-suppression (`delete`) et vues uniques automatiques (`antivv`).
 - **AFK** – `afk <raison>` : le bot répond à ta place quand tu es absent.

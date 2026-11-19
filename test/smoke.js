@@ -59,6 +59,14 @@ function check(name, ok, detail = '') {
     check('upscale et son alias hd', up && up.regex.test('upscale') && up.regex.test('hd 4 doc'))
     check('upscale exporté par lib/download', typeof require('../lib/download').upscale === 'function')
 
+    {
+      const libMain = require('../lib')
+      check(
+        'alias Levanter/Knull : lib.nyx, lib.levanter et lib.knull sont le même bus',
+        libMain.nyx instanceof require('events').EventEmitter && libMain.nyx === libMain.levanter && libMain.levanter === libMain.knull
+      )
+    }
+
     const OWNER = '2250700000001'
     const STRANGER = '2250700000002'
     const GROUP = '120363000000000001@g.us'
@@ -124,6 +132,16 @@ function check(name, ok, detail = '') {
       return sent
     }
     const textsOf = (list) => list.map((s) => s.content?.text || '').join('\n')
+
+    {
+      const libMain = require('../lib')
+      let captured = null
+      const onIncoming = (m) => (captured = m)
+      libMain.nyx.once('incoming.message', onIncoming)
+      await send(raw('bus test'))
+      check('bus events : incoming.message émis pour chaque message reçu (compat Levanter/Knull)', captured?.text === 'bus test', captured?.text)
+      libMain.nyx.off('incoming.message', onIncoming)
+    }
 
     let out = await send(raw('.ping'))
     check('.ping répond (Pong)', /Pong/.test(textsOf(out)), textsOf(out))
