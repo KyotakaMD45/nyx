@@ -28,7 +28,7 @@ bot(
     const shown = isSecret(parsed.key) ? mask(parsed.value) : parsed.value
     await message.reply(lang.plugins.setvar.done.format(parsed.key, shown))
     if (parsed.key === 'SESSION_ID') {
-      const count = parsed.value.split(',').filter((id) => id.trim()).length
+      const count = parsed.value.split(/,|;_;/).filter((id) => id.trim()).length
       await message.reply(count > 1 ? lang.plugins.setvar.sessions_restart.format(count) : lang.plugins.setvar.session_restart)
       if (!instance.isChild) session.clearSession()
       restart()

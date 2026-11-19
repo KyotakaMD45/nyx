@@ -41,7 +41,7 @@ Il t'est aussi envoyé dans ta propre discussion WhatsApp.
 
 ## Multi-session
 
-Mets plusieurs SESSION_ID séparés par des virgules dans `config.env` :
+Mets plusieurs SESSION_ID séparés par des virgules (ou par `;_;` comme Levanter) dans `config.env` :
 
 ```env
 SESSION_ID="Nyx_compte1,Nyx_compte2,Nyx_compte3"
@@ -52,6 +52,8 @@ Ou depuis WhatsApp : `.setvar SESSION_ID=Nyx_compte1,Nyx_compte2` (le bot redém
 Comme Levanter, chaque compte est lié à **son SESSION_ID**, pas à sa place dans la liste : ses fichiers sont dans `sessions/<SESSION_ID>/` (session, données, réglages). Ajouter, retirer ou réordonner des comptes ne mélange rien.
 
 Chaque compte a ses propres données (commandes autorisées, alive, anti-suppression, AFK…) et **ses propres variables** : un `.setvar` envoyé depuis un compte ne change que ce compte (fichier `sessions/<SESSION_ID>/config.env`). `.delvar` le ramène à la valeur commune de `config.env`.
+
+**Messages du bot** (bienvenue, carte de démarrage, rapports d'erreur, mises à jour, statuts, `delete p`, `antivv p`) : comme Levanter, ils arrivent dans le compte du propriétaire, c'est-à-dire le **premier numéro SUDO** s'il y en a un, sinon la discussion du bot.
 
 Restent communes à tous : `SESSION_ID`, `AUTO_UPDATE`, `UPDATE_INTERVAL`, `BRANCH`, `TZ`, `LOG_LEVEL`, `LOG_MSG`, les clés d'IA et les sources YouTube. Une session qui plante redémarre seule ; `.restart` et les mises à jour redémarrent toutes les sessions.
 

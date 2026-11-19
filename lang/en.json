@@ -5,7 +5,7 @@
     "start_failed": "Startup failed: {0}",
     "session_imported": "[{0}] Session imported from SESSION_ID",
     "session_dead": "This SESSION_ID was logged out by WhatsApp: create a new session, or log in with the QR below.",
-    "session_invalid": "Invalid SESSION_ID: it must start with \"Nexora~\" or \"Nexora_\" (session site).",
+    "session_invalid": "Invalid SESSION_ID: it must start with \"Nyx_\" or \"Nyx~\" (session site: nyx-session.vercel.app).",
     "session_import_failed": "Could not import the session: {0}",
     "scan_qr": "[{0}] Scan this QR in WhatsApp › Linked devices:",
     "pairing_code": "[{0}] Pairing code: {1}",

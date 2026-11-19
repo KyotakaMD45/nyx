@@ -1,14 +1,14 @@
-const { bot, lang, config, setVar, logger, getBaileys, parseStatusView, bare, num, toJid } = require('../lib')
+const { bot, lang, config, setVar, logger, getBaileys, parseStatusView, bare, num, toJid, ownerJid } = require('../lib')
 
 const REPLY_COOLDOWN = 12 * 60 * 60 * 1000
 const lastReply = new Map()
 
 function forwardTarget(sock) {
   const value = config.STATUS_FORWARD_JID
-  if (!value || value.toLowerCase() === 'false' || value.toLowerCase() === 'me') return bare(sock.user.id)
+  if (!value || value.toLowerCase() === 'false' || value.toLowerCase() === 'me') return ownerJid(sock)
   if (value.includes('@')) return value
   const digits = value.replace(/\D/g, '')
-  return digits ? toJid(digits) : bare(sock.user.id)
+  return digits ? toJid(digits) : ownerJid(sock)
 }
 
 const SKIP_TYPES = new Set(['protocolMessage', 'reactionMessage', 'senderKeyDistributionMessage', 'messageContextInfo'])

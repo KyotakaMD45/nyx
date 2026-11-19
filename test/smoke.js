@@ -276,6 +276,22 @@ function check(name, ok, detail = '') {
       const fbReport = out.find((s) => /ERROR REPORT/.test(s.content?.text || ''))
       check('erreur interceptée (fb) : rapport aussi dans le PV', fbReport && fbReport.jid === `${OWNER}@s.whatsapp.net` && /panne fb/.test(fbReport.content.text) && /Command  : fb/.test(fbReport.content.text), JSON.stringify(out.map((s) => s.jid)))
       dl.facebook = realFb
+      const owner = require('../lib/owner')
+      process.env.SUDO = '2250700000077'
+      config.reload()
+      sock.onWhatsApp = async (n) => [{ exists: true, jid: `${n}@s.whatsapp.net` }]
+      check('propriétaire : 1er SUDO comme Levanter', (await owner.resolveOwner(sock)) === '2250700000077@s.whatsapp.net')
+      dl.facebook = async () => {
+        throw new Error('panne fb 2')
+      }
+      out = await send(inGroup('.fb https://www.facebook.com/v/2'))
+      const sudoReport = out.find((s) => /ERROR REPORT/.test(s.content?.text || ''))
+      check('rapport d’erreur : envoyé au compte du propriétaire (1er SUDO)', sudoReport && sudoReport.jid === '2250700000077@s.whatsapp.net', JSON.stringify(out.map((s) => s.jid)))
+      dl.facebook = realFb
+      delete process.env.SUDO
+      config.reload()
+      sock.onWhatsApp = async () => []
+      check('sans SUDO : la discussion du bot', (await owner.resolveOwner(sock)) === `${OWNER}@s.whatsapp.net`)
     }
     {
       const realFetch = global.fetch
@@ -522,6 +538,7 @@ function check(name, ok, detail = '') {
       const multi = require('../lib/multi')
       check('multi-session : SESSION_ID séparés par des virgules, sans doublon', JSON.stringify(multi.sessionIds(' Nyx_a , Nyx_b,Nyx_a,,')) === '["Nyx_a","Nyx_b"]')
       check('multi-session : une seule session = mode normal', multi.sessionIds('Nyx_a').length === 1)
+      check('multi-session : séparateur ;_; comme Levanter', JSON.stringify(multi.sessionIds('Nyx_a;_;Nyx_b ;_; Nyx_c,Nyx_d')) === '["Nyx_a","Nyx_b","Nyx_c","Nyx_d"]')
       const { execFileSync } = require('child_process')
       const crypto = require('crypto')
       const SESSIONS = path.join(ROOT, 'sessions')
