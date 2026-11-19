@@ -270,9 +270,9 @@
     },
     "pass": {
       "desc": "Autorise des commandes pour les autres dans cette discussion",
-      "usage": "*Exemples :*\n- {0}pass ping sticker : autorise ces commandes ici\n- {0}pass : voir les commandes autorisées ici\n- {0}pass del ping : retire une commande\n- {0}pass del all : retire tout",
+      "usage": "*Exemples :*\n- {0}pass ping sticker : autorise ces commandes ici\n- {0}yami : voir les commandes autorisées ici\n- {0}ope ping : retire une commande\n- {0}ope all : retire tout",
       "added": "✅ *Commandes autorisées pour* {0}\n{1}",
-      "list": "📋 *Commandes autorisées pour* {0}\n{1}\n\n📊 Total : {2}\n💡 Retirer : {3}pass del <commande> · tout : {3}pass del all",
+      "list": "📋 *Commandes autorisées pour* {0}\n{1}\n\n📊 Total : {2}\n💡 Retirer : {3}ope <commande> · tout : {3}ope all",
       "none": "📋 Aucune commande autorisée ici.\n\n💡 Ajoute-en : {0}pass ping sticker",
       "already": "ℹ️ Déjà autorisée(s) : {0}",
       "locked": "🔒 Réservée(s) au propriétaire, impossible à autoriser : {0}",
@@ -280,6 +280,20 @@
       "removed": "🗑️ *Commandes retirées pour* {0}\n{1}",
       "missing": "⚠️ Pas autorisée(s) ici : {0}",
       "cleared": "✅ Toutes les commandes autorisées ont été retirées ici."
+    },
+    "yami": {
+      "desc": "Affiche les commandes autorisées dans cette discussion",
+      "no_commands": "📋 Aucune commande autorisée trouvée\n\n💡 Utilise {0}pass pour ajouter des commandes\n📝 Exemple : {0}pass song video sticker",
+      "list": "📋 *Commandes autorisées pour* {0} :\n\n{1}\n\n📊 Total : {2} commande{3}\n\n💡 Supprimer avec : {4}ope <noms de commandes>\n💡 Tout supprimer : {4}ope all"
+    },
+    "ope": {
+      "desc": "Supprime des commandes autorisées · ope all pour tout supprimer",
+      "no_input": "⚠️ Indique les commandes à supprimer\n\n📝 Exemples :\n  • {0}ope song video\n  • {0}ope all (supprime tout)\n\n💡 Utilise {0}yami pour voir les commandes autorisées",
+      "not_found_list": "❌ Commande{0} non trouvée : {1}{2}\n\n💡 Utilise {3}yami pour voir toutes les commandes autorisées\n📝 Exemple : {3}ope song video",
+      "current": "\n\n📋 Commandes autorisées actuellement :\n{0}",
+      "no_commands": "⚠️ Aucune commande autorisée pour cet utilisateur/groupe\n\n💡 Utilise d'abord {0}pass pour ajouter des commandes",
+      "all_success": "✅ Toutes les commandes ont été supprimées\n\n💡 Utilise {0}pass pour ajouter de nouvelles commandes",
+      "removed": "*Commandes supprimées pour* {0}\n{1}"
     },
     "delete": {
       "desc": "Anti-suppression : récupère les messages supprimés",

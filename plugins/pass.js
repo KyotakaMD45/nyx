@@ -40,3 +40,41 @@ bot(
     await message.send(parts.join('\n\n') || t.usage.format(prefix()))
   }
 )
+
+bot(
+  {
+    pattern: 'yami ?(.*)',
+    desc: lang.plugins.yami.desc,
+    type: 'owner',
+  },
+  async (message) => {
+    const t = lang.plugins.yami
+    const list = pass.listFor(message.jid)
+    if (!list.length) return message.send(t.no_commands.format(prefix()))
+    await message.send(t.list.format(where(message), lines(list), list.length, list.length > 1 ? 's' : '', prefix()))
+  }
+)
+
+bot(
+  {
+    pattern: 'ope ?(.*)',
+    desc: lang.plugins.ope.desc,
+    type: 'owner',
+  },
+  async (message, match) => {
+    const t = lang.plugins.ope
+    const input = String(match || '').trim()
+    if (!input) return message.send(t.no_input.format(prefix()))
+    const current = pass.listFor(message.jid)
+    if (!current.length) return message.send(t.no_commands.format(prefix()))
+    if (/^all$/i.test(input)) {
+      pass.remove(message.jid, 'all')
+      return message.send(t.all_success.format(prefix()))
+    }
+    const { removed, missing } = pass.remove(message.jid, input)
+    if (!removed.length) {
+      return message.send(t.not_found_list.format(missing.length > 1 ? 's' : '', missing.join(', '), t.current.format(lines(current)), prefix()))
+    }
+    await message.send(t.removed.format(where(message), lines(removed)))
+  }
+)

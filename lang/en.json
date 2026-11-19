@@ -270,9 +270,9 @@
     },
     "pass": {
       "desc": "Allow commands for others in this chat",
-      "usage": "*Examples:*\n- {0}pass ping sticker: allow these commands here\n- {0}pass: show allowed commands here\n- {0}pass del ping: remove a command\n- {0}pass del all: remove all",
+      "usage": "*Examples:*\n- {0}pass ping sticker: allow these commands here\n- {0}yami: see the commands allowed here\n- {0}ope ping: remove a command\n- {0}ope all: remove everything",
       "added": "✅ *Commands allowed for* {0}\n{1}",
-      "list": "📋 *Commands allowed for* {0}\n{1}\n\n📊 Total: {2}\n💡 Remove: {3}pass del <command> · all: {3}pass del all",
+      "list": "📋 *Commands allowed for* {0}\n{1}\n\n📊 Total: {2}\n💡 Remove: {3}ope <command> · all: {3}ope all",
       "none": "📋 No allowed commands here.\n\n💡 Add some: {0}pass ping sticker",
       "already": "ℹ️ Already allowed: {0}",
       "locked": "🔒 Owner only, cannot be allowed: {0}",
@@ -280,6 +280,20 @@
       "removed": "🗑️ *Commands removed for* {0}\n{1}",
       "missing": "⚠️ Not allowed here: {0}",
       "cleared": "✅ All allowed commands were removed here."
+    },
+    "yami": {
+      "desc": "Show the commands allowed in this chat",
+      "no_commands": "📋 No allowed commands found\n\n💡 Use {0}pass to add commands\n📝 Example: {0}pass song video sticker",
+      "list": "📋 *Allowed commands for* {0}:\n\n{1}\n\n📊 Total: {2} command{3}\n\n💡 Remove with: {4}ope <command names>\n💡 Remove all: {4}ope all"
+    },
+    "ope": {
+      "desc": "Remove allowed commands · ope all to remove everything",
+      "no_input": "⚠️ Please provide command names to remove\n\n📝 Examples:\n  • {0}ope song video\n  • {0}ope all (removes everything)\n\n💡 Use {0}yami to see allowed commands",
+      "not_found_list": "❌ Command{0} not found: {1}{2}\n\n💡 Use {3}yami to see all allowed commands\n📝 Example: {3}ope song video",
+      "current": "\n\n📋 Current allowed commands:\n{0}",
+      "no_commands": "⚠️ No commands found for this user/group\n\n💡 Use {0}pass first to add commands",
+      "all_success": "✅ All commands have been removed\n\n💡 Use {0}pass to add new commands",
+      "removed": "*Commands removed for* {0}\n{1}"
     },
     "delete": {
       "desc": "Anti-delete: recover deleted messages",
