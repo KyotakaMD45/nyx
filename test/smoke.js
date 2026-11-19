@@ -628,6 +628,29 @@ function check(name, ok, detail = '') {
     }
     check('SESSION_ID invalide : refusé', invalid === 'invalid_session_id')
     session.clearSession()
+    {
+      const realStatusFetch = global.fetch
+      let hit = ''
+      const cfg = (extra) => ({ SESSION_ID: 'Nyx_demo', SESSION_URL: 'https://site.test/json/', SESSION_CHECK: true, ...extra })
+      global.fetch = async (url) => {
+        hit = String(url)
+        return { ok: true, json: async () => ({ active: true }) }
+      }
+      let g = await session.remoteStatus(cfg())
+      check('déconnexion distante : interroge le serveur du site', hit === 'https://site.test/api/status?id=Nyx_demo' && g.managed && g.reachable && g.active === true, hit)
+      check('déconnexion distante : active → le bot reste', session.isRevoked(g) === false)
+      global.fetch = async () => ({ ok: true, json: async () => ({ active: false, revoked: true }) })
+      g = await session.remoteStatus(cfg())
+      check('déconnexion distante : révoquée → le bot se déconnecte', session.isRevoked(g) === true)
+      global.fetch = async () => {
+        throw new Error('offline')
+      }
+      g = await session.remoteStatus(cfg())
+      check('déconnexion distante : serveur injoignable → le bot reste (fail-open)', g.reachable === false && session.isRevoked(g) === false)
+      global.fetch = realStatusFetch
+      check('déconnexion distante : désactivable (SESSION_CHECK=false)', (await session.remoteStatus(cfg({ SESSION_CHECK: false }))).managed === false)
+      check('déconnexion distante : ignore les sessions non hébergées (Nyx~ / autres)', (await session.remoteStatus(cfg({ SESSION_ID: 'Nexora_0123456789abcdef' }))).managed === false)
+    }
     const realFetch = global.fetch
     let asked = ''
     global.fetch = async (url) => {
