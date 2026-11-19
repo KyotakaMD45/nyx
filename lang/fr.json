@@ -278,6 +278,16 @@
       "done_local": "✨ Image agrandie (×{0}) · les serveurs IA sont indisponibles, agrandissement local",
       "failed": "❌ Impossible d’améliorer cette image, réessaie plus tard."
     },
+    "afk": {
+      "desc": "Mode absent (AFK) : répond à ta place quand tu n'es pas là",
+      "example": "*Mode AFK (absent)*\n- afk <raison> : active, ex. *afk Je dors, de retour demain*\n- #lastseen dans la raison = depuis combien de temps tu es absent\n- Le bot répond en privé, et en groupe quand on te mentionne ou te répond\n- Dès que tu écris un message, l'AFK se coupe tout seul\n- afk off : désactive",
+      "enabled": "✅ *AFK activé*\n\n{0}",
+      "status": "💤 *AFK actif*\n\n{0}\n\n_afk off pour désactiver_",
+      "not_afk": "👋 Tu n'es plus AFK.",
+      "already_off": "_Tu n'étais pas AFK._",
+      "default_reason": "Je suis absent pour le moment.",
+      "reply": "💤 *Absent*\n\n{0}\n\n_Absent depuis {1}_"
+    },
     "ai": {
       "desc": "Pose une question à l'IA (Gemini / Groq)",
       "usage": "*Exemple :* ai Explique-moi la photosynthèse",

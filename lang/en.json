@@ -278,6 +278,16 @@
       "done_local": "✨ Image enlarged (×{0}) · AI servers unavailable, local upscale",
       "failed": "❌ Could not enhance this image, try again later."
     },
+    "afk": {
+      "desc": "Away mode (AFK): replies for you while you are away",
+      "example": "*AFK mode*\n- afk <reason>: turn on, e.g. *afk Sleeping, back tomorrow*\n- #lastseen in the reason = how long you have been away\n- The bot replies in private, and in groups when you are mentioned or replied to\n- As soon as you send a message, AFK turns off\n- afk off: turn off",
+      "enabled": "✅ *AFK on*\n\n{0}",
+      "status": "💤 *AFK is on*\n\n{0}\n\n_afk off to turn it off_",
+      "not_afk": "👋 You are no longer AFK.",
+      "already_off": "_You were not AFK._",
+      "default_reason": "I'm away right now.",
+      "reply": "💤 *Away*\n\n{0}\n\n_Away for {1}_"
+    },
     "ai": {
       "desc": "Ask the AI (Gemini / Groq)",
       "usage": "*Example:* ai Explain photosynthesis",

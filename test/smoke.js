@@ -298,6 +298,24 @@ function check(name, ok, detail = '') {
       delete process.env.GROQ_API_KEY
       config.reload()
     }
+    {
+      out = await send(raw('.afk'))
+      check('.afk sans texte : mode d’emploi', /afk off/.test(textsOf(out)), textsOf(out))
+      out = await send(raw('.afk Je dors #lastseen'))
+      check('.afk : activé', /AFK activé/.test(textsOf(out)) && /Je dors 0s/.test(textsOf(out)), textsOf(out))
+      out = await send(raw('Salut', { from: STRANGER }))
+      check('afk : réponse en privé avec la durée', /Je dors \d+s/.test(textsOf(out)), textsOf(out))
+      out = await send(raw('Tu es là ?', { from: STRANGER }))
+      check('afk : pas de spam (1 réponse par minute)', out.length === 0)
+      out = await send(inGroup('Bonjour tout le monde', { from: STRANGER }))
+      check('afk : en groupe, rien sans mention', out.length === 0)
+      out = await send(inGroup('@moi tu viens ?', { from: STRANGER, extra: { contextInfo: { mentionedJid: [`${OWNER}@s.whatsapp.net`] } } }))
+      check('afk : en groupe, répond quand on te mentionne', /Je dors/.test(textsOf(out)), textsOf(out))
+      out = await send(raw('je suis rentré'))
+      check('afk : ton propre message coupe l’AFK', /plus AFK/.test(textsOf(out)), textsOf(out))
+      out = await send(raw('Re', { from: STRANGER, extra: {} }))
+      check('afk : plus de réponse après', !/Je dors/.test(textsOf(out)))
+    }
     out = await send(inGroup('.tagall Bonjour'))
     check('.tagall mentionne tout le monde', out[0]?.content?.mentions?.length === 2)
     out = await send(inGroup('.tag Message caché'))
@@ -504,33 +522,67 @@ function check(name, ok, detail = '') {
       const multi = require('../lib/multi')
       check('multi-session : SESSION_ID séparés par des virgules, sans doublon', JSON.stringify(multi.sessionIds(' Nyx_a , Nyx_b,Nyx_a,,')) === '["Nyx_a","Nyx_b"]')
       check('multi-session : une seule session = mode normal', multi.sessionIds('Nyx_a').length === 1)
-      const instance = require('../lib/instance')
-      check('multi-session : session 1 garde les dossiers habituels', instance.isMain && instance.sessionDir.endsWith('session') && !instance.sessionDir.includes('sessions'))
       const { execFileSync } = require('child_process')
-      const dir = execFileSync(process.execPath, ['-e', "console.log(require('./lib/instance').sessionDir)"], { cwd: ROOT, env: { ...process.env, NYX_INSTANCE: '2' } }).toString().trim()
-      check('multi-session : session 2 dans sessions/2', dir.split(path.sep).join('/').endsWith('sessions/2/session'), dir)
+      const crypto = require('crypto')
+      const SESSIONS = path.join(ROOT, 'sessions')
       const savedEnv = fs.existsSync(ENV) ? fs.readFileSync(ENV, 'utf8') : null
-      fs.writeFileSync(ENV, 'SESSION_ID="Nyx_aaa,Nyx_bbb"\nPREFIX="."\nAUTO_UPDATE="false"\n')
+      const keepRoot = path.join(backup, 'multi-root')
+      for (const name of ['session', 'data']) if (fs.existsSync(path.join(ROOT, name))) fs.cpSync(path.join(ROOT, name), path.join(keepRoot, name), { recursive: true })
       const envFor = (extra) => {
         const env = { ...process.env, ...extra }
         delete env.PREFIX
         delete env.AUTO_UPDATE
+        if (env.SESSION_ID === '') delete env.SESSION_ID
         return env
       }
-      const asSession2 = (code) => execFileSync(process.execPath, ['-e', code], { cwd: ROOT, env: envFor({ NYX_INSTANCE: '2', SESSION_ID: 'Nyx_bbb' }) }).toString().trim()
-      const got = asSession2("const v=require('./lib/vars');v.setVar('PREFIX','!');v.setVar('AUTO_UPDATE','true');console.log(require('./config').PREFIX+'|'+v.getVar('PREFIX'))")
-      const file = fs.readFileSync(ENV, 'utf8')
-      check('multi-session : setvar de la session 2 ne touche que la session 2', got === '!|!' && /PREFIX=".;_;!"/.test(file), got + ' / ' + file)
-      check('multi-session : variable commune (AUTO_UPDATE) pour toutes', /AUTO_UPDATE="true"/.test(file) && !/AUTO_UPDATE=".*;_;/.test(file), file)
-      const first = execFileSync(process.execPath, ['-e', "console.log(require('./config').PREFIX)"], { cwd: ROOT, env: envFor({ NYX_INSTANCE: '1', SESSION_ID: 'Nyx_aaa' }) }).toString().trim()
-      check('multi-session : la session 1 garde son préfixe', first === '.', first)
-      const cleared = asSession2("const v=require('./lib/vars');v.delVar('PREFIX');console.log(require('./config').PREFIX)")
-      check('multi-session : delvar dans la session 2 = valeur par défaut, session 1 intacte', cleared === '^[.,!]' && fs.readFileSync(ENV, 'utf8').includes('PREFIX=".;_;"'), cleared + ' / ' + fs.readFileSync(ENV, 'utf8'))
-      const list = asSession2("const v=require('./lib/vars');v.setVar('SESSION_ID','Nyx_aaa,Nyx_bbb,Nyx_ccc');console.log(require('./lib/multi').sessionIds(require('dotenv').parse(require('fs').readFileSync('config.env')).SESSION_ID).length)")
-      check('multi-session : .setvar SESSION_ID depuis WhatsApp ajoute une session', list === '3', list)
-      if (savedEnv === null) fs.rmSync(ENV, { force: true })
-      else fs.writeFileSync(ENV, savedEnv)
+      const as = (instance, id, code) =>
+        execFileSync(process.execPath, ['-e', code], { cwd: ROOT, env: envFor({ NYX_INSTANCE: instance, SESSION_ID: id }) }).toString().trim()
+      const unix = (p) => p.split(path.sep).join('/')
+      try {
+        fs.rmSync(SESSIONS, { recursive: true, force: true })
+        for (const name of ['session', 'data']) fs.rmSync(path.join(ROOT, name), { recursive: true, force: true })
+        fs.mkdirSync(path.join(ROOT, 'session'), { recursive: true })
+        fs.writeFileSync(path.join(ROOT, 'session', 'creds.json'), '{"a":1}')
+        fs.mkdirSync(path.join(ROOT, 'data'), { recursive: true })
+        fs.writeFileSync(path.join(ROOT, 'data', 'session_id'), crypto.createHash('sha256').update('Nyx_bbb').digest('hex'))
+        fs.mkdirSync(path.join(SESSIONS, '2', 'session'), { recursive: true })
+        fs.writeFileSync(path.join(SESSIONS, '2', 'session', 'creds.json'), '{"b":1}')
+        fs.writeFileSync(ENV, 'SESSION_ID="Nyx_aaa,Nyx_bbb"\nPREFIX="."\nAUTO_UPDATE="false"\n')
+
+        const dirA = as('1', 'Nyx_aaa', "console.log(require('./lib/instance').sessionDir)")
+        check('multi-session : chaque compte a son dossier (sessions/<ID>)', unix(dirA).endsWith('sessions/nyx_aaa/session'), dirA)
+        const dirB = as('2', 'Nyx_bbb', "console.log(require('./lib/instance').sessionDir)")
+        check('migration : l’ancien dossier principal suit son SESSION_ID', unix(dirB).endsWith('sessions/nyx_bbb/session') && fs.readFileSync(path.join(SESSIONS, 'nyx_bbb', 'session', 'creds.json'), 'utf8') === '{"a":1}')
+        check('migration : sans empreinte, l’ancien sessions/2 n’est pas pris par un autre compte', fs.existsSync(path.join(SESSIONS, '2', 'session', 'creds.json')) && !fs.existsSync(path.join(SESSIONS, 'nyx_aaa', 'session', 'creds.json')))
+
+        const got = as('2', 'Nyx_bbb', "const v=require('./lib/vars');v.setVar('PREFIX','!');v.setVar('AUTO_UPDATE','true');console.log(require('./config').PREFIX+'|'+v.getVar('PREFIX'))")
+        const file = fs.readFileSync(ENV, 'utf8')
+        check('multi-session : setvar d’un compte = son propre fichier', got === '!|!' && /PREFIX="\."/.test(file) && fs.readFileSync(path.join(SESSIONS, 'nyx_bbb', 'config.env'), 'utf8').includes('PREFIX="!"'), got + ' / ' + file)
+        check('multi-session : variable commune (AUTO_UPDATE) pour tous', /AUTO_UPDATE="true"/.test(file) && !fs.readFileSync(path.join(SESSIONS, 'nyx_bbb', 'config.env'), 'utf8').includes('AUTO_UPDATE'), file)
+        check('multi-session : l’autre compte garde son préfixe', as('1', 'Nyx_aaa', "console.log(require('./config').PREFIX)") === '.')
+        check('retrait du 1er compte : le compte restant garde son préfixe et son dossier', as('1', 'Nyx_bbb', "console.log(require('./config').PREFIX+'|'+require('./lib/instance').slot)") === '!|nyx_bbb')
+        fs.writeFileSync(ENV, 'SESSION_ID="Nyx_bbb"\nPREFIX="."\n')
+        const alone = execFileSync(process.execPath, ['-e', "console.log(require('./config').PREFIX+'|'+require('./lib/instance').slot)"], { cwd: ROOT, env: envFor({ SESSION_ID: '' }) }).toString().trim()
+        check('retour à un seul compte : il garde ses réglages', alone === '!|nyx_bbb', alone)
+        const single = execFileSync(process.execPath, ['-e', "const v=require('./lib/vars');v.setVar('PREFIX','?');console.log(require('./config').PREFIX)"], { cwd: ROOT, env: envFor({ SESSION_ID: '' }) }).toString().trim()
+        check('un seul compte : setvar écrit dans config.env et remplace l’ancien réglage du compte', single === '?' && /PREFIX="\?"/.test(fs.readFileSync(ENV, 'utf8')) && !fs.readFileSync(path.join(SESSIONS, 'nyx_bbb', 'config.env'), 'utf8').includes('PREFIX'), single)
+        fs.writeFileSync(ENV, 'SESSION_ID="Nyx_aaa,Nyx_bbb"\nPREFIX="."\n')
+        as('2', 'Nyx_bbb', "require('./lib/vars').setVar('PREFIX','!')")
+        const cleared = as('2', 'Nyx_bbb', "const v=require('./lib/vars');v.delVar('PREFIX');console.log(require('./config').PREFIX)")
+        check('multi-session : delvar d’un compte = revient à la valeur commune', cleared === '.', cleared)
+        const list = as('2', 'Nyx_bbb', "const v=require('./lib/vars');v.setVar('SESSION_ID','Nyx_aaa,Nyx_bbb,Nyx_ccc');console.log(require('./lib/multi').sessionIds(require('dotenv').parse(require('fs').readFileSync('config.env')).SESSION_ID).length)")
+        check('multi-session : .setvar SESSION_ID depuis WhatsApp ajoute une session', list === '3', list)
+      } finally {
+        fs.rmSync(SESSIONS, { recursive: true, force: true })
+        for (const name of ['session', 'data']) {
+          fs.rmSync(path.join(ROOT, name), { recursive: true, force: true })
+          if (fs.existsSync(path.join(keepRoot, name))) fs.cpSync(path.join(keepRoot, name), path.join(ROOT, name), { recursive: true })
+        }
+        if (savedEnv === null) fs.rmSync(ENV, { force: true })
+        else fs.writeFileSync(ENV, savedEnv)
+      }
     }
+
     const session = require('../lib/session')
     session.clearSession()
     const creds = B.initAuthCreds()

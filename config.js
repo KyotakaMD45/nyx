@@ -32,10 +32,22 @@ function pick(key, value) {
   return String(value).split(SEP)[sessionIndex()] ?? ''
 }
 
+function ownVars() {
+  try {
+    const file = require('./lib/instance').varsFile
+    if (!file || !existsSync(file)) return {}
+    const parsed = require('dotenv').parse(require('fs').readFileSync(file))
+    for (const key of SHARED) delete parsed[key]
+    return parsed
+  } catch {
+    return {}
+  }
+}
+
 function sessionEnv() {
   const env = {}
   for (const [key, value] of Object.entries(process.env)) env[key] = pick(key, value)
-  return env
+  return Object.assign(env, ownVars())
 }
 
 function build() {
@@ -100,6 +112,6 @@ Object.defineProperty(config, 'reload', {
   },
 })
 
-Object.defineProperty(config, 'session', { enumerable: false, value: { SEP, SHARED, sessionIndex, pick } })
+Object.defineProperty(config, 'session', { enumerable: false, value: { SEP, SHARED, sessionIndex, pick, effective: (key) => sessionEnv()[key] } })
 
 module.exports = config
