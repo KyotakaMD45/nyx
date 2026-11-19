@@ -467,6 +467,9 @@ function check(name, ok, detail = '') {
     try {
       const custom = await session.prepareSession({ SESSION_ID: 'Nyx_monbot', SESSION_URL: 'https://site.test/json/' })
       check('SESSION_ID personnalisé Nyx_monbot importé', custom === 'imported' && asked === 'https://site.test/json/Nyx_monbot/nyx', asked)
+      session.clearSession()
+      const own = await session.prepareSession({ SESSION_ID: 'Nyx_monbot_k3f9', SESSION_URL: 'https://site.test/json/' })
+      check('SESSION_ID personnel Nyx_monbot_k3f9 importé', own === 'imported' && asked === 'https://site.test/json/Nyx_monbot_k3f9/nyx', asked)
     } finally {
       global.fetch = realFetch
       session.clearSession()
