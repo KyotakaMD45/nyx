@@ -458,6 +458,19 @@ function check(name, ok, detail = '') {
     }
     check('SESSION_ID invalide : refusé', invalid === 'invalid_session_id')
     session.clearSession()
+    const realFetch = global.fetch
+    let asked = ''
+    global.fetch = async (url) => {
+      asked = String(url)
+      return new Response(json)
+    }
+    try {
+      const custom = await session.prepareSession({ SESSION_ID: 'Nyx_monbot', SESSION_URL: 'https://site.test/json/' })
+      check('SESSION_ID personnalisé Nyx_monbot importé', custom === 'imported' && asked === 'https://site.test/json/Nyx_monbot/nyx', asked)
+    } finally {
+      global.fetch = realFetch
+      session.clearSession()
+    }
   } catch (error) {
     failed++
     console.log(`❌ erreur inattendue : ${error?.stack || error}`)
