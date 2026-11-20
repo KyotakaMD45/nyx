@@ -271,9 +271,12 @@ function check(name, ok, detail = '') {
     await send(raw('.online on'))
     check('.online on', config.ALWAYS_ONLINE === true)
     await send(raw('.online off'))
-    await send(raw('.status emoji 🔥,❤️'))
+    await send(raw('.status off'))
+    out = await send(raw('.status emoji 🔥,❤️'))
     check('.status emoji', config.STATUS_VIEW_EMOJI === '🔥,❤️')
+    check('.status emoji active aussi la vue des statuts', config.AUTO_STATUS_VIEW === 'true' && /activée automatiquement/.test(textsOf(out)), config.AUTO_STATUS_VIEW)
     await send(raw('.status emoji off'))
+    await send(raw('.status off'))
 
     const inGroup = (text, opts = {}) => raw(text, { jid: GROUP, participant: `${opts.from || OWNER}@s.whatsapp.net`, ...opts })
     {

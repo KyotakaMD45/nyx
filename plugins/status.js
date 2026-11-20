@@ -119,8 +119,12 @@ bot(
     if (emoji) {
       const v = emoji[1].trim().toLowerCase() === 'off' ? '' : emoji[1].trim()
       setVar('STATUS_VIEW_EMOJI', v)
-      const hint = v && !parseStatusView(config.AUTO_STATUS_VIEW).enabled ? t.needs_on.format(require('../lib').prefix()) : ''
-      return message.reply(lang.plugins.settings.saved.format('STATUS_VIEW_EMOJI', v || 'off') + hint)
+      let note = ''
+      if (v && !parseStatusView(config.AUTO_STATUS_VIEW).enabled) {
+        setVar('AUTO_STATUS_VIEW', 'true')
+        note = t.auto_on
+      }
+      return message.reply(lang.plugins.settings.saved.format('STATUS_VIEW_EMOJI', v || 'off') + note)
     }
     const msg = /^msg\s+([\s\S]+)$/i.exec(value)
     if (msg) {

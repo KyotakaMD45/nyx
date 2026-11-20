@@ -174,7 +174,7 @@
       "usage": "*Statuses*\n› Auto view: *{0}*\n› Emoji: *{1}*\n› Reply: *{2}*\n› Sent to: *{3}*\n\n*Examples:*\n› status on — view and receive every status\n› status off\n› status no-dl — view only, without receiving them\n› status hide-view — view without the \"seen\" receipt\n› status &delay — wait a little before viewing\n› status only-view 2250700000000,2250700000001\n› status except-view 2250700000000\n› status emoji 🔥,❤️ · status emoji off\n› status msg Nice status! · status msg off\n› status forward 2250700000000 · status forward me\n\n_Options combine: status no-dl &delay_",
       "header": "📥 *Status from {0}* (+{1})",
       "own_chat": "your chat",
-      "needs_on": "\n\n_⚠️ Status view is off: send *{0}status on* so the bot reacts._"
+      "auto_on": "\n\n_👀 Status view was turned on automatically (status off to stop)._"
     },
     "kick": {
       "desc": "Remove a member",
