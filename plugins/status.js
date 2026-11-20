@@ -1,4 +1,6 @@
-const { bot, lang, config, setVar, logger, getBaileys, parseStatusView, bare, num, toJid, ownerJid } = require('../lib')
+const { bot, lang, config, setVar, logger, getBaileys, parseStatusView, bare, num, toJid, ownerJid, parseEmojis } = require('../lib')
+
+const statusEmojis = parseEmojis
 
 const REPLY_COOLDOWN = 12 * 60 * 60 * 1000
 const lastReply = new Map()
@@ -33,19 +35,6 @@ async function forwardStatus(sock, raw, number) {
   const copy = B.proto.Message.decode(B.proto.Message.encode(raw.message).finish())
   const generated = B.generateWAMessageFromContent(target, copy, { quoted: raw, userJid: sock.user.id })
   await sock.relayMessage(target, generated.message, { messageId: generated.key.id })
-}
-
-function statusEmojis(value) {
-  const raw = String(value || '').trim()
-  if (!raw || ['false', 'off', 'null'].includes(raw.toLowerCase())) return []
-  const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter(undefined, { granularity: 'grapheme' }) : null
-  const out = []
-  for (const part of raw.split(/[\s,;|]+/).filter(Boolean)) {
-    const graphemes = segmenter ? [...segmenter.segment(part)].map((s) => s.segment) : [part]
-    if (graphemes.length > 1 && graphemes.every((g) => /\p{Extended_Pictographic}/u.test(g))) out.push(...graphemes)
-    else out.push(part)
-  }
-  return out
 }
 
 function rememberLid(sock, raw) {

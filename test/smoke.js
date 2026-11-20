@@ -278,13 +278,22 @@ function check(name, ok, detail = '') {
     await send(raw('.status emoji off'))
     await send(raw('.status off'))
 
-    const quoted = (ref) => ({ extra: { contextInfo: { stanzaId: ref, participant: `${STRANGER}@s.whatsapp.net`, quotedMessage: { conversation: 'coucou' } } } })
-    out = await send(raw('.react 🔥', quoted('QREF1')))
-    check('.react : réagit au message cité', out.some((s) => s.content?.react?.text === '🔥' && s.content.react.key.id === 'QREF1'), JSON.stringify(out.map((s) => s.content)))
-    out = await send(raw('.react ❤️'))
-    check('.react sans réponse : mode d’emploi', /react/.test(textsOf(out)))
-    out = await send(raw('.react off', quoted('QREF2')))
-    check('.react off : retire la réaction (texte vide)', out.some((s) => s.content?.react && s.content.react.text === '' && s.content.react.key.id === 'QREF2'))
+    process.env.AREACT = '🔥,❤️'
+    config.reload()
+    out = await send(raw('coucou', { from: STRANGER }))
+    check('AREACT : réaction auto à un message reçu', out.some((s) => ['🔥', '❤️'].includes(s.content?.react?.text) && s.content.react.key.id), JSON.stringify(out.map((s) => s.content)))
+    out = await send(raw('mon message'))
+    check('AREACT : pas de réaction à mes propres messages', !out.some((s) => s.content?.react))
+    process.env.AREACT = 'true'
+    config.reload()
+    out = await send(raw('salut', { from: STRANGER }))
+    check('AREACT=true : jeu d’emojis par défaut utilisé', out.some((s) => s.content?.react?.text), JSON.stringify(out.map((s) => s.content)))
+    process.env.AREACT = 'false'
+    config.reload()
+    out = await send(raw('rien', { from: STRANGER }))
+    check('AREACT off : aucune réaction', !out.some((s) => s.content?.react))
+    delete process.env.AREACT
+    config.reload()
 
     const inGroup = (text, opts = {}) => raw(text, { jid: GROUP, participant: `${opts.from || OWNER}@s.whatsapp.net`, ...opts })
     {
