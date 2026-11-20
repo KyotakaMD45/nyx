@@ -263,6 +263,10 @@
       "usage": "_Send or reply to an image / video with *sticker*._",
       "no_ffmpeg": "Video stickers need ffmpeg on the server (apt install ffmpeg)."
     },
+    "react": {
+      "desc": "React with an emoji to the quoted message",
+      "usage": "_Reply to a message with *react <emoji>*._\n_Example: react 🔥 · react off to remove._"
+    },
     "take": {
       "desc": "Rename a sticker's pack",
       "usage": "_Reply to a sticker:_ take Pack,Author"

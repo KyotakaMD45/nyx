@@ -278,6 +278,14 @@ function check(name, ok, detail = '') {
     await send(raw('.status emoji off'))
     await send(raw('.status off'))
 
+    const quoted = (ref) => ({ extra: { contextInfo: { stanzaId: ref, participant: `${STRANGER}@s.whatsapp.net`, quotedMessage: { conversation: 'coucou' } } } })
+    out = await send(raw('.react 🔥', quoted('QREF1')))
+    check('.react : réagit au message cité', out.some((s) => s.content?.react?.text === '🔥' && s.content.react.key.id === 'QREF1'), JSON.stringify(out.map((s) => s.content)))
+    out = await send(raw('.react ❤️'))
+    check('.react sans réponse : mode d’emploi', /react/.test(textsOf(out)))
+    out = await send(raw('.react off', quoted('QREF2')))
+    check('.react off : retire la réaction (texte vide)', out.some((s) => s.content?.react && s.content.react.text === '' && s.content.react.key.id === 'QREF2'))
+
     const inGroup = (text, opts = {}) => raw(text, { jid: GROUP, participant: `${opts.from || OWNER}@s.whatsapp.net`, ...opts })
     {
       require('../lib').bot({ pattern: 'plante ?(.*)', type: 'misc' }, async () => {
