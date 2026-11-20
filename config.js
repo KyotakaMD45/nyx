@@ -80,7 +80,7 @@ function build() {
     STATUS_FORWARD_JID: (env.STATUS_FORWARD_JID || '').trim(),
     ANTI_VV: (env.ANTI_VV || legacyAntiVv(env.VV)).trim().toLowerCase(),
     ANTI_DELETE: (env.ANTI_DELETE || 'false').trim().toLowerCase(),
-    AREACT: (env.AREACT || 'false').trim(),
+    CMD_REACTION: toBool(env.CMD_REACTION),
     DISABLE_START_MESSAGE: toBool(env.DISABLE_START_MESSAGE),
     ALIVE_MSG: env.ALIVE_MSG || '',
 

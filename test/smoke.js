@@ -278,21 +278,26 @@ function check(name, ok, detail = '') {
     await send(raw('.status emoji off'))
     await send(raw('.status off'))
 
-    process.env.AREACT = '🔥,❤️'
+    process.env.CMD_REACTION = 'true'
     config.reload()
-    out = await send(raw('coucou', { from: STRANGER }))
-    check('AREACT : réaction auto à un message reçu', out.some((s) => ['🔥', '❤️'].includes(s.content?.react?.text) && s.content.react.key.id), JSON.stringify(out.map((s) => s.content)))
-    out = await send(raw('mon message'))
-    check('AREACT : pas de réaction à mes propres messages', !out.some((s) => s.content?.react))
-    process.env.AREACT = 'true'
+    out = await send(raw('.ping'))
+    check('CMD_REACTION : ⏳ puis ✅ sur une commande réussie', out.some((s) => s.content?.react?.text === '⏳') && out.some((s) => s.content?.react?.text === '✅'), JSON.stringify(out.map((s) => s.content?.react?.text).filter(Boolean)))
+    {
+      const { bot: addBot, commands } = require('../lib/plugins')
+      addBot({ pattern: 'plante2 ?(.*)', type: 'misc' }, async () => {
+        throw new Error('boum2')
+      })
+      out = await send(raw('.plante2'))
+      check('CMD_REACTION : ❌ sur une commande en erreur', out.some((s) => s.content?.react?.text === '⏳') && out.some((s) => s.content?.react?.text === '❌'), JSON.stringify(out.map((s) => s.content?.react?.text).filter(Boolean)))
+      commands.splice(commands.findIndex((c) => c.name === 'plante2'), 1)
+    }
+    out = await send(raw('coucou pas une commande', { from: STRANGER }))
+    check('CMD_REACTION : rien sur un message qui n’est pas une commande', !out.some((s) => s.content?.react))
+    process.env.CMD_REACTION = 'false'
     config.reload()
-    out = await send(raw('salut', { from: STRANGER }))
-    check('AREACT=true : jeu d’emojis par défaut utilisé', out.some((s) => s.content?.react?.text), JSON.stringify(out.map((s) => s.content)))
-    process.env.AREACT = 'false'
-    config.reload()
-    out = await send(raw('rien', { from: STRANGER }))
-    check('AREACT off : aucune réaction', !out.some((s) => s.content?.react))
-    delete process.env.AREACT
+    out = await send(raw('.ping'))
+    check('CMD_REACTION off : pas de réaction sur les commandes', !out.some((s) => s.content?.react))
+    delete process.env.CMD_REACTION
     config.reload()
 
     const inGroup = (text, opts = {}) => raw(text, { jid: GROUP, participant: `${opts.from || OWNER}@s.whatsapp.net`, ...opts })
