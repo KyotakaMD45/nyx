@@ -221,6 +221,26 @@
       "desc": "Tout le monde peut écrire",
       "done": "🔊 Groupe ouvert : tout le monde peut écrire."
     },
+    "automute": {
+      "desc": "Ferme le groupe chaque jour à une heure fixe",
+      "usage": "*Exemple :* automute 22:00\n› automute info : voir l'heure prévue\n› automute off : désactiver",
+      "set": "🔇 Fermeture automatique programmée chaque jour à *{0}* ({1}).",
+      "info": "🔇 Fermeture automatique : chaque jour à *{0}* ({1}).",
+      "off": "✅ Fermeture automatique désactivée.",
+      "none": "Aucune fermeture automatique dans ce groupe.",
+      "same": "❌ La fermeture et l'ouverture automatiques ne peuvent pas être à la même heure.",
+      "notice": "🔇 Groupe fermé automatiquement : seuls les admins peuvent écrire."
+    },
+    "autounmute": {
+      "desc": "Ouvre le groupe chaque jour à une heure fixe",
+      "usage": "*Exemple :* autounmute 07:00\n› autounmute info : voir l'heure prévue\n› autounmute off : désactiver",
+      "set": "🔊 Ouverture automatique programmée chaque jour à *{0}* ({1}).",
+      "info": "🔊 Ouverture automatique : chaque jour à *{0}* ({1}).",
+      "off": "✅ Ouverture automatique désactivée.",
+      "none": "Aucune ouverture automatique dans ce groupe.",
+      "same": "❌ La fermeture et l'ouverture automatiques ne peuvent pas être à la même heure.",
+      "notice": "🔊 Groupe ouvert automatiquement : tout le monde peut écrire."
+    },
     "ginfo": {
       "desc": "Informations du groupe",
       "card": "*{0}*\n\n› Membres : {1}\n› Admins : {2}\n› Créé le : {3}\n› Fermé : {4}\n\n{5}"

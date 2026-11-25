@@ -221,6 +221,26 @@
       "desc": "Everyone can send messages",
       "done": "🔊 Group open: everyone can send messages."
     },
+    "automute": {
+      "desc": "Closes the group every day at a set time",
+      "usage": "*Example:* automute 22:00\n› automute info: show the scheduled time\n› automute off: turn it off",
+      "set": "🔇 Auto-close scheduled every day at *{0}* ({1}).",
+      "info": "🔇 Auto-close: every day at *{0}* ({1}).",
+      "off": "✅ Auto-close turned off.",
+      "none": "No auto-close in this group.",
+      "same": "❌ Auto-close and auto-open can't be at the same time.",
+      "notice": "🔇 Group closed automatically: only admins can send messages."
+    },
+    "autounmute": {
+      "desc": "Opens the group every day at a set time",
+      "usage": "*Example:* autounmute 07:00\n› autounmute info: show the scheduled time\n› autounmute off: turn it off",
+      "set": "🔊 Auto-open scheduled every day at *{0}* ({1}).",
+      "info": "🔊 Auto-open: every day at *{0}* ({1}).",
+      "off": "✅ Auto-open turned off.",
+      "none": "No auto-open in this group.",
+      "same": "❌ Auto-close and auto-open can't be at the same time.",
+      "notice": "🔊 Group opened automatically: everyone can send messages."
+    },
     "ginfo": {
       "desc": "Group information",
       "card": "*{0}*\n\n› Members: {1}\n› Admins: {2}\n› Created: {3}\n› Closed: {4}\n\n{5}"

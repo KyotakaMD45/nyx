@@ -386,6 +386,41 @@ function check(name, ok, detail = '') {
     check('.link', /chat\.whatsapp\.com\/INVITE123/.test(textsOf(out)))
     out = await send(inGroup('.mute'))
     check('.mute', calls.some((c) => c.fn === 'setting' && c.value === 'announcement'))
+    {
+      const am = require('../plugins/automute')
+      check(
+        'automute : lecture des heures',
+        am.parseTime('22:30') === '22:30' && am.parseTime('7h') === '07:00' && am.parseTime('22 05') === '22:05' && am.parseTime('25:00') === null && am.parseTime('abc') === null
+      )
+      out = await send(inGroup('.automute 22:30'))
+      check('.automute 22:30 programmé', /22:30/.test(textsOf(out)), textsOf(out))
+      out = await send(inGroup('.autounmute 22:30'))
+      check('.autounmute refuse la même heure que automute', /même heure/.test(textsOf(out)), textsOf(out))
+      out = await send(inGroup('.aunmute 7h'))
+      check('.aunmute (alias) programme 07:00', /07:00/.test(textsOf(out)), textsOf(out))
+      out = await send(inGroup('.automute info'))
+      check('.automute info', /22:30/.test(textsOf(out)), textsOf(out))
+      out = await send(raw('.automute 22:30'))
+      check('.automute hors groupe : refusé', /groupe/.test(textsOf(out)))
+      const savedTz = config.TZ
+      config.TZ = 'UTC'
+      calls.length = 0
+      sent = []
+      await am.tick(sock, new Date('2026-01-15T22:30:10Z'))
+      check('automute ferme le groupe à l’heure', calls.some((c) => c.fn === 'setting' && c.value === 'announcement') && /fermé automatiquement/.test(textsOf(sent)), textsOf(sent))
+      calls.length = 0
+      await am.tick(sock, new Date('2026-01-15T22:30:40Z'))
+      check('automute : une seule fois par jour', calls.length === 0)
+      await am.tick(sock, new Date('2026-01-16T07:00:05Z'))
+      check('autounmute ouvre le groupe à l’heure', calls.some((c) => c.fn === 'setting' && c.value === 'not_announcement'))
+      out = await send(inGroup('.automute off'))
+      check('.automute off', /désactivée/.test(textsOf(out)), textsOf(out))
+      calls.length = 0
+      await am.tick(sock, new Date('2026-01-16T22:30:05Z'))
+      check('automute off : le groupe n’est plus fermé', !calls.some((c) => c.value === 'announcement'))
+      await send(inGroup('.autounmute off'))
+      config.TZ = savedTz
+    }
     out = await send(raw('.kick 2250700000002'))
     check('commande de groupe hors groupe : refusée', /groupe/.test(textsOf(out)))
 
