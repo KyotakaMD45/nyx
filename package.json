@@ -1,6 +1,6 @@
 {
   "name": "nyx-bot",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Nyx — bot WhatsApp léger, autonome et extensible par plugins",
   "main": "index.js",
   "private": true,
