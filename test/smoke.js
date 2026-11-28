@@ -473,6 +473,42 @@ function check(name, ok, detail = '') {
       check('.philo : sujet d’entraînement et encouragement dans la citation', /Sujet d'entraînement : _.+\?_/.test(textsOf(out)), textsOf(out))
       out = await send(raw('.philo sujets verite'))
       check('.philo sujets verite', /Langage et vérité/.test(textsOf(out)) && /› .+\?/.test(textsOf(out)), textsOf(out))
+      {
+        const g = (txt) => inGroup(txt)
+        out = await send(g('.autophilo cours'))
+        check('.autophilo cours : liste des cours', /La vie en société — \*societe\*/.test(textsOf(out)), textsOf(out))
+        out = await send(g('.autophilo cours societe'))
+        check('.autophilo cours societe : cours de la semaine fixé', /Cours de la semaine : \*La vie en société\*/.test(textsOf(out)), textsOf(out))
+        out = await send(g('.autophilo cours licorne'))
+        check('.autophilo cours inconnu', /inconnu/.test(textsOf(out)), textsOf(out))
+        let onlyLesson = true
+        for (let k = 0; k < 6; k++) {
+          out = await send(g('.philo'))
+          if (!/Leçon : La vie en société/.test(textsOf(out))) onlyLesson = false
+        }
+        check('.philo dans ce groupe : uniquement les citations du cours de la semaine', onlyLesson && /Cours de la semaine : La vie en société/.test(textsOf(out)), textsOf(out))
+        out = await send(g('.autophilo 08:00'))
+        check('.autophilo 08:00 garde le cours', /La vie en société/.test(textsOf(out)), textsOf(out))
+        const savedTz = config.TZ
+        config.TZ = 'UTC'
+        const seen = new Set()
+        for (let d = 10; d < 16; d++) {
+          sent = []
+          await ph.tick(sock, new Date(`2026-03-${d}T08:00:05Z`))
+          const txt = textsOf(sent.filter((x) => x.jid === g('.x').key.remoteJid))
+          if (!/Leçon : La vie en société/.test(txt)) seen.add('autre')
+          else seen.add(txt.split('«')[1])
+        }
+        check('autophilo : chaque jour une citation du cours de la semaine, sans répétition', !seen.has('autre') && seen.size === 6, [...seen].join(' | '))
+        out = await send(raw('.philo'))
+        check('le cours ne touche pas les autres discussions', !/Cours de la semaine/.test(textsOf(out)))
+        out = await send(g('.autophilo cours religion'))
+        check('changer de cours la semaine suivante', /Dieu et la religion/.test(textsOf(out)))
+        out = await send(g('.autophilo cours off'))
+        check('.autophilo cours off', /tout le programme/.test(textsOf(out)), textsOf(out))
+        await send(g('.autophilo off'))
+        config.TZ = savedTz
+      }
       check('AUTO_PHILO : heures lues', JSON.stringify(ph.varTimes('7h, 19:00 x')) === '["07:00","19:00"]' && ph.varTimes('off').length === 0)
       const savedTz = config.TZ
       config.TZ = 'UTC'

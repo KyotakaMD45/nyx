@@ -54,6 +54,21 @@ function findTheme(word) {
   return null
 }
 
+// Une leçon seulement (pour le cours de la semaine).
+function findLecon(word) {
+  const w = normalize(word)
+  if (!w) return null
+  for (const comp of DATA.competences) {
+    for (const lecon of comp.lecons) {
+      if (lecon.id === w || normalize(lecon.titre).includes(w) || lecon.notions.some((n) => normalize(n).includes(w)))
+        return { id: lecon.id, label: lecon.titre }
+    }
+  }
+  return null
+}
+
+const leconLabel = (id) => DATA.competences.flatMap((c) => c.lecons).find((l) => l.id === id)?.titre || ''
+
 const matches = (themeId) => (q) => !themeId || q.comp.id === themeId || q.lecon.id === themeId
 
 const any = (list, random = Math.random) => list[Math.floor(random() * list.length)]
@@ -83,11 +98,20 @@ nyx.on('connection.open', (sock) => {
   current = sock
 })
 
+function titleFor(themeId) {
+  const t = lang.plugins.autophilo
+  const cours = leconLabel(themeId)
+  return cours ? t.title_course.format(cours) : t.title
+}
+
 async function tick(sock = current, date = new Date()) {
   if (!sock?.user) return
   const { day, time } = nowParts(date)
   const plans = Object.entries(db.all(NS)).filter(([jid]) => jid !== VAR_KEY)
-  if (varTimes(config.AUTO_PHILO).length) plans.push([VAR_KEY, { ...db.get(NS, VAR_KEY, {}), times: varTimes(config.AUTO_PHILO), theme: null }])
+  if (varTimes(config.AUTO_PHILO).length) {
+    const own = db.get(NS, ownerJid(sock), null)
+    plans.push([VAR_KEY, { ...db.get(NS, VAR_KEY, {}), times: varTimes(config.AUTO_PHILO), theme: own?.theme || null }])
+  }
   for (const [key0, plan] of plans) {
     const jid = key0 === VAR_KEY ? ownerJid(sock) : key0
     if (!plan?.times?.includes(time)) continue
@@ -99,7 +123,7 @@ async function tick(sock = current, date = new Date()) {
     if (!q) continue
     db.set(NS, key0, key0 === VAR_KEY ? { i: (plan.i || 0) + 1 } : { ...plan, i: (plan.i || 0) + 1 })
     try {
-      await sock.sendMessage(jid, { text: format(q, lang.plugins.autophilo.title) })
+      await sock.sendMessage(jid, { text: format(q, titleFor(plan.theme)) })
     } catch (error) {
       logger.warn(`autophilo ${jid} : ${error?.message || error}`)
     }
@@ -144,9 +168,10 @@ bot(
     }
     const theme = input ? findTheme(input) : null
     if (input && !theme) return message.reply(t.unknown.format(input))
-    const list = rotation(matches(theme?.id))
+    const cours = !input ? planOf(message.jid)?.theme || null : null
+    const list = rotation(matches(theme?.id || cours))
     const q = list[Math.floor(Math.random() * list.length)]
-    await message.reply(format(q))
+    await message.reply(format(q, cours && leconLabel(cours) ? lang.plugins.autophilo.title_course.format(leconLabel(cours)) : undefined))
   }
 )
 
@@ -165,8 +190,26 @@ bot(
     const themeLabel = (id) => (id ? findTheme(id)?.label || id : t.all)
 
     if (!input || /^info$/i.test(input)) {
-      if (!plan?.times?.length) return message.reply(`${t.none}\n\n${t.usage}`)
+      if (!plan?.times?.length) return message.reply(`${plan?.theme ? t.cours_now.format(themeLabel(plan.theme)) + '\n\n' : ''}${t.none}\n\n${t.usage}`)
       return message.reply(t.info.format(plan.times.join(', '), config.TZ, themeLabel(plan.theme)))
+    }
+    const coursArg = /^(?:cours|le[cç]on)(?:\s+(.+))?$/i.exec(input)
+    if (coursArg) {
+      const arg = (coursArg[1] || '').trim()
+      if (!arg) {
+        const list = DATA.competences
+          .map((c) => `*${c.numero}. ${c.theme}*\n${c.lecons.map((l) => `   › ${l.titre}${l.series ? ` (${l.series})` : ''} — *${l.id}*`).join('\n')}`)
+          .join('\n\n')
+        return message.reply(t.cours_list.format(plan?.theme ? themeLabel(plan.theme) : t.all, list))
+      }
+      if (/^(off|tout|tous|all|aucun|stop)$/i.test(arg)) {
+        if (plan) db.set(NS, message.jid, { ...plan, theme: null })
+        return message.reply(t.cours_off)
+      }
+      const lecon = findLecon(arg)
+      if (!lecon) return message.reply(t.cours_unknown.format(arg))
+      db.set(NS, message.jid, { ...(plan || {}), times: plan?.times || [], theme: lecon.id, i: 0, since: nowParts().day })
+      return message.reply(t.cours_set.format(lecon.label) + (plan?.times?.length ? '' : `\n\n${t.cours_no_times}`))
     }
     if (/^(off|del|stop|reset)$/i.test(input)) {
       if (!plan) return message.reply(t.none)
@@ -199,4 +242,4 @@ bot(
   }
 )
 
-module.exports = { DATA, ALL, rotation, findTheme, pick, format, tick, varTimes, VAR_KEY }
+module.exports = { DATA, ALL, rotation, findTheme, findLecon, pick, format, tick, varTimes, VAR_KEY }

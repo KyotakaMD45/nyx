@@ -253,14 +253,21 @@
     "autophilo": {
       "desc": "Envoie une citation de philosophie chaque jour à heure fixe",
       "title": "🌅 Citation de philosophie du jour",
-      "usage": "*Exemples :*\n› autophilo 07:00 : une citation chaque jour à 7 h\n› autophilo 07:00 19:00 : deux fois par jour (4 heures max)\n› autophilo theme verite : seulement ce thème (philo themes pour la liste)\n› autophilo theme tout : tous les thèmes\n› autophilo info : voir le réglage\n› autophilo off : arrêter",
-      "set": "✅ Citation de philosophie programmée chaque jour à *{0}* ({1}).\n› Thème : {2}",
-      "info": "📚 Citations automatiques : chaque jour à *{0}* ({1}).\n› Thème : {2}",
+      "usage": "*Exemples :*\n› autophilo 07:00 : une citation chaque jour à 7 h\n› autophilo 07:00 19:00 : deux fois par jour (4 heures max)\n› autophilo cours societe : cours de la semaine (seulement ses citations)\n› autophilo cours : liste des cours\n› autophilo theme verite : seulement ce thème (philo themes pour la liste)\n› autophilo theme tout : tous les thèmes\n› autophilo info : voir le réglage\n› autophilo off : arrêter",
+      "set": "✅ Citation de philosophie programmée chaque jour à *{0}* ({1}).\n📘 Cours / thème : {2}",
+      "info": "📚 Citations automatiques : chaque jour à *{0}* ({1}).\n📘 Cours / thème : {2}",
       "theme_set": "✅ Thème des citations : *{0}*.",
       "all": "tous les thèmes du programme",
       "too_many": "❌ {0} heures maximum par jour.",
       "off": "✅ Citations automatiques arrêtées.",
-      "none": "Aucune citation automatique dans cette discussion."
+      "none": "Aucune citation automatique dans cette discussion.",
+      "title_course": "🌅 *Citation du jour*\n📘 _Cours de la semaine : {0}_",
+      "cours_set": "📘 Cours de la semaine : *{0}*\nSeules les citations de ce cours seront envoyées ici, jusqu'à ce que tu changes de cours.",
+      "cours_no_times": "_Ajoute les heures d'envoi : autophilo 07:00_",
+      "cours_off": "✅ Plus de cours fixé : les citations reviennent sur tout le programme.",
+      "cours_unknown": "❌ Cours « {0} » inconnu. Envoie *autophilo cours* pour voir la liste.",
+      "cours_now": "📘 Cours de la semaine : *{0}*",
+      "cours_list": "📘 *Cours de la semaine* — actuel : _{0}_\n\nPour changer : *autophilo cours <mot>* (ex. autophilo cours societe)\nPour revenir à tout le programme : *autophilo cours off*\n\n{1}"
     },
     "anime": {
       "desc": "Nouveaux animes avec résumé (AniList / MyAnimeList)",

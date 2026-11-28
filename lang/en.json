@@ -253,14 +253,21 @@
     "autophilo": {
       "desc": "Send a philosophy quote every day at set times",
       "title": "🌅 Philosophy quote of the day",
-      "usage": "*Examples:*\n› autophilo 07:00: a quote every day at 7 am\n› autophilo 07:00 19:00: twice a day (4 times max)\n› autophilo theme verite: only this theme (philo themes for the list)\n› autophilo theme all: every theme\n› autophilo info: show settings\n› autophilo off: stop",
-      "set": "✅ Philosophy quote scheduled every day at *{0}* ({1}).\n› Theme: {2}",
-      "info": "📚 Automatic quotes: every day at *{0}* ({1}).\n› Theme: {2}",
+      "usage": "*Examples:*\n› autophilo 07:00: a quote every day at 7 am\n› autophilo 07:00 19:00: twice a day (4 times max)\n› autophilo cours societe: this week's lesson (only its quotes)\n› autophilo cours: list of lessons\n› autophilo theme verite: only this theme (philo themes for the list)\n› autophilo theme all: every theme\n› autophilo info: show settings\n› autophilo off: stop",
+      "set": "✅ Philosophy quote scheduled every day at *{0}* ({1}).\n📘 Lesson / theme: {2}",
+      "info": "📚 Automatic quotes: every day at *{0}* ({1}).\n📘 Lesson / theme: {2}",
       "theme_set": "✅ Quote theme: *{0}*.",
       "all": "every theme of the syllabus",
       "too_many": "❌ {0} times per day maximum.",
       "off": "✅ Automatic quotes stopped.",
-      "none": "No automatic quotes in this chat."
+      "none": "No automatic quotes in this chat.",
+      "title_course": "🌅 *Quote of the day*\n📘 _This week's lesson: {0}_",
+      "cours_set": "📘 This week's lesson: *{0}*\nOnly quotes from this lesson will be sent here until you change it.",
+      "cours_no_times": "_Add sending times: autophilo 07:00_",
+      "cours_off": "✅ No lesson set: quotes cover the whole syllabus again.",
+      "cours_unknown": "❌ Unknown lesson « {0} ». Send *autophilo cours* for the list.",
+      "cours_now": "📘 This week's lesson: *{0}*",
+      "cours_list": "📘 *This week's lesson* — current: _{0}_\n\nTo change: *autophilo cours <word>* (e.g. autophilo cours societe)\nBack to the whole syllabus: *autophilo cours off*\n\n{1}"
     },
     "anime": {
       "desc": "New anime with summary (AniList / MyAnimeList)",
