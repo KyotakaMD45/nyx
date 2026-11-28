@@ -30,8 +30,16 @@ bot(
     type: 'system',
   },
   async (message) => {
-    const raw = message.reply_message?.data?.message
-    if (!raw) return message.reply('_Réponds à un message (par exemple un sticker avec son) avec *msginfo*._')
+    // Le message cité se trouve à plusieurs endroits selon la version : on essaie tout.
+    const m = message.data?.message || {}
+    const ctx = Object.values(m).find((v) => v && typeof v === 'object' && v.contextInfo)?.contextInfo
+    const raw = ctx?.quotedMessage || message.reply_message?.data?.message || message.reply_message?.message
+    if (!raw) {
+      const keys = Object.keys(message.reply_message || {}).join(', ') || 'aucun'
+      return message.reply(
+        `_Je ne vois pas de message cité._\nFais un *appui long sur le sticker → Répondre*, puis écris *.msginfo*.\n\n(info technique : ${Object.keys(m).join(', ') || 'vide'} | reply : ${keys})`
+      )
+    }
     const info = describe(raw)
     const types = Object.keys(info).join(', ')
     let text = JSON.stringify(info, null, 1)
