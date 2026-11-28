@@ -78,6 +78,28 @@ async function videoToWebp(buffer, { crop = false } = {}) {
   }
 }
 
+// Son d'une vidéo en note vocale (ogg/opus, max 30 s). Renvoie null si la vidéo est muette.
+async function videoToVoice(buffer, seconds = 30) {
+  const base = path.join(os.tmpdir(), `nyx-voice-${Date.now()}-${Math.random().toString(36).slice(2)}`)
+  const input = `${base}.mp4`
+  const output = `${base}.ogg`
+  fs.writeFileSync(input, buffer)
+  try {
+    await ffmpeg([
+      '-y', '-i', input, '-t', String(seconds), '-vn', '-map', '0:a:0?',
+      '-acodec', 'libopus', '-ac', '1', '-ar', '48000', '-b:a', '64k', '-f', 'ogg', output,
+    ])
+    const ogg = fs.existsSync(output) ? fs.readFileSync(output) : null
+    return ogg && ogg.length > 1000 ? ogg : null
+  } catch (error) {
+    if (error.code === 'ENOENT') throw new Error(lang.plugins.sticker.no_ffmpeg)
+    return null // vidéo sans piste audio
+  } finally {
+    fs.rmSync(input, { force: true })
+    fs.rmSync(output, { force: true })
+  }
+}
+
 const isMoving = (m) => !!(m?.video || m?.data?.message?.stickerMessage?.isAnimated)
 
 bot(
@@ -114,9 +136,13 @@ bot(
     const crop = /^(?:crop|carre|carré)\b/i.test(text)
     if (crop) text = text.replace(/^\S+\s*/, '')
     await message.react('⏳').catch(() => {})
-    const webp = await videoToWebp(await source.download(), { crop })
+    const video = await source.download()
+    const webp = await videoToWebp(video, { crop })
     const { pack, author } = packInfo(text)
     await message.send(await withExif(webp, pack, author), { isAnimated: true, quoted: message.data }, 'sticker')
+    // Un sticker WhatsApp ne peut pas contenir de son : on envoie le son de la vidéo juste après, en note vocale.
+    const audio = await videoToVoice(video).catch(() => null)
+    if (audio) await message.send(audio, { ptt: true, mimetype: 'audio/ogg; codecs=opus', quoted: message.data }, 'audio')
     await message.react('').catch(() => {})
   }
 )
@@ -150,4 +176,4 @@ bot(
   }
 )
 
-module.exports = { withExif, imageToWebp, videoToWebp, videoFilter }
+module.exports = { withExif, imageToWebp, videoToWebp, videoToVoice, videoFilter }

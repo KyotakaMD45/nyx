@@ -333,8 +333,8 @@
       "no_ffmpeg": "Les stickers vidéo nécessitent ffmpeg sur le serveur (apt install ffmpeg)."
     },
     "vsticker": {
-      "desc": "Vidéo ou GIF en sticker animé",
-      "usage": "_Envoie ou réponds à une vidéo / un GIF avec *vsticker*._\n› vsticker crop : remplit tout le carré (recadre)\n› vsticker Pack,Auteur : nom du pack"
+      "desc": "Vidéo ou GIF en sticker animé + le son en note vocale",
+      "usage": "_Envoie ou réponds à une vidéo / un GIF avec *vsticker*._\n› Le son de la vidéo arrive juste après, en note vocale (si la vidéo en a)\n›vsticker crop : remplit tout le carré (recadre)\n› vsticker Pack,Auteur : nom du pack"
     },
     "take": {
       "desc": "Change le nom du pack d'un sticker",
