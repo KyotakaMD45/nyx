@@ -37,18 +37,38 @@ function ffmpeg(args) {
   })
 }
 
-async function videoToWebp(buffer) {
+const MAX_STICKER = 950 * 1024
+const ATTEMPTS = [
+  { fps: 15, q: 60, seconds: 8 },
+  { fps: 12, q: 45, seconds: 7 },
+  { fps: 10, q: 30, seconds: 6 },
+  { fps: 8, q: 20, seconds: 5 },
+]
+
+function videoFilter(fps, crop) {
+  const frame = crop
+    ? 'scale=512:512:force_original_aspect_ratio=increase,crop=512:512'
+    : 'scale=512:512:force_original_aspect_ratio=decrease,pad=512:512:-1:-1:color=0x00000000'
+  return `fps=${fps},${frame}`
+}
+
+async function videoToWebp(buffer, { crop = false } = {}) {
   const base = path.join(os.tmpdir(), `nyx-${Date.now()}-${Math.random().toString(36).slice(2)}`)
   const input = `${base}.mp4`
   const output = `${base}.webp`
   fs.writeFileSync(input, buffer)
   try {
-    await ffmpeg([
-      '-y', '-i', input, '-t', '8', '-an',
-      '-vf', "scale=512:512:force_original_aspect_ratio=decrease,fps=15,pad=512:512:-1:-1:color=0x00000000",
-      '-vcodec', 'libwebp', '-loop', '0', '-preset', 'default', '-q:v', '60', output,
-    ])
-    return fs.readFileSync(output)
+    let webp = null
+    for (const { fps, q, seconds } of ATTEMPTS) {
+      await ffmpeg([
+        '-y', '-i', input, '-t', String(seconds), '-an',
+        '-vf', videoFilter(fps, crop),
+        '-vcodec', 'libwebp', '-loop', '0', '-preset', 'default', '-q:v', String(q), output,
+      ])
+      webp = fs.readFileSync(output)
+      if (webp.length <= MAX_STICKER) break
+    }
+    return webp
   } catch (error) {
     if (error.code === 'ENOENT') throw new Error(lang.plugins.sticker.no_ffmpeg)
     throw error
@@ -57,6 +77,8 @@ async function videoToWebp(buffer) {
     fs.rmSync(output, { force: true })
   }
 }
+
+const isMoving = (m) => !!(m?.video || m?.data?.message?.stickerMessage?.isAnimated)
 
 bot(
   {
@@ -72,7 +94,30 @@ bot(
     const media = await source.download()
     const webp = source.video ? await videoToWebp(media) : source.sticker ? media : await imageToWebp(media)
     const { pack, author } = packInfo(match)
-    await message.send(await withExif(webp, pack, author), {}, 'sticker')
+    await message.send(await withExif(webp, pack, author), { isAnimated: isMoving(source) }, 'sticker')
+  }
+)
+
+bot(
+  {
+    pattern: 'vsticker ?(.*)',
+    alias: ['vs', 'svideo'],
+    desc: lang.plugins.vsticker.desc,
+    type: 'media',
+    fromMe: false,
+  },
+  async (message, match) => {
+    const t = lang.plugins.vsticker
+    const source = message.video ? message : message.reply_message
+    if (!source?.video) return message.reply(t.usage)
+    let text = String(match || '').trim()
+    const crop = /^(?:crop|carre|carré)\b/i.test(text)
+    if (crop) text = text.replace(/^\S+\s*/, '')
+    await message.react('⏳').catch(() => {})
+    const webp = await videoToWebp(await source.download(), { crop })
+    const { pack, author } = packInfo(text)
+    await message.send(await withExif(webp, pack, author), { isAnimated: true, quoted: message.data }, 'sticker')
+    await message.react('').catch(() => {})
   }
 )
 
@@ -105,4 +150,4 @@ bot(
   }
 )
 
-module.exports = { withExif, imageToWebp }
+module.exports = { withExif, imageToWebp, videoToWebp, videoFilter }

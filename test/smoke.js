@@ -153,6 +153,14 @@ function check(name, ok, detail = '') {
     check('.alive : affiche le texte personnalisé', /Je suis là Nyx/.test(textsOf(out)))
     out = await send(raw('.alive get'))
     check('.alive get : texte brut', textsOf(out).includes('#name'))
+    {
+      const alive = require('../lib/alive')
+      const q = alive.frenchQuote(() => 0)
+      check('alive #quote : citation en français', /^« .+ » — .+/.test(q) && alive.QUOTES_FR.length >= 20, q)
+      out = await send(raw('.alive Citation : #quote'))
+      check('.alive #quote : remplacé par une citation française', /Citation : « .+ » — /.test(textsOf(out)), textsOf(out))
+      await send(raw('.alive Je suis là #name, actif depuis #uptime'))
+    }
     out = await send(raw('.alive Coucou', { from: STRANGER }))
     check('.alive : un inconnu ne peut pas le changer', out.length === 0 && require('../lib/alive').getAlive().message.startsWith('Je suis là'))
     out = await send(raw('.alive reset'))
@@ -611,6 +619,23 @@ function check(name, ok, detail = '') {
     await img.load(webp)
     check('sticker : webp 512x512', meta.format === 'webp' && meta.width === 512 && meta.height === 512)
     check('sticker : pack et auteur dans l\'EXIF', /MonPack/.test(img.exif.toString()) && /Moi/.test(img.exif.toString()))
+    {
+      const st = require('../plugins/sticker')
+      check('vsticker : filtre carré (crop) et filtre avec bordures', /crop=512:512/.test(st.videoFilter(15, true)) && /pad=512:512/.test(st.videoFilter(15, false)))
+      let hasFfmpeg = true
+      try { require('child_process').execFileSync('ffmpeg', ['-version'], { stdio: 'ignore' }) } catch { hasFfmpeg = false }
+      if (hasFfmpeg) {
+        const clip = path.join(require('os').tmpdir(), `nyx-test-${Date.now()}.mp4`)
+        require('child_process').execFileSync('ffmpeg', ['-y', '-f', 'lavfi', '-i', 'testsrc=size=640x360:rate=25', '-t', '3', '-pix_fmt', 'yuv420p', clip], { stdio: 'ignore' })
+        const anim = await st.videoToWebp(fs.readFileSync(clip), { crop: true })
+        fs.rmSync(clip, { force: true })
+        const am = new webpmux.Image()
+        await am.load(anim)
+        check('vsticker : webp animé 512x512 sous 1 Mo', am.hasAnim && am.width === 512 && am.height === 512 && anim.length < 1024 * 1024, `${am.width}x${am.height} ${anim.length}o anim=${am.hasAnim}`)
+      } else console.log('  (ffmpeg absent : test vidéo sauté)')
+      const vs = await send(raw('.vsticker'))
+      check('.vsticker sans vidéo : explique l\'usage', /vsticker/.test(textsOf(vs)), textsOf(vs))
+    }
 
     {
       const multi = require('../lib/multi')

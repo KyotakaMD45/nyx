@@ -283,6 +283,10 @@
       "usage": "_Envoie ou réponds à une image / vidéo avec *sticker*._",
       "no_ffmpeg": "Les stickers vidéo nécessitent ffmpeg sur le serveur (apt install ffmpeg)."
     },
+    "vsticker": {
+      "desc": "Vidéo ou GIF en sticker animé",
+      "usage": "_Envoie ou réponds à une vidéo / un GIF avec *vsticker*._\n› vsticker crop : remplit tout le carré (recadre)\n› vsticker Pack,Auteur : nom du pack"
+    },
     "take": {
       "desc": "Change le nom du pack d'un sticker",
       "usage": "_Réponds à un sticker :_ take Pack,Auteur"
