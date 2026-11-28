@@ -241,6 +241,48 @@
       "same": "❌ La fermeture et l'ouverture automatiques ne peuvent pas être à la même heure.",
       "notice": "🔊 Groupe ouvert automatiquement : tout le monde peut écrire."
     },
+    "philo": {
+      "desc": "Citation de philosophie (programme de Côte d'Ivoire)",
+      "title": "📚 Citation de philosophie",
+      "card": "{0}\n\n_Compétence {1} : {2}_\n_Leçon : {3}_\n\n« {4} »\n— *{5}*, {6}\n\n💭 Notion : {7}\n📝 Sujet d'entraînement : _{8}_\n\n{9}",
+      "themes": "📚 *Programme de philosophie — Terminales (Côte d'Ivoire)*\n\n{0}\n\n{1} citations. Exemple : *philo liberte* ou *philo religion* · sujets : *philo sujets liberte*",
+      "unknown": "❌ Thème « {0} » inconnu. Envoie *philo themes* pour voir la liste.",
+      "sujets": "📝 *Sujets d'entraînement — {0}*\n\n{1}\n\n{2}",
+      "all_label": "tout le programme"
+    },
+    "autophilo": {
+      "desc": "Envoie une citation de philosophie chaque jour à heure fixe",
+      "title": "🌅 Citation de philosophie du jour",
+      "usage": "*Exemples :*\n› autophilo 07:00 : une citation chaque jour à 7 h\n› autophilo 07:00 19:00 : deux fois par jour (4 heures max)\n› autophilo theme verite : seulement ce thème (philo themes pour la liste)\n› autophilo theme tout : tous les thèmes\n› autophilo info : voir le réglage\n› autophilo off : arrêter",
+      "set": "✅ Citation de philosophie programmée chaque jour à *{0}* ({1}).\n› Thème : {2}",
+      "info": "📚 Citations automatiques : chaque jour à *{0}* ({1}).\n› Thème : {2}",
+      "theme_set": "✅ Thème des citations : *{0}*.",
+      "all": "tous les thèmes du programme",
+      "too_many": "❌ {0} heures maximum par jour.",
+      "off": "✅ Citations automatiques arrêtées.",
+      "none": "Aucune citation automatique dans cette discussion."
+    },
+    "anime": {
+      "desc": "Nouveaux animes avec résumé (AniList / MyAnimeList)",
+      "ep1": "📅 Épisode 1 : {0}",
+      "episodes": "{0} épisodes",
+      "no_summary": "_Pas encore de résumé._",
+      "header_week": "🆕 *Nouveaux animes de la semaine* ({0})\n_Source : AniList · résumés en français_",
+      "header_soon": "🔜 *Animes qui sortent cette semaine* ({0})",
+      "header_season": "🔥 *Animes les plus suivis de la saison*",
+      "none": "Aucun anime trouvé.\n\n*Exemples :* anime · anime bientot · anime saison · anime One Piece"
+    },
+    "autoanime": {
+      "desc": "Envoie les nouveaux animes chaque jour à heure fixe",
+      "header": "🆕 *Nouveaux animes sortis* ({0})\n_Source : AniList · résumés en français_",
+      "nothing": "🎬 Pas de nouvel anime sorti depuis hier.",
+      "usage": "*Exemples :*\n› autoanime 18:00 : les nouveaux animes chaque jour à 18 h\n› autoanime 08:00 20:00 : deux fois par jour (4 heures max)\n› autoanime info : voir le réglage\n› autoanime off : arrêter\n\nAussi : *anime* (semaine), *anime bientot*, *anime saison*, *anime <nom>*",
+      "set": "✅ Nouveaux animes envoyés chaque jour à *{0}* ({1}).\n_Chaque anime n'est envoyé qu'une fois._",
+      "info": "🎬 Nouveaux animes : chaque jour à *{0}* ({1}).",
+      "too_many": "❌ {0} heures maximum par jour.",
+      "off": "✅ Envoi automatique des animes arrêté.",
+      "none": "Aucun envoi automatique d'animes dans cette discussion."
+    },
     "ginfo": {
       "desc": "Informations du groupe",
       "card": "*{0}*\n\n› Membres : {1}\n› Admins : {2}\n› Créé le : {3}\n› Fermé : {4}\n\n{5}"
@@ -441,6 +483,8 @@
     "ANTI_DELETE": "false, p, g ou un numéro",
     "DISABLE_START_MESSAGE": "Pas de message au démarrage (true/false)",
     "ALIVE_MSG": "Message alive perso (#name #version #uptime #ram #prefix)",
+    "AUTO_PHILO": "Citation de philo chaque jour dans ta discussion, aux heures données (ex. 07:00,19:00 · off)",
+    "AUTO_ANIME": "Nouveaux animes du jour dans ta discussion, aux heures données (ex. 18:00 · off)",
     "STICKER_PACKNAME": "Pack,Auteur des stickers",
     "GEMINI_API_KEY": "Clé API Gemini",
     "GEMINI_MODEL": "Modèle Gemini",

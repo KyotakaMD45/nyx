@@ -241,6 +241,48 @@
       "same": "❌ Auto-close and auto-open can't be at the same time.",
       "notice": "🔊 Group opened automatically: everyone can send messages."
     },
+    "philo": {
+      "desc": "Philosophy quote (Côte d'Ivoire syllabus)",
+      "title": "📚 Philosophy quote",
+      "card": "{0}\n\n_Competence {1}: {2}_\n_Lesson: {3}_\n\n« {4} »\n— *{5}*, {6}\n\n💭 Notion: {7}\n📝 Practice topic: _{8}_\n\n{9}",
+      "themes": "📚 *Philosophy syllabus — Terminale (Côte d'Ivoire)*\n\n{0}\n\n{1} quotes. Example: *philo liberte* or *philo religion* · topics: *philo sujets liberte*",
+      "unknown": "❌ Unknown theme « {0} ». Send *philo themes* for the list.",
+      "sujets": "📝 *Practice topics — {0}*\n\n{1}\n\n{2}",
+      "all_label": "the whole syllabus"
+    },
+    "autophilo": {
+      "desc": "Send a philosophy quote every day at set times",
+      "title": "🌅 Philosophy quote of the day",
+      "usage": "*Examples:*\n› autophilo 07:00: a quote every day at 7 am\n› autophilo 07:00 19:00: twice a day (4 times max)\n› autophilo theme verite: only this theme (philo themes for the list)\n› autophilo theme all: every theme\n› autophilo info: show settings\n› autophilo off: stop",
+      "set": "✅ Philosophy quote scheduled every day at *{0}* ({1}).\n› Theme: {2}",
+      "info": "📚 Automatic quotes: every day at *{0}* ({1}).\n› Theme: {2}",
+      "theme_set": "✅ Quote theme: *{0}*.",
+      "all": "every theme of the syllabus",
+      "too_many": "❌ {0} times per day maximum.",
+      "off": "✅ Automatic quotes stopped.",
+      "none": "No automatic quotes in this chat."
+    },
+    "anime": {
+      "desc": "New anime with summary (AniList / MyAnimeList)",
+      "ep1": "📅 Episode 1: {0}",
+      "episodes": "{0} episodes",
+      "no_summary": "_No summary yet._",
+      "header_week": "🆕 *New anime this week* ({0})\n_Source: AniList_",
+      "header_soon": "🔜 *Anime premiering this week* ({0})",
+      "header_season": "🔥 *Most popular anime this season*",
+      "none": "No anime found.\n\n*Examples:* anime · anime soon · anime season · anime One Piece"
+    },
+    "autoanime": {
+      "desc": "Send new anime every day at set times",
+      "header": "🆕 *New anime out* ({0})\n_Source: AniList_",
+      "nothing": "🎬 No new anime since yesterday.",
+      "usage": "*Examples:*\n› autoanime 18:00: new anime every day at 6 pm\n› autoanime 08:00 20:00: twice a day (4 times max)\n› autoanime info: show settings\n› autoanime off: stop\n\nAlso: *anime* (week), *anime soon*, *anime season*, *anime <name>*",
+      "set": "✅ New anime sent every day at *{0}* ({1}).\n_Each anime is sent only once._",
+      "info": "🎬 New anime: every day at *{0}* ({1}).",
+      "too_many": "❌ {0} times per day maximum.",
+      "off": "✅ Automatic anime stopped.",
+      "none": "No automatic anime in this chat."
+    },
     "ginfo": {
       "desc": "Group information",
       "card": "*{0}*\n\n› Members: {1}\n› Admins: {2}\n› Created: {3}\n› Closed: {4}\n\n{5}"
@@ -441,6 +483,8 @@
     "ANTI_DELETE": "false, p, g or a number",
     "DISABLE_START_MESSAGE": "No message on startup (true/false)",
     "ALIVE_MSG": "Custom alive message (#name #version #uptime #ram #prefix)",
+    "AUTO_PHILO": "Daily philosophy quote in your chat at these times (e.g. 07:00,19:00 · off)",
+    "AUTO_ANIME": "New anime of the day in your chat at these times (e.g. 18:00 · off)",
     "STICKER_PACKNAME": "Sticker Pack,Author",
     "GEMINI_API_KEY": "Gemini API key",
     "GEMINI_MODEL": "Gemini model",

@@ -83,6 +83,8 @@ function build() {
     CMD_REACTION: toBool(env.CMD_REACTION),
     DISABLE_START_MESSAGE: toBool(env.DISABLE_START_MESSAGE),
     ALIVE_MSG: env.ALIVE_MSG || '',
+    AUTO_PHILO: (env.AUTO_PHILO || '').trim(),
+    AUTO_ANIME: (env.AUTO_ANIME || '').trim(),
 
     STICKER_PACKNAME: env.STICKER_PACKNAME || 'Nyx,Nyx Bot',
 

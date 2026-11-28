@@ -1,0 +1,528 @@
+{
+  "source": "Programme éducatif de philosophie, Terminales A et C-D-E (APC), DPFC, ministère de l'Éducation nationale de Côte d'Ivoire",
+  "encouragements": [
+    "💪 Courage pour tes révisions : le BAC se prépare un peu chaque jour !",
+    "📖 Une citation par jour, et la dissertation devient plus facile.",
+    "🎯 Défi : trouve la problématique de ce sujet en 5 minutes.",
+    "✍️ Essaie d'écrire l'introduction de ce sujet aujourd'hui.",
+    "🧠 Réfléchir, c'est déjà philosopher. Bravo d'être là !",
+    "🔥 On ne lâche rien, la réussite est au bout du chemin !",
+    "📚 Relie cette citation à un argument de ton cours.",
+    "🌟 Crois en toi : chaque effort compte.",
+    "🙌 Petit à petit, tu deviens un vrai philosophe.",
+    "🏆 Le BAC, c'est toi qui vas le décrocher !"
+  ],
+  "competences": [
+    {
+      "id": "liberte",
+      "numero": "II",
+      "theme": "Les conditions de la liberté",
+      "lecons": [
+        {
+          "id": "homme",
+          "titre": "La connaissance de l'homme",
+          "notions": [
+            "la conscience",
+            "la mémoire",
+            "l'inconscient",
+            "la liberté",
+            "la violence"
+          ],
+          "sujets": [
+            "La conscience suffit-elle à connaître l'homme ?",
+            "L'inconscient est-il une excuse pour nos actes ?",
+            "Peut-on être libre si l'on est déterminé ?"
+          ],
+          "citations": [
+            {
+              "t": "Je pense, donc je suis.",
+              "a": "René Descartes",
+              "o": "Discours de la méthode",
+              "n": "la conscience"
+            },
+            {
+              "t": "L'homme n'est qu'un roseau, le plus faible de la nature ; mais c'est un roseau pensant.",
+              "a": "Blaise Pascal",
+              "o": "Pensées",
+              "n": "la conscience"
+            },
+            {
+              "t": "Toute conscience est conscience de quelque chose.",
+              "a": "Edmund Husserl",
+              "o": "Méditations cartésiennes",
+              "n": "la conscience"
+            },
+            {
+              "t": "Le moi n'est pas maître dans sa propre maison.",
+              "a": "Sigmund Freud",
+              "o": "Une difficulté de la psychanalyse",
+              "n": "l'inconscient"
+            },
+            {
+              "t": "Les hommes se croient libres parce qu'ils ont conscience de leurs actions et sont ignorants des causes par lesquelles ils sont déterminés.",
+              "a": "Baruch Spinoza",
+              "o": "Éthique",
+              "n": "la liberté"
+            },
+            {
+              "t": "L'homme est condamné à être libre.",
+              "a": "Jean-Paul Sartre",
+              "o": "L'existentialisme est un humanisme",
+              "n": "la liberté"
+            },
+            {
+              "t": "Connais-toi toi-même.",
+              "a": "Socrate",
+              "o": "inscription du temple de Delphes",
+              "n": "la conscience"
+            },
+            {
+              "t": "La violence est l'accoucheuse de toute vieille société qui en porte une nouvelle dans ses flancs.",
+              "a": "Karl Marx",
+              "o": "Le Capital",
+              "n": "la violence"
+            }
+          ]
+        },
+        {
+          "id": "societe",
+          "titre": "La vie en société",
+          "notions": [
+            "la nature sociale de l'homme",
+            "le droit et l'État",
+            "l'État et la Nation",
+            "la justice",
+            "autrui"
+          ],
+          "sujets": [
+            "L'homme peut-il vivre en dehors de la société ?",
+            "L'État est-il l'ennemi de la liberté ?",
+            "Autrui est-il un obstacle à ma liberté ?"
+          ],
+          "citations": [
+            {
+              "t": "L'homme est par nature un animal politique.",
+              "a": "Aristote",
+              "o": "Les Politiques",
+              "n": "la nature sociale de l'homme"
+            },
+            {
+              "t": "L'homme est un loup pour l'homme.",
+              "a": "Thomas Hobbes",
+              "o": "Du citoyen",
+              "n": "la violence"
+            },
+            {
+              "t": "L'homme est né libre, et partout il est dans les fers.",
+              "a": "Jean-Jacques Rousseau",
+              "o": "Du contrat social",
+              "n": "la liberté"
+            },
+            {
+              "t": "L'obéissance à la loi qu'on s'est prescrite est liberté.",
+              "a": "Jean-Jacques Rousseau",
+              "o": "Du contrat social",
+              "n": "le droit et l'État"
+            },
+            {
+              "t": "La fin de l'État, c'est en réalité la liberté.",
+              "a": "Baruch Spinoza",
+              "o": "Traité théologico-politique",
+              "n": "le droit et l'État"
+            },
+            {
+              "t": "La justice sans la force est impuissante ; la force sans la justice est tyrannique.",
+              "a": "Blaise Pascal",
+              "o": "Pensées",
+              "n": "la justice"
+            },
+            {
+              "t": "Une nation est une âme, un principe spirituel.",
+              "a": "Ernest Renan",
+              "o": "Qu'est-ce qu'une nation ?",
+              "n": "l'État et la Nation"
+            },
+            {
+              "t": "L'enfer, c'est les autres.",
+              "a": "Jean-Paul Sartre",
+              "o": "Huis clos",
+              "n": "autrui"
+            },
+            {
+              "t": "La liberté consiste à pouvoir faire tout ce qui ne nuit pas à autrui.",
+              "a": "Déclaration des droits de l'homme et du citoyen",
+              "o": "article 4 (1789)",
+              "n": "la liberté"
+            }
+          ]
+        },
+        {
+          "id": "religion",
+          "titre": "Dieu et la religion",
+          "notions": [
+            "l'idée de Dieu",
+            "la religion",
+            "le rôle social de la religion",
+            "l'obligation morale"
+          ],
+          "sujets": [
+            "La religion rend-elle l'homme libre ?",
+            "Peut-on être moral sans croire en Dieu ?",
+            "La foi s'oppose-t-elle à la raison ?"
+          ],
+          "citations": [
+            {
+              "t": "La religion est l'opium du peuple.",
+              "a": "Karl Marx",
+              "o": "Critique de la philosophie du droit de Hegel",
+              "n": "le rôle social de la religion"
+            },
+            {
+              "t": "Une religion est un système solidaire de croyances et de pratiques relatives à des choses sacrées.",
+              "a": "Émile Durkheim",
+              "o": "Les Formes élémentaires de la vie religieuse",
+              "n": "la religion"
+            },
+            {
+              "t": "Le cœur a ses raisons que la raison ne connaît point.",
+              "a": "Blaise Pascal",
+              "o": "Pensées",
+              "n": "l'idée de Dieu"
+            },
+            {
+              "t": "Dieu est mort.",
+              "a": "Friedrich Nietzsche",
+              "o": "Le Gai Savoir",
+              "n": "l'idée de Dieu"
+            },
+            {
+              "t": "J'ai dû abolir le savoir afin d'obtenir une place pour la croyance.",
+              "a": "Emmanuel Kant",
+              "o": "Critique de la raison pure",
+              "n": "l'idée de Dieu"
+            },
+            {
+              "t": "Agis uniquement d'après la maxime qui fait que tu peux vouloir en même temps qu'elle devienne une loi universelle.",
+              "a": "Emmanuel Kant",
+              "o": "Fondements de la métaphysique des mœurs",
+              "n": "l'obligation morale"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "progres",
+      "numero": "III",
+      "theme": "Les conditions du progrès et du bonheur",
+      "lecons": [
+        {
+          "id": "histoire",
+          "titre": "L'histoire de l'humanité",
+          "series": "Terminale A",
+          "notions": [
+            "l'humanité",
+            "le rôle de l'homme dans l'histoire",
+            "la culture et la civilisation",
+            "décoloniser et désaliéner"
+          ],
+          "sujets": [
+            "L'homme fait-il l'histoire ou la subit-il ?",
+            "Se décoloniser, est-ce rejeter la culture de l'autre ?",
+            "Toutes les cultures se valent-elles ?"
+          ],
+          "citations": [
+            {
+              "t": "Les hommes font leur propre histoire, mais ils ne la font pas arbitrairement.",
+              "a": "Karl Marx",
+              "o": "Le 18 Brumaire de Louis Bonaparte",
+              "n": "le rôle de l'homme dans l'histoire"
+            },
+            {
+              "t": "Rien de grand ne s'est accompli dans le monde sans passion.",
+              "a": "Hegel",
+              "o": "La Raison dans l'histoire",
+              "n": "le rôle de l'homme dans l'histoire"
+            },
+            {
+              "t": "Chaque génération doit, dans une relative opacité, découvrir sa mission, la remplir ou la trahir.",
+              "a": "Frantz Fanon",
+              "o": "Les Damnés de la terre",
+              "n": "décoloniser et désaliéner"
+            },
+            {
+              "t": "Colonisation = chosification.",
+              "a": "Aimé Césaire",
+              "o": "Discours sur le colonialisme",
+              "n": "décoloniser et désaliéner"
+            },
+            {
+              "t": "Une civilisation qui s'avère incapable de résoudre les problèmes que suscite son fonctionnement est une civilisation décadente.",
+              "a": "Aimé Césaire",
+              "o": "Discours sur le colonialisme",
+              "n": "la culture et la civilisation"
+            },
+            {
+              "t": "En Afrique, quand un vieillard meurt, c'est une bibliothèque qui brûle.",
+              "a": "Amadou Hampâté Bâ",
+              "o": "discours à l'UNESCO (1960)",
+              "n": "la culture et la civilisation"
+            },
+            {
+              "t": "Le barbare, c'est d'abord l'homme qui croit à la barbarie.",
+              "a": "Claude Lévi-Strauss",
+              "o": "Race et histoire",
+              "n": "l'humanité"
+            }
+          ]
+        },
+        {
+          "id": "philosophie",
+          "titre": "La valeur de la philosophie",
+          "notions": [
+            "le mythe",
+            "la raison",
+            "la philosophie"
+          ],
+          "sujets": [
+            "La philosophie sert-elle à quelque chose ?",
+            "Le mythe s'oppose-t-il à la raison ?",
+            "Existe-t-il une philosophie africaine ?"
+          ],
+          "citations": [
+            {
+              "t": "C'est l'étonnement qui poussa, comme aujourd'hui, les premiers penseurs aux spéculations philosophiques.",
+              "a": "Aristote",
+              "o": "Métaphysique",
+              "n": "la philosophie"
+            },
+            {
+              "t": "Une vie sans examen ne vaut pas la peine d'être vécue.",
+              "a": "Socrate",
+              "o": "Platon, Apologie de Socrate",
+              "n": "la philosophie"
+            },
+            {
+              "t": "On ne peut apprendre la philosophie ; on ne peut qu'apprendre à philosopher.",
+              "a": "Emmanuel Kant",
+              "o": "Critique de la raison pure",
+              "n": "la philosophie"
+            },
+            {
+              "t": "Philosopher, c'est apprendre à mourir.",
+              "a": "Michel de Montaigne",
+              "o": "Essais",
+              "n": "la philosophie"
+            },
+            {
+              "t": "Il faut imaginer Sisyphe heureux.",
+              "a": "Albert Camus",
+              "o": "Le Mythe de Sisyphe",
+              "n": "le mythe"
+            },
+            {
+              "t": "La philosophie est son temps saisi dans la pensée.",
+              "a": "Hegel",
+              "o": "Principes de la philosophie du droit",
+              "n": "la philosophie"
+            },
+            {
+              "t": "Le bon sens est la chose du monde la mieux partagée.",
+              "a": "René Descartes",
+              "o": "Discours de la méthode",
+              "n": "la raison"
+            },
+            {
+              "t": "L'émotion est nègre, comme la raison hellène.",
+              "a": "Léopold Sédar Senghor",
+              "o": "Liberté I (débat sur la philosophie africaine)",
+              "n": "la raison"
+            }
+          ]
+        },
+        {
+          "id": "bonheur",
+          "titre": "Progrès et bonheur",
+          "notions": [
+            "le progrès",
+            "la technique",
+            "le travail",
+            "le bonheur"
+          ],
+          "sujets": [
+            "Le progrès technique rend-il l'homme heureux ?",
+            "Le travail est-il une contrainte ou une libération ?",
+            "Le bonheur est-il possible ?"
+          ],
+          "citations": [
+            {
+              "t": "Nous rendre comme maîtres et possesseurs de la nature.",
+              "a": "René Descartes",
+              "o": "Discours de la méthode",
+              "n": "la technique"
+            },
+            {
+              "t": "Science sans conscience n'est que ruine de l'âme.",
+              "a": "François Rabelais",
+              "o": "Pantagruel",
+              "n": "le progrès"
+            },
+            {
+              "t": "Le travail éloigne de nous trois grands maux : l'ennui, le vice et le besoin.",
+              "a": "Voltaire",
+              "o": "Candide",
+              "n": "le travail"
+            },
+            {
+              "t": "Le bonheur n'est pas un idéal de la raison, mais de l'imagination.",
+              "a": "Emmanuel Kant",
+              "o": "Fondements de la métaphysique des mœurs",
+              "n": "le bonheur"
+            },
+            {
+              "t": "Tous les hommes recherchent d'être heureux ; cela est sans exception.",
+              "a": "Blaise Pascal",
+              "o": "Pensées",
+              "n": "le bonheur"
+            },
+            {
+              "t": "Le plaisir est le commencement et la fin de la vie bienheureuse.",
+              "a": "Épicure",
+              "o": "Lettre à Ménécée",
+              "n": "le bonheur"
+            },
+            {
+              "t": "Ne demande pas que ce qui arrive arrive comme tu le veux ; mais veuille que ce qui arrive arrive comme il arrive, et tu seras heureux.",
+              "a": "Épictète",
+              "o": "Manuel",
+              "n": "le bonheur"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verite",
+      "numero": "IV",
+      "theme": "Les conditions d'élaboration de la vérité",
+      "lecons": [
+        {
+          "id": "langage",
+          "titre": "Langage et vérité",
+          "notions": [
+            "le langage",
+            "la communication",
+            "la vérité"
+          ],
+          "sujets": [
+            "Le langage peut-il dire toute la vérité ?",
+            "Les mots trahissent-ils la pensée ?",
+            "La vérité est-elle relative ?"
+          ],
+          "citations": [
+            {
+              "t": "Ce que l'on conçoit bien s'énonce clairement, et les mots pour le dire arrivent aisément.",
+              "a": "Nicolas Boileau",
+              "o": "L'Art poétique",
+              "n": "le langage"
+            },
+            {
+              "t": "Les limites de mon langage signifient les limites de mon propre monde.",
+              "a": "Ludwig Wittgenstein",
+              "o": "Tractatus logico-philosophicus",
+              "n": "le langage"
+            },
+            {
+              "t": "Ce dont on ne peut parler, il faut le taire.",
+              "a": "Ludwig Wittgenstein",
+              "o": "Tractatus logico-philosophicus",
+              "n": "la vérité"
+            },
+            {
+              "t": "Le langage est la maison de l'être.",
+              "a": "Martin Heidegger",
+              "o": "Lettre sur l'humanisme",
+              "n": "le langage"
+            },
+            {
+              "t": "Le vrai est le tout.",
+              "a": "Hegel",
+              "o": "Phénoménologie de l'esprit",
+              "n": "la vérité"
+            },
+            {
+              "t": "Vérité en deçà des Pyrénées, erreur au-delà.",
+              "a": "Blaise Pascal",
+              "o": "Pensées",
+              "n": "la vérité"
+            },
+            {
+              "t": "La parole est moitié à celui qui parle, moitié à celui qui l'écoute.",
+              "a": "Michel de Montaigne",
+              "o": "Essais",
+              "n": "la communication"
+            }
+          ]
+        },
+        {
+          "id": "science",
+          "titre": "La connaissance scientifique",
+          "notions": [
+            "les formes de connaissance",
+            "la démarche scientifique",
+            "les limites de la science"
+          ],
+          "sujets": [
+            "La science peut-elle tout expliquer ?",
+            "Les sciences humaines sont-elles de vraies sciences ?",
+            "Doit-on avoir confiance en la science ?"
+          ],
+          "citations": [
+            {
+              "t": "On ne commande à la nature qu'en lui obéissant.",
+              "a": "Francis Bacon",
+              "o": "Novum Organum",
+              "n": "la démarche scientifique"
+            },
+            {
+              "t": "La science, dans son besoin d'achèvement comme dans son principe, s'oppose absolument à l'opinion.",
+              "a": "Gaston Bachelard",
+              "o": "La Formation de l'esprit scientifique",
+              "n": "les formes de connaissance"
+            },
+            {
+              "t": "Rien ne va de soi. Rien n'est donné. Tout est construit.",
+              "a": "Gaston Bachelard",
+              "o": "La Formation de l'esprit scientifique",
+              "n": "la démarche scientifique"
+            },
+            {
+              "t": "Le critère de la scientificité d'une théorie réside dans la possibilité de l'invalider, de la réfuter ou encore de la tester.",
+              "a": "Karl Popper",
+              "o": "Conjectures et réfutations",
+              "n": "la démarche scientifique"
+            },
+            {
+              "t": "La science ne pense pas.",
+              "a": "Martin Heidegger",
+              "o": "Qu'appelle-t-on penser ?",
+              "n": "les limites de la science"
+            },
+            {
+              "t": "L'expérience est la source unique de la vérité.",
+              "a": "Henri Poincaré",
+              "o": "La Science et l'hypothèse",
+              "n": "la démarche scientifique"
+            },
+            {
+              "t": "Le fait scientifique est conquis, construit, constaté.",
+              "a": "Pierre Bourdieu",
+              "o": "Le Métier de sociologue",
+              "n": "la démarche scientifique"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

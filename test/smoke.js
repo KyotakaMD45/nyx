@@ -429,6 +429,109 @@ function check(name, ok, detail = '') {
       await send(inGroup('.autounmute off'))
       config.TZ = savedTz
     }
+    {
+      const ph = require('../plugins/philo')
+      check('philo : citations rangées par compétence et leçon du programme', ph.DATA.competences.length === 3 && ph.ALL.length >= 50 && ph.ALL.every((q) => q.t && q.a && q.o && q.n))
+      check('philo : thème trouvé par mot-clé', ph.findTheme('liberté')?.id === 'liberte' && ph.findTheme('religion')?.id === 'religion' && ph.findTheme('inconscient')?.id === 'homme' && ph.findTheme('xyz') === null)
+      check('philo : rotation alterne les leçons', new Set(ph.rotation().slice(0, 8).map((q) => q.lecon.id)).size === 8)
+      out = await send(raw('.philo religion'))
+      check('.philo religion : citation de la leçon Dieu et la religion', /Dieu et la religion/.test(textsOf(out)) && /« .+ »/.test(textsOf(out)), textsOf(out))
+      out = await send(raw('.philo themes'))
+      check('.philo themes : liste du programme', /Les conditions de la liberté/.test(textsOf(out)) && /Langage et vérité/.test(textsOf(out)), textsOf(out))
+      out = await send(raw('.philo licorne'))
+      check('.philo thème inconnu', /inconnu/.test(textsOf(out)), textsOf(out))
+      out = await send(raw('.autophilo 07:00 19h'))
+      check('.autophilo 07:00 19h : programmé', /07:00, 19:00/.test(textsOf(out)), textsOf(out))
+      out = await send(raw('.autophilo theme verite'))
+      check('.autophilo theme verite', /élaboration de la vérité/.test(textsOf(out)), textsOf(out))
+      out = await send(raw('.aphilo info'))
+      check('.aphilo info (alias)', /07:00, 19:00/.test(textsOf(out)) && /vérité/.test(textsOf(out)), textsOf(out))
+      out = await send(raw('.autophilo 1 2 3 4 5'))
+      check('.autophilo : 4 heures maximum', /maximum/.test(textsOf(out)), textsOf(out))
+      const savedTz = config.TZ
+      config.TZ = 'UTC'
+      sent = []
+      await ph.tick(sock, new Date('2026-02-01T07:00:05Z'))
+      const first = textsOf(sent)
+      check('autophilo envoie la citation à l’heure, dans le thème choisi', /du jour/.test(first) && /(Langage et vérité|connaissance scientifique)/.test(first), first)
+      sent = []
+      await ph.tick(sock, new Date('2026-02-01T07:00:40Z'))
+      check('autophilo : une seule fois par heure prévue', sent.length === 0)
+      await ph.tick(sock, new Date('2026-02-01T19:00:02Z'))
+      check('autophilo : citation suivante différente', textsOf(sent) && textsOf(sent) !== first)
+      out = await send(raw('.autophilo off'))
+      check('.autophilo off', /arrêtées/.test(textsOf(out)), textsOf(out))
+      sent = []
+      await ph.tick(sock, new Date('2026-02-02T07:00:05Z'))
+      check('autophilo off : plus rien n’est envoyé', sent.length === 0)
+      config.TZ = savedTz
+    }
+    {
+      const ph = require('../plugins/philo')
+      check('philo : sujets d’entraînement et encouragements', ph.DATA.encouragements.length >= 5 && ph.DATA.competences.every((c) => c.lecons.every((l) => l.sujets.length >= 2)))
+      out = await send(raw('.philo bonheur'))
+      check('.philo : sujet d’entraînement et encouragement dans la citation', /Sujet d'entraînement : _.+\?_/.test(textsOf(out)), textsOf(out))
+      out = await send(raw('.philo sujets verite'))
+      check('.philo sujets verite', /Langage et vérité/.test(textsOf(out)) && /› .+\?/.test(textsOf(out)), textsOf(out))
+      check('AUTO_PHILO : heures lues', JSON.stringify(ph.varTimes('7h, 19:00 x')) === '["07:00","19:00"]' && ph.varTimes('off').length === 0)
+      const savedTz = config.TZ
+      config.TZ = 'UTC'
+      config.AUTO_PHILO = '06:30'
+      sent = []
+      await ph.tick(sock, new Date('2026-03-01T06:30:05Z'))
+      check('AUTO_PHILO : citation envoyée dans la discussion du propriétaire', sent.length === 1 && /du jour/.test(textsOf(sent)), JSON.stringify(sent.map((x) => x.jid)))
+      config.AUTO_PHILO = ''
+      config.TZ = savedTz
+    }
+    {
+      const an = require('../plugins/anime')
+      const realFetch = global.fetch
+      const media = (id, title, extra = {}) => ({ id, isAdult: false, format: 'TV', episodes: 12, averageScore: 80, popularity: id * 10, genres: ['Action'], siteUrl: `https://anilist.co/anime/${id}`, countryOfOrigin: 'JP', title: { romaji: title, english: title, native: '' }, coverImage: { extraLarge: '' }, studios: { nodes: [{ name: 'Studio' }] }, startDate: {}, description: 'A hero <br>fights.<br>(Source: X)', ...extra })
+      let calls = 0
+      global.fetch = async (url, opts) => {
+        calls++
+        if (String(url).includes('anilist')) {
+          return new Response(JSON.stringify({ data: { Page: { pageInfo: { hasNextPage: false }, airingSchedules: [
+            { episode: 1, airingAt: 1772000000, media: media(1, 'Alpha') },
+            { episode: 1, airingAt: 1772000100, media: media(2, 'Bêta') },
+            { episode: 1, airingAt: 1772000200, media: media(3, 'Interdit', { isAdult: true }) },
+            { episode: 1, airingAt: 1772000300, media: media(4, 'Ecchi', { genres: ['Ecchi'] }) },
+          ], media: [media(5, 'Frieren')] } } }), { status: 200 })
+        }
+        if (String(url).includes('translate')) return new Response(JSON.stringify([[['Un héros se bat.', 'A hero fights.']]]), { status: 200 })
+        return new Response('{}', { status: 404 })
+      }
+      try {
+        check('anime : texte nettoyé (HTML et source retirés)', an.cleanText('A <i>b</i><br>(Source: Crunchyroll)') === 'A b')
+        const list = await an.premieres(0, 2000000000)
+        check('anime : contenus adultes et ecchi exclus, tri par popularité', list.map((x) => x.title).join() === 'Bêta,Alpha', list.map((x) => x.title).join())
+        check('anime : résumé traduit en français', (await an.frenchSummary('A hero fights.')) === 'Un héros se bat.')
+        out = await send(raw('.anime'))
+        const caps = out.map((x) => x.content?.caption || x.content?.text || '').join('\n')
+        check('.anime : nouveautés avec résumé et lien', /Nouveaux animes/.test(caps) && /Bêta/.test(caps) && /Un héros se bat/.test(caps) && /anilist\.co\/anime\/2/.test(caps), caps)
+        out = await send(raw('.autoanime 18:00'))
+        check('.autoanime 18:00 : programmé', /18:00/.test(textsOf(out)), textsOf(out))
+        const savedTz = config.TZ
+        config.TZ = 'UTC'
+        sent = []
+        await an.tick(sock, new Date('2026-04-01T18:00:03Z'))
+        const got = sent.map((x) => x.content?.caption || x.content?.text || '').join('\n')
+        check('autoanime : nouveaux animes envoyés à l’heure', /Alpha/.test(got) && /Bêta/.test(got) && !/Interdit/.test(got), got)
+        sent = []
+        await an.tick(sock, new Date('2026-04-02T18:00:03Z'))
+        check('autoanime : un anime n’est jamais envoyé deux fois', /Pas de nouvel anime/.test(textsOf(sent)) && !/Alpha/.test(sent.map((x) => x.content?.caption || '').join()), textsOf(sent))
+        out = await send(raw('.autoanime off'))
+        check('.autoanime off', /arrêté/.test(textsOf(out)), textsOf(out))
+        config.AUTO_ANIME = '09:00'
+        sent = []
+        await an.tick(sock, new Date('2026-04-03T09:00:03Z'))
+        check('AUTO_ANIME : animes envoyés dans la discussion du propriétaire', sent.some((x) => /Alpha|Bêta/.test(x.content?.caption || x.content?.text || '')))
+        config.AUTO_ANIME = ''
+        config.TZ = savedTz
+      } finally {
+        global.fetch = realFetch
+      }
+    }
     out = await send(raw('.kick 2250700000002'))
     check('commande de groupe hors groupe : refusée', /groupe/.test(textsOf(out)))
 
