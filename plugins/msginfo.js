@@ -20,6 +20,32 @@ function describe(value, depth = 0) {
   return value
 }
 
+// Liste les blocs d'un fichier WebP (RIFF) et cherche des traces de son caché dedans.
+function inspectFile(buf) {
+  const lines = [`taille : ${buf.length} octets`, `début : ${buf.slice(0, 4).toString('latin1')}`]
+  if (buf.slice(0, 4).toString('latin1') === 'RIFF' && buf.slice(8, 12).toString('latin1') === 'WEBP') {
+    const chunks = {}
+    let pos = 12
+    while (pos + 8 <= buf.length) {
+      const id = buf.slice(pos, pos + 4).toString('latin1')
+      const size = buf.readUInt32LE(pos + 4)
+      if (pos + 8 + size > buf.length) break
+      chunks[id] = chunks[id] || { nombre: 0, octets: 0 }
+      chunks[id].nombre++
+      chunks[id].octets += size
+      pos += 8 + size + (size % 2)
+    }
+    lines.push('blocs : ' + Object.entries(chunks).map(([k, v]) => `${k}×${v.nombre} (${v.octets} o)`).join(', '))
+    if (pos < buf.length) lines.push(`données après la fin du WebP : ${buf.length - pos} octets`)
+  }
+  const sigs = { OggS: 'son Ogg', ID3: 'son MP3', ftyp: 'vidéo/son MP4', OpusHead: 'son Opus', fLaC: 'son FLAC' }
+  for (const [sig, name] of Object.entries(sigs)) {
+    const at = buf.indexOf(Buffer.from(sig, 'latin1'))
+    if (at >= 0) lines.push(`trouvé « ${sig} » (${name}) à l'octet ${at}`)
+  }
+  return lines.join('\n')
+}
+
 // .msginfo : réponds à un message pour voir comment WhatsApp l'a construit
 // (type de message et champs), sans les clés ni les liens du média.
 bot(
@@ -43,7 +69,12 @@ bot(
     const info = describe(raw)
     const types = Object.keys(info).join(', ')
     let text = JSON.stringify(info, null, 1)
-    if (text.length > 3500) text = text.slice(0, 3500) + '\n…'
-    await message.reply(`*Types :* ${types}\n\`\`\`${text}\`\`\``)
+    if (text.length > 3000) text = text.slice(0, 3000) + '\n…'
+    let fileInfo = ''
+    if (message.reply_message?.download) {
+      const buf = await message.reply_message.download().catch(() => null)
+      if (buf) fileInfo = `\n\n*Contenu du fichier :*\n\`\`\`${inspectFile(buf)}\`\`\``
+    }
+    await message.reply(`*Types :* ${types}\n\`\`\`${text}\`\`\`${fileInfo}`)
   }
 )
